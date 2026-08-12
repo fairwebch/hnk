@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="height:8px;background:repeating-conic-gradient(#D8232F 0% 25%,#FFFFFF 0% 50%) 0 0/16px 16px"></div>
+<sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
+  <div style="background:#0A1428">
+    <div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1.3fr;gap:56px;padding:60px 72px 52px">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <img src="assets/logo.svg" alt="HNK Kroatien Schwyz" style="width:44px;height:44px;display:block">
+          <div>
+            <div style="font:italic 800 18px/1 'Barlow Condensed',sans-serif;color:#FFFFFF;letter-spacing:.03em">HNK KROATIEN</div>
+            <div style="font:700 9px/1 'Barlow Condensed',sans-serif;color:#7E89A3;letter-spacing:.32em;margin-top:3px">SCHWYZ · 1995</div>
+          </div>
+        </div>
+        <div style="font:400 14px/1.6 'Barlow',sans-serif;color:#93A0BA;margin-top:18px;max-width:340px">{{ tag }}</div>
+        <div style="display:flex;gap:10px;margin-top:22px">
+          <div style="border:1px solid #24365C;padding:7px 14px;font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.12em;color:#B9C3D9;cursor:pointer" style-hover="border-color:#D8232F;color:#FFFFFF">FACEBOOK</div>
+          <div style="border:1px solid #24365C;padding:7px 14px;font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.12em;color:#B9C3D9;cursor:pointer" style-hover="border-color:#D8232F;color:#FFFFFF">INSTAGRAM</div>
+          <div style="border:1px solid #24365C;padding:7px 14px;font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.12em;color:#B9C3D9;cursor:pointer" style-hover="border-color:#D8232F;color:#FFFFFF">WHATSAPP</div>
+        </div>
+      </div>
+      <div>
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.22em;color:#D8232F;text-transform:uppercase;margin-bottom:16px">{{ tMom }}</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font:500 14px 'Barlow',sans-serif;color:#9AA5BE">
+          <span style="cursor:pointer" style-hover="color:#FFFFFF">Aktivni</span>
+          <span style="cursor:pointer" style-hover="color:#FFFFFF">Seniori</span>
+          <span style="cursor:pointer" style-hover="color:#FFFFFF">Juniori U16</span>
+          <span style="cursor:pointer" style-hover="color:#FFFFFF">Juniori U12</span>
+        </div>
+      </div>
+      <div>
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.22em;color:#D8232F;text-transform:uppercase;margin-bottom:16px">{{ tKlub }}</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font:500 14px 'Barlow',sans-serif;color:#9AA5BE">
+          <sc-for list="{{ klubLinks }}" as="l" hint-placeholder-count="4"><span style="cursor:pointer" style-hover="color:#FFFFFF">{{ l }}</span></sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.22em;color:#D8232F;text-transform:uppercase;margin-bottom:16px">KONTAKT</div>
+        <div style="display:flex;flex-direction:column;gap:10px;font:500 14px 'Barlow',sans-serif;color:#9AA5BE">
+          <span>+41 79 279 72 32</span>
+          <span>info@kroatien-schwyz.ch</span>
+          <span>Igralište Widmen, 6436 Muotathal</span>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #18274A;padding:20px 72px;display:flex;justify-content:space-between;font:500 12px 'Barlow',sans-serif;color:#68748F">
+      <span>© 2026 HNK Kroatien Schwyz — {{ rights }}</span>
+      <span>Impressum · Datenschutzerklärung</span>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
+  <div style="background:#0A1428;padding:36px 24px 0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <img src="assets/logo.svg" alt="HNK Kroatien Schwyz" style="width:38px;height:38px;display:block">
+      <div style="font:italic 800 16px/1 'Barlow Condensed',sans-serif;color:#FFFFFF;letter-spacing:.03em">HNK KROATIEN SCHWYZ</div>
+    </div>
+    <div style="font:400 13px/1.6 'Barlow',sans-serif;color:#93A0BA;margin-top:14px">{{ tag }}</div>
+    <div style="display:flex;flex-direction:column;gap:8px;font:500 13px 'Barlow',sans-serif;color:#9AA5BE;margin-top:18px">
+      <span>+41 79 279 72 32</span>
+      <span>info@kroatien-schwyz.ch</span>
+      <span>Igralište Widmen, 6436 Muotathal</span>
+    </div>
+    <div style="border-top:1px solid #18274A;margin-top:26px;padding:16px 0 22px;display:flex;flex-direction:column;gap:6px;font:500 11px 'Barlow',sans-serif;color:#68748F">
+      <span>© 2026 HNK Kroatien Schwyz — {{ rights }}</span>
+      <span>Impressum · Datenschutzerklärung</span>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:440},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;hr&quot;,&quot;de&quot;],&quot;default&quot;:&quot;hr&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;mobile&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const lang = this.props.lang ?? 'hr';
+    const d = {
+      hr: { tag: 'Hrvatski nogometni klub u kantonu Schwyz. Od 1995. spajamo sport, prijateljstvo i tradiciju.', tMom: 'Momčadi', tKlub: 'Klub', klubLinks: ['O nama', 'Uprava', 'Sponzoring', 'Postani član'], rights: 'Sva prava pridržana' },
+      de: { tag: 'Kroatischer Fussballverein im Kanton Schwyz. Seit 1995 verbinden wir Sport, Freundschaft und Tradition.', tMom: 'Mannschaften', tKlub: 'Verein', klubLinks: ['Über uns', 'Vorstand', 'Sponsoring', 'Mitglied werden'], rights: 'Alle Rechte vorbehalten' }
+    }[lang];
+    const mobile = this.props.mobile ?? false;
+    return { desktop: !mobile, mobile, ...d };
+  }
+}
+</script>
+</body>
+</html>
