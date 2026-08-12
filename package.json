@@ -15,7 +15,7 @@
     "@portabletext/react": "^3.2.4",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.68.3",
-    "next": "15.1.6",
+    "next": "15.5.23",
     "next-intl": "^3.26.3",
     "next-sanity": "^9.8.28",
     "react": "19.0.0",

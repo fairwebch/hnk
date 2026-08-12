@@ -35,3 +35,4 @@ next-env.d.ts
 
 # migration working files (large image dumps)
 /migration/images/
+.env*
