@@ -1,0 +1,152 @@
+{
+  "meta": {
+    "titleTemplate": "%s · HNK Kroatien Schwyz",
+    "defaultTitle": "HNK Kroatien Schwyz",
+    "description": "Hrvatski nogometni klub u kantonu Schwyz. Od 1995. spajamo sport, prijateljstvo i tradiciju."
+  },
+  "nav": {
+    "pocetna": "Početna",
+    "klub": "Klub",
+    "momcadi": "Momčadi",
+    "novosti": "Novosti",
+    "galerija": "Galerija",
+    "dogadjaji": "Događaji",
+    "sponzoring": "Sponzoring",
+    "kontakt": "Kontakt"
+  },
+  "header": {
+    "join": "Učlani se",
+    "openMenu": "Otvori izbornik",
+    "closeMenu": "Zatvori izbornik",
+    "languageHr": "HR",
+    "languageDe": "DE"
+  },
+  "common": {
+    "readMore": "Pročitaj više",
+    "viewAll": "Prikaži sve",
+    "back": "Natrag",
+    "backToList": "Natrag na popis",
+    "allCategories": "Sve kategorije",
+    "learnMore": "Saznaj više",
+    "date": "Datum",
+    "location": "Lokacija",
+    "category": "Kategorija"
+  },
+  "categories": {
+    "Eventi": "Eventi",
+    "Novosti": "Novosti",
+    "Skupština": "Skupština",
+    "Sport": "Sport"
+  },
+  "home": {
+    "heroKicker": "Nogometni klub · Kanton Schwyz · 1995",
+    "heroTitle": "HNK Kroatien Schwyz",
+    "heroSubtitle": "Hrvatski nogometni klub u kantonu Schwyz. Od 1995. spajamo sport, prijateljstvo i tradiciju.",
+    "ctaTeam": "Prijavi ekipu",
+    "ctaJoin": "Učlani se",
+    "stats": {
+      "founded": "Godina osnutka",
+      "years": "Godina tradicije",
+      "teams": "Aktivnih momčadi",
+      "members": "Članova i navijača"
+    },
+    "newsHeading": "Najnovije novosti",
+    "newsKicker": "Iz kluba",
+    "galleryHeading": "Iz galerije",
+    "galleryKicker": "Trenuci",
+    "eventsHeading": "Nadolazeći događaji",
+    "eventsKicker": "Ne propusti",
+    "nextEvent": "Sljedeći događaj"
+  },
+  "news": {
+    "title": "Novosti",
+    "subtitle": "Vijesti, najave i događanja iz kluba.",
+    "filterAll": "Sve"
+  },
+  "events": {
+    "title": "Događaji",
+    "subtitle": "Klub živi od evenata — pridruži nam se.",
+    "upcoming": "Nadolazeći",
+    "past": "Prošli",
+    "countdownTitle": "Do početka",
+    "days": "dana",
+    "hours": "sati",
+    "minutes": "min",
+    "seconds": "sek",
+    "live": "Događaj je u tijeku!",
+    "finished": "Događaj je završio"
+  },
+  "gallery": {
+    "title": "Galerija",
+    "subtitle": "Fotografije s utakmica, proslava i klupskih događanja.",
+    "photoCount": "{count, plural, one {# fotografija} few {# fotografije} other {# fotografija}}"
+  },
+  "teams": {
+    "title": "Momčadi",
+    "subtitle": "Od najmlađih do seniora — ponos kluba.",
+    "gallery": "Galerija momčadi"
+  },
+  "board": {
+    "title": "Uprava",
+    "subtitle": "Ljudi koji vode klub."
+  },
+  "sponsors": {
+    "title": "Sponzoring",
+    "subtitle": "Naši partneri čine ovaj klub mogućim.",
+    "packagesHeading": "Sponzorski paketi",
+    "ourSponsors": "Naši sponzori",
+    "becomeSponsor": "Postani sponzor",
+    "visit": "Posjeti web"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "subtitle": "Javite nam se — rado ćemo odgovoriti.",
+    "formName": "Ime i prezime",
+    "formEmail": "E-mail",
+    "formMessage": "Poruka",
+    "formSend": "Pošalji poruku",
+    "addressHeading": "Adresa",
+    "phoneHeading": "Telefon",
+    "emailHeading": "E-mail"
+  },
+  "empty": {
+    "news": "Novosti uskoro stižu",
+    "newsSub": "Trenutno nema objavljenih novosti. Vratite se uskoro.",
+    "events": "Događaji uskoro stižu",
+    "eventsSub": "Trenutno nema najavljenih događaja. Vratite se uskoro.",
+    "gallery": "Galerija je u pripremi",
+    "gallerySub": "Fotografije stižu uskoro.",
+    "teams": "Momčadi uskoro",
+    "teamsSub": "Podaci o momčadima bit će objavljeni uskoro.",
+    "board": "Uprava uskoro",
+    "boardSub": "Podaci o upravi bit će objavljeni uskoro.",
+    "sponsors": "Sponzori uskoro",
+    "sponsorsSub": "Popis sponzora bit će objavljen uskoro.",
+    "page": "Sadržaj uskoro",
+    "pageSub": "Ova je stranica u pripremi."
+  },
+  "footer": {
+    "tagline": "Hrvatski nogometni klub u kantonu Schwyz. Od 1995. spajamo sport, prijateljstvo i tradiciju.",
+    "teamsHeading": "Momčadi",
+    "clubHeading": "Klub",
+    "contactHeading": "Kontakt",
+    "rights": "Sva prava pridržana",
+    "impressum": "Impressum",
+    "datenschutz": "Datenschutzerklärung",
+    "links": {
+      "aktivni": "Aktivni",
+      "seniori": "Seniori",
+      "juniori16": "Juniori U16",
+      "juniori12": "Juniori U12",
+      "oNama": "O nama",
+      "uprava": "Uprava",
+      "sponzoring": "Sponzoring",
+      "postaniClan": "Postani član"
+    }
+  },
+  "notFound": {
+    "title": "Stranica nije pronađena",
+    "subtitle": "Tražena stranica ne postoji ili je premještena.",
+    "home": "Natrag na početnu"
+  }
+}

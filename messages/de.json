@@ -1,0 +1,152 @@
+{
+  "meta": {
+    "titleTemplate": "%s · HNK Kroatien Schwyz",
+    "defaultTitle": "HNK Kroatien Schwyz",
+    "description": "Kroatischer Fussballverein im Kanton Schwyz. Seit 1995 verbinden wir Sport, Freundschaft und Tradition."
+  },
+  "nav": {
+    "pocetna": "Startseite",
+    "klub": "Verein",
+    "momcadi": "Mannschaften",
+    "novosti": "News",
+    "galerija": "Galerie",
+    "dogadjaji": "Events",
+    "sponzoring": "Sponsoring",
+    "kontakt": "Kontakt"
+  },
+  "header": {
+    "join": "Mitglied werden",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schliessen",
+    "languageHr": "HR",
+    "languageDe": "DE"
+  },
+  "common": {
+    "readMore": "Mehr lesen",
+    "viewAll": "Alle anzeigen",
+    "back": "Zurück",
+    "backToList": "Zurück zur Übersicht",
+    "allCategories": "Alle Kategorien",
+    "learnMore": "Mehr erfahren",
+    "date": "Datum",
+    "location": "Ort",
+    "category": "Kategorie"
+  },
+  "categories": {
+    "Eventi": "Events",
+    "Novosti": "News",
+    "Skupština": "Versammlung",
+    "Sport": "Sport"
+  },
+  "home": {
+    "heroKicker": "Fussballverein · Kanton Schwyz · 1995",
+    "heroTitle": "HNK Kroatien Schwyz",
+    "heroSubtitle": "Kroatischer Fussballverein im Kanton Schwyz. Seit 1995 verbinden wir Sport, Freundschaft und Tradition.",
+    "ctaTeam": "Team anmelden",
+    "ctaJoin": "Mitglied werden",
+    "stats": {
+      "founded": "Gründungsjahr",
+      "years": "Jahre Tradition",
+      "teams": "Aktive Mannschaften",
+      "members": "Mitglieder & Fans"
+    },
+    "newsHeading": "Neueste News",
+    "newsKicker": "Aus dem Verein",
+    "galleryHeading": "Aus der Galerie",
+    "galleryKicker": "Momente",
+    "eventsHeading": "Kommende Events",
+    "eventsKicker": "Nicht verpassen",
+    "nextEvent": "Nächstes Event"
+  },
+  "news": {
+    "title": "News",
+    "subtitle": "Neuigkeiten, Ankündigungen und Ereignisse aus dem Verein.",
+    "filterAll": "Alle"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Der Verein lebt von Events — sei dabei.",
+    "upcoming": "Kommende",
+    "past": "Vergangene",
+    "countdownTitle": "Bis zum Start",
+    "days": "Tage",
+    "hours": "Std",
+    "minutes": "Min",
+    "seconds": "Sek",
+    "live": "Event läuft gerade!",
+    "finished": "Event beendet"
+  },
+  "gallery": {
+    "title": "Galerie",
+    "subtitle": "Fotos von Spielen, Feiern und Vereinsanlässen.",
+    "photoCount": "{count, plural, one {# Foto} other {# Fotos}}"
+  },
+  "teams": {
+    "title": "Mannschaften",
+    "subtitle": "Von den Jüngsten bis zu den Senioren — der Stolz des Vereins.",
+    "gallery": "Mannschaftsgalerie"
+  },
+  "board": {
+    "title": "Vorstand",
+    "subtitle": "Die Menschen, die den Verein führen."
+  },
+  "sponsors": {
+    "title": "Sponsoring",
+    "subtitle": "Unsere Partner machen diesen Verein möglich.",
+    "packagesHeading": "Sponsoring-Pakete",
+    "ourSponsors": "Unsere Sponsoren",
+    "becomeSponsor": "Sponsor werden",
+    "visit": "Website besuchen"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "subtitle": "Melden Sie sich — wir antworten gerne.",
+    "formName": "Name",
+    "formEmail": "E-Mail",
+    "formMessage": "Nachricht",
+    "formSend": "Nachricht senden",
+    "addressHeading": "Adresse",
+    "phoneHeading": "Telefon",
+    "emailHeading": "E-Mail"
+  },
+  "empty": {
+    "news": "News folgen in Kürze",
+    "newsSub": "Momentan gibt es keine veröffentlichten News. Schauen Sie bald wieder vorbei.",
+    "events": "Events folgen in Kürze",
+    "eventsSub": "Momentan sind keine Events angekündigt. Schauen Sie bald wieder vorbei.",
+    "gallery": "Galerie in Vorbereitung",
+    "gallerySub": "Fotos folgen in Kürze.",
+    "teams": "Mannschaften folgen",
+    "teamsSub": "Angaben zu den Mannschaften folgen in Kürze.",
+    "board": "Vorstand folgt",
+    "boardSub": "Angaben zum Vorstand folgen in Kürze.",
+    "sponsors": "Sponsoren folgen",
+    "sponsorsSub": "Die Sponsorenliste folgt in Kürze.",
+    "page": "Inhalt folgt",
+    "pageSub": "Diese Seite ist in Vorbereitung."
+  },
+  "footer": {
+    "tagline": "Kroatischer Fussballverein im Kanton Schwyz. Seit 1995 verbinden wir Sport, Freundschaft und Tradition.",
+    "teamsHeading": "Mannschaften",
+    "clubHeading": "Verein",
+    "contactHeading": "Kontakt",
+    "rights": "Alle Rechte vorbehalten",
+    "impressum": "Impressum",
+    "datenschutz": "Datenschutzerklärung",
+    "links": {
+      "aktivni": "Aktive",
+      "seniori": "Senioren",
+      "juniori16": "Junioren U16",
+      "juniori12": "Junioren U12",
+      "oNama": "Über uns",
+      "uprava": "Vorstand",
+      "sponzoring": "Sponsoring",
+      "postaniClan": "Mitglied werden"
+    }
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "subtitle": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+    "home": "Zurück zur Startseite"
+  }
+}

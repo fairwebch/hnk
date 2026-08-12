@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink-800 text-slateblue-100 font-sans antialiased overflow-x-hidden;
+  }
+
+  ::selection {
+    background: #d8232f;
+    color: #fff;
+  }
+}
+
+@layer components {
+  /* Croatian checkerboard strip */
+  .sahovnica-strip {
+    height: 8px;
+    background: repeating-conic-gradient(#d8232f 0% 25%, #ffffff 0% 50%) 0 0 / 16px 16px;
+  }
+
+  /* Skewed red CTA button (matches design) */
+  .btn-cta {
+    @apply inline-flex items-center bg-croatia text-white shadow-cta transition-colors;
+    transform: skewX(-8deg);
+  }
+  .btn-cta:hover {
+    @apply bg-croatia-dark;
+  }
+  .btn-cta > span {
+    @apply font-display font-extrabold uppercase tracking-wider2 whitespace-nowrap;
+    transform: skewX(8deg);
+  }
+
+  /* Outlined ghost button */
+  .btn-ghost {
+    @apply inline-flex items-center border border-slateblue-800 text-slateblue-100 font-display font-bold uppercase tracking-wider2 transition-colors;
+  }
+  .btn-ghost:hover {
+    @apply border-croatia text-white;
+  }
+
+  /* Section kicker label */
+  .kicker {
+    @apply font-display font-bold uppercase text-croatia tracking-widest2;
+  }
+
+  /* Card surface on navy */
+  .card {
+    @apply bg-ink-700 border border-slateblue-900 overflow-hidden;
+  }
+}
+
+@layer utilities {
+  .container-x {
+    @apply mx-auto w-full max-w-[1200px] px-5 sm:px-8;
+  }
+  .container-wide {
+    @apply mx-auto w-full max-w-[1440px] px-5 sm:px-10;
+  }
+}

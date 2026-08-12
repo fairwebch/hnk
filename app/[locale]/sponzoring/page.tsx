@@ -1,0 +1,144 @@
+import { setRequestLocale, getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import { Link } from '@/i18n/navigation';
+import { sanityFetch } from '@/sanity/lib/fetch';
+import { sponzoriQuery } from '@/sanity/lib/queries';
+import type { Sponzor } from '@/sanity/lib/types';
+import { PageHero } from '@/components/ui/PageHero';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { urlFor } from '@/sanity/lib/image';
+import { pickLocale } from '@/lib/locale';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'sponsors' });
+  return { title: t('title') };
+}
+
+const TIERS = ['Premium', 'Standard', 'Basic'] as const;
+
+export default async function SponzoringPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations();
+
+  const sponsors = await sanityFetch<Sponzor[]>(sponzoriQuery, {}, []);
+
+  return (
+    <>
+      <PageHero title={t('sponsors.title')} subtitle={t('sponsors.subtitle')} />
+
+      {/* Packages */}
+      <section className="bg-ink-800 border-b border-slateblue-900">
+        <div className="container-x py-14">
+          <h2 className="font-display font-bold text-white uppercase text-2xl tracking-[.03em] mb-8">
+            {t('sponsors.packagesHeading')}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {TIERS.map((tier, i) => (
+              <div
+                key={tier}
+                className={`rounded-xl border p-7 flex flex-col ${
+                  tier === 'Premium'
+                    ? 'border-croatia bg-ink-700'
+                    : 'border-slateblue-900 bg-ink-700'
+                }`}
+              >
+                {tier === 'Premium' && (
+                  <span className="self-start bg-croatia text-white font-display font-bold uppercase text-[10px] tracking-wider2 px-2 py-0.5 mb-3">
+                    ★
+                  </span>
+                )}
+                <h3 className="font-display font-extrabold text-white uppercase text-3xl leading-none">
+                  {tier}
+                </h3>
+                <div className="mt-3 flex-1">
+                  <ul className="space-y-2 font-sans text-sm text-slateblue-300">
+                    {Array.from({ length: 3 - i > 0 ? 3 - i : 1 }).map((_, k) => (
+                      <li key={k} className="flex items-start gap-2">
+                        <span className="text-croatia mt-0.5">✓</span>
+                        <span>
+                          {tier === 'Premium'
+                            ? ['Logo na naslovnici', 'Logo na dresovima', 'Objave na mrežama'][k]
+                            : tier === 'Standard'
+                              ? ['Logo na stranici sponzora', 'Objave na mrežama'][k] ?? ''
+                              : ['Logo na stranici sponzora'][k] ?? ''}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Link href="/kontakt" className="btn-cta mt-6 px-5 py-3 w-fit">
+                  <span>{t('sponsors.becomeSponsor')}</span>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sponsor grid */}
+      <section className="bg-ink-700">
+        <div className="container-x py-14">
+          <h2 className="font-display font-bold text-white uppercase text-2xl tracking-[.03em] mb-8">
+            {t('sponsors.ourSponsors')}
+          </h2>
+
+          {sponsors.length === 0 ? (
+            <EmptyState title={t('empty.sponsors')} subtitle={t('empty.sponsorsSub')} icon="users" />
+          ) : (
+            <div className="space-y-10">
+              {TIERS.map((tier) => {
+                const group = sponsors.filter((s) => s.package === tier);
+                if (group.length === 0) return null;
+                return (
+                  <div key={tier}>
+                    <h3 className="font-display font-bold uppercase text-xs tracking-wider2 text-croatia mb-4">
+                      {tier}
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {group.map((s) => {
+                        const inner = (
+                          <div className="bg-white rounded-lg h-32 flex items-center justify-center p-6 transition-transform group-hover:scale-[1.02]">
+                            {s.logo?.asset ? (
+                              <Image
+                                src={urlFor(s.logo).height(140).fit('max').auto('format').url()}
+                                alt={s.name}
+                                width={220}
+                                height={110}
+                                className="max-h-20 w-auto object-contain"
+                              />
+                            ) : (
+                              <span className="font-display font-bold text-ink-700 text-lg">{s.name}</span>
+                            )}
+                          </div>
+                        );
+                        return s.link ? (
+                          <a
+                            key={s._id}
+                            href={s.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group block"
+                            title={s.name}
+                          >
+                            {inner}
+                          </a>
+                        ) : (
+                          <div key={s._id} className="group" title={s.name}>
+                            {inner}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+    </>
+  );
+}
