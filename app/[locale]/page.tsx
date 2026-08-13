@@ -5,7 +5,6 @@ import { sanityFetch } from '@/sanity/lib/fetch';
 import {
   latestNovostiQuery,
   nextDogadjajQuery,
-  upcomingDogadjajiQuery,
   allMomcadiQuery,
   sponzoriQuery,
   galerijeTeaserQuery,
@@ -13,7 +12,6 @@ import {
 } from '@/sanity/lib/queries';
 import type { Novost, Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
 import { NewsCard } from '@/components/cards/NewsCard';
-import { EventCard } from '@/components/cards/EventCard';
 import { EventCountdown } from '@/components/EventCountdown';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -39,11 +37,10 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [news, nextEvent, upcoming, teams, sponsors, galleries, counts] =
+  const [news, nextEvent, teams, sponsors, galleries, counts] =
     await Promise.all([
       sanityFetch<Novost[]>(latestNovostiQuery, { limit: 6 }, []),
       sanityFetch<Dogadjaj | null>(nextDogadjajQuery, {}, null),
-      sanityFetch<Dogadjaj[]>(upcomingDogadjajiQuery, {}, []),
       sanityFetch<Momcad[]>(allMomcadiQuery, {}, []),
       sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),
       sanityFetch<GalleryTeaser[]>(galerijeTeaserQuery, { limit: 4 }, []),
@@ -61,11 +58,6 @@ export default async function HomePage({
     { value: counts.momcadi > 0 ? `${counts.momcadi}` : '4', label: t('home.stats.teams') },
     { value: '250+', label: t('home.stats.members') },
   ];
-
-  // Upcoming events for the cards row, excluding the one shown in the bar.
-  const upcomingRest = nextEvent
-    ? upcoming.filter((e) => e._id !== nextEvent._id)
-    : upcoming;
 
   return (
     <>
@@ -169,25 +161,6 @@ export default async function HomePage({
           </div>
         </div>
       </section>
-
-      {/* UPCOMING EVENTS */}
-      {upcomingRest.length > 0 && (
-        <section className="bg-paper">
-          <div className="container-x py-16">
-            <SectionHeading
-              kicker={t('home.eventsKicker')}
-              title={t('home.eventsHeading')}
-              href="/dogadjaji"
-              linkLabel={t('common.viewAll')}
-            />
-            <div className="grid grid-cols-1 gap-5">
-              {upcomingRest.slice(0, 3).map((d) => (
-                <EventCard key={d._id} dogadjaj={d} locale={locale} showCountdown />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* LATEST NEWS */}
       <section className="bg-paper">
