@@ -56,7 +56,15 @@
     "galleryKicker": "Trenuci",
     "eventsHeading": "Nadolazeći događaji",
     "eventsKicker": "Ne propusti",
-    "nextEvent": "Sljedeći događaj"
+    "nextEvent": "Sljedeći događaj",
+    "teamsKicker": "Naše ekipe",
+    "teamsHeading": "Momčadi kluba",
+    "partnersKicker": "Podržavaju nas",
+    "partnersHeading": "Glavni partneri",
+    "ctaTitle": "Postani dio kluba",
+    "ctaText": "Želiš aktivno sudjelovati u razvoju i napredovanju kluba? Pridruži nam se — na terenu ili izvan njega.",
+    "eventRegister": "Prijavi se",
+    "noUpcoming": "Trenutno nema nadolazećih događaja"
   },
   "news": {
     "title": "Novosti",

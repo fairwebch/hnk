@@ -56,7 +56,15 @@
     "galleryKicker": "Momente",
     "eventsHeading": "Kommende Events",
     "eventsKicker": "Nicht verpassen",
-    "nextEvent": "Nächstes Event"
+    "nextEvent": "Nächstes Event",
+    "teamsKicker": "Unsere Teams",
+    "teamsHeading": "Mannschaften",
+    "partnersKicker": "Sie unterstützen uns",
+    "partnersHeading": "Hauptpartner",
+    "ctaTitle": "Werde Teil des Vereins",
+    "ctaText": "Möchtest du aktiv am Vereinsleben teilnehmen? Mach mit — auf dem Platz oder daneben.",
+    "eventRegister": "Anmelden",
+    "noUpcoming": "Zurzeit keine bevorstehenden Veranstaltungen"
   },
   "news": {
     "title": "News",
