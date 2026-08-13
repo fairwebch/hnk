@@ -75,9 +75,16 @@ export default async function HomePage({
 
         <div className="container-x relative py-20 md:py-28">
           <div className="kicker text-[13px] mb-4">{t('home.heroKicker')}</div>
-          <h1 className="font-display font-extrabold text-white uppercase tracking-[.01em] text-[2.6rem] sm:text-6xl md:text-8xl leading-[0.9] max-w-4xl break-words">
-            {t('home.heroTitle')}
-          </h1>
+          {(() => {
+            const words = t('home.heroTitle').split(' ');
+            const last = words.pop();
+            return (
+              <h1 className="h-display text-white tracking-[.01em] text-[2.6rem] sm:text-6xl md:text-8xl leading-[0.9] max-w-4xl break-words">
+                <span className="block">{words.join(' ')}</span>
+                <span className="block text-croatia">{last}</span>
+              </h1>
+            );
+          })()}
           <p className="font-sans text-slateblue-200 mt-6 max-w-xl text-lg md:text-xl leading-relaxed">
             {t('home.heroSubtitle')}
           </p>
@@ -115,7 +122,7 @@ export default async function HomePage({
       {nextEvent && (
         <section className="bg-ink-700">
           <div className="container-x py-14">
-            <div className="relative card rounded-2xl overflow-hidden">
+            <div className="relative card-dark overflow-hidden">
               <div className="absolute inset-0">
                 <SanityImage
                   image={nextEvent.coverImage}
@@ -157,7 +164,7 @@ export default async function HomePage({
       )}
 
       {/* LATEST NEWS */}
-      <section className="bg-ink-800">
+      <section className="bg-paper">
         <div className="container-x py-16">
           <SectionHeading
             kicker={t('home.newsKicker')}
@@ -183,7 +190,7 @@ export default async function HomePage({
       </section>
 
       {/* GALLERY TEASER */}
-      <section className="bg-ink-700 border-t border-slateblue-900">
+      <section className="bg-white border-t border-line">
         <div className="container-x py-16">
           <SectionHeading
             kicker={t('home.galleryKicker')}
@@ -199,7 +206,7 @@ export default async function HomePage({
                 <Link
                   key={g._id}
                   href={`/galerija/${g.slug}`}
-                  className="group relative aspect-square overflow-hidden rounded-lg border border-slateblue-900"
+                  className="group relative aspect-square overflow-hidden border border-line"
                 >
                   <SanityImage
                     image={g.cover}

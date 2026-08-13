@@ -56,7 +56,7 @@ export default async function NovostPage({
       <div className="container-x max-w-3xl py-12">
         <Link
           href="/novosti"
-          className="inline-flex items-center gap-2 font-display font-bold uppercase text-xs tracking-wider2 text-slateblue-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 font-display font-bold uppercase text-xs tracking-wider2 text-content-muted hover:text-croatia transition-colors"
         >
           <span aria-hidden>←</span> {t('common.backToList')}
         </Link>
@@ -67,19 +67,19 @@ export default async function NovostPage({
               {t(`categories.${n.category}` as any)}
             </span>
           )}
-          <time className="font-display font-bold uppercase text-[11px] tracking-wider2 text-slateblue-400">
+          <time className="font-display font-bold uppercase text-[11px] tracking-wider2 text-content-muted">
             {formatDate(n.date, locale)}
           </time>
         </div>
 
-        <h1 className="font-display font-extrabold text-white text-4xl md:text-5xl leading-tight mt-4">
+        <h1 className="h-display text-content text-4xl md:text-5xl leading-tight mt-4">
           {title}
         </h1>
       </div>
 
       {n.coverImage?.asset && (
         <div className="container-x max-w-4xl">
-          <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-slateblue-900">
+          <div className="relative aspect-[16/9] overflow-hidden border border-line">
             <SanityImage image={n.coverImage} alt={title} fill sizes="100vw" className="object-cover" priority />
           </div>
         </div>
@@ -90,7 +90,7 @@ export default async function NovostPage({
           <PortableText value={body} />
         ) : (
           pickLocale(n.excerpt, locale) && (
-            <p className="font-sans text-lg text-slateblue-100 leading-relaxed">
+            <p className="font-sans text-lg text-content-soft leading-relaxed">
               {pickLocale(n.excerpt, locale)}
             </p>
           )

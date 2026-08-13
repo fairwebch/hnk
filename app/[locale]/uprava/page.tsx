@@ -30,8 +30,8 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {members.map((m) => (
-              <div key={m._id} className="card rounded-lg overflow-hidden">
-                <div className="relative aspect-[4/5] bg-ink-600">
+              <div key={m._id} className="card overflow-hidden">
+                <div className="relative aspect-[4/5] bg-line">
                   <SanityImage
                     image={m.image}
                     alt={m.name}
@@ -44,11 +44,11 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
                   <div className="font-display font-bold uppercase text-[11px] tracking-wider2 text-croatia">
                     {pickLocale(m.role, locale)}
                   </div>
-                  <h3 className="font-display font-bold text-white text-xl mt-1">{m.name}</h3>
+                  <h3 className="h-display text-content text-xl mt-1">{m.name}</h3>
                   {m.phone && (
                     <a
                       href={`tel:${m.phone.replace(/\s/g, '')}`}
-                      className="inline-block font-sans text-sm text-slateblue-300 mt-2 hover:text-white transition-colors"
+                      className="inline-block font-sans text-sm text-content-soft mt-2 hover:text-croatia transition-colors"
                     >
                       {m.phone}
                     </a>

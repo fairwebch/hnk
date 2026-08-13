@@ -34,7 +34,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
               <Link
                 key={team._id}
                 href={`/momcadi/${team.slug}`}
-                className="card rounded-lg group overflow-hidden hover:border-slateblue-700 transition-colors"
+                className="card card-hover group overflow-hidden"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <SanityImage
@@ -45,7 +45,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-900/90 to-transparent" />
-                  <h3 className="absolute bottom-0 left-0 p-5 font-display font-extrabold uppercase text-white text-2xl leading-none group-hover:text-croatia transition-colors">
+                  <h3 className="absolute bottom-0 left-0 p-5 h-display text-white text-2xl leading-none group-hover:text-croatia transition-colors">
                     {pickLocale(team.name, locale)}
                   </h3>
                 </div>

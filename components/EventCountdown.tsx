@@ -71,7 +71,7 @@ export function EventCountdown({
       {units.map((u, i) => (
         <div
           key={i}
-          className={`flex flex-col items-center rounded-md bg-ink-800 border border-slateblue-800 ${box}`}
+          className={`flex flex-col items-center bg-ink-800 border border-slateblue-800 ${box}`}
         >
           <span className="font-display font-extrabold text-white leading-none tabular-nums">
             {mounted ? String(u.v).padStart(2, '0') : '––'}

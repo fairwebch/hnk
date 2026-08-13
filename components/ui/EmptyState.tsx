@@ -8,15 +8,15 @@ export function EmptyState({
   icon?: 'ball' | 'calendar' | 'photo' | 'users';
 }) {
   return (
-    <div className="card rounded-lg py-16 px-6 text-center flex flex-col items-center">
-      <div className="w-16 h-16 rounded-full bg-ink-800 border border-slateblue-800 flex items-center justify-center text-croatia mb-5">
+    <div className="card-dashed py-16 px-6 text-center flex flex-col items-center">
+      <div className="w-16 h-16 rounded-full bg-chip border border-line flex items-center justify-center text-croatia mb-5">
         <Icon name={icon} />
       </div>
-      <h3 className="font-display font-bold text-2xl text-white uppercase tracking-[.04em]">
+      <h3 className="h-display text-2xl text-content tracking-[.04em]">
         {title}
       </h3>
       {subtitle && (
-        <p className="font-sans text-slateblue-300 mt-2 max-w-md">{subtitle}</p>
+        <p className="font-sans text-content-soft mt-2 max-w-md">{subtitle}</p>
       )}
     </div>
   );

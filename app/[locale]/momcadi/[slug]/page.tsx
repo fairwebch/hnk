@@ -66,7 +66,7 @@ export default async function MomcadPage({
           >
             <span aria-hidden>←</span> {t('teams.title')}
           </Link>
-          <h1 className="font-display font-extrabold text-white uppercase text-5xl md:text-7xl leading-none mt-5">
+          <h1 className="h-display text-white text-5xl md:text-7xl leading-none mt-5">
             {name}
           </h1>
         </div>
@@ -76,13 +76,13 @@ export default async function MomcadPage({
         {desc && desc.length > 0 ? (
           <PortableText value={desc} />
         ) : (
-          <p className="text-slateblue-300">{t('empty.pageSub')}</p>
+          <p className="text-content-soft">{t("empty.pageSub")}</p>
         )}
       </div>
 
       {gallery.length > 0 && (
         <div className="container-x pb-16">
-          <h2 className="font-display font-bold text-white uppercase text-2xl tracking-[.03em] mb-6">
+          <h2 className="h-display text-content text-2xl tracking-[.02em] mb-6">
             {t('teams.gallery')}
           </h2>
           <GalleryGrid images={gallery} />

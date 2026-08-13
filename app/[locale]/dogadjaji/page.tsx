@@ -35,7 +35,7 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
           <>
             {upcoming.length > 0 && (
               <section>
-                <h2 className="font-display font-bold text-white uppercase text-2xl tracking-[.03em] mb-6 flex items-center gap-3">
+                <h2 className="h-display text-content text-2xl tracking-[.02em] mb-6 flex items-center gap-3">
                   <span className="w-2.5 h-2.5 rounded-full bg-croatia animate-pulse" />
                   {t('events.upcoming')}
                 </h2>
@@ -49,7 +49,7 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
 
             {past.length > 0 && (
               <section>
-                <h2 className="font-display font-bold text-slateblue-300 uppercase text-2xl tracking-[.03em] mb-6">
+                <h2 className="h-display text-content-muted text-2xl tracking-[.02em] mb-6">
                   {t('events.past')}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 opacity-80">

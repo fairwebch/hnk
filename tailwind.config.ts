@@ -8,12 +8,23 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Light theme (design spec)
+        paper: '#F5F6FA', // page background
+        line: '#E4E8F0', // borders / hairlines on light
+        chip: '#FBEAEC', // category chip background (pink)
+        content: {
+          DEFAULT: '#33405C', // primary text on light
+          soft: '#55617A', // secondary text on light
+          muted: '#8A93A8', // muted text / labels on light
+        },
         // Navy scale (backgrounds)
         ink: {
           900: '#070E1D', // top contact bar / darkest
           800: '#0A1428', // footer / section dark
           700: '#0D1B33', // header
           600: '#0F213F', // cards on dark
+          550: '#122444', // dark card
+          500: '#16274A', // dark card (lighter)
         },
         // Croatian red (primary accent)
         croatia: {

@@ -43,7 +43,7 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
         </div>
 
         {/* Form */}
-        <div className="card rounded-xl p-6 md:p-8">
+        <div className="card p-6 md:p-8">
           <ContactForm />
         </div>
       </div>
@@ -58,11 +58,11 @@ function InfoRow({ heading, value, href }: { heading: string; value: string; hre
         {heading}
       </div>
       {href ? (
-        <a href={href} className="font-sans text-lg text-white hover:text-croatia transition-colors">
+        <a href={href} className="font-sans text-lg text-content hover:text-croatia transition-colors">
           {value}
         </a>
       ) : (
-        <span className="font-sans text-lg text-white">{value}</span>
+        <span className="font-sans text-lg text-content">{value}</span>
       )}
     </div>
   );

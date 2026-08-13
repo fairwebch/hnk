@@ -27,7 +27,7 @@ export function SanityImage({
   if (!image?.asset) {
     return (
       <div
-        className={`relative bg-ink-600 flex items-center justify-center overflow-hidden ${className}`}
+        className={`relative bg-paper flex items-center justify-center overflow-hidden ${className}`}
         style={fill ? undefined : { width, height }}
         aria-hidden
       >

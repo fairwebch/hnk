@@ -34,7 +34,7 @@ export default async function GalerijaPage({ params }: { params: Promise<{ local
               <Link
                 key={g._id}
                 href={`/galerija/${g.slug}`}
-                className="card rounded-lg group overflow-hidden hover:border-slateblue-700 transition-colors"
+                className="card card-hover group overflow-hidden"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <SanityImage
@@ -46,7 +46,7 @@ export default async function GalerijaPage({ params }: { params: Promise<{ local
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-900/85 to-transparent" />
                   <div className="absolute bottom-0 left-0 p-5">
-                    <h3 className="font-display font-bold uppercase text-white text-xl leading-tight">
+                    <h3 className="h-display text-white text-xl leading-tight">
                       {pickLocale(g.name, locale)}
                     </h3>
                     <div className="flex items-center gap-2 mt-1 font-sans text-xs text-slateblue-300">

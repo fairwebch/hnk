@@ -9,41 +9,41 @@ import { urlFor } from '@/sanity/lib/image';
 const components: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
-      <p className="font-sans text-slateblue-100 leading-relaxed my-4">{children}</p>
+      <p className="font-sans text-content-soft leading-relaxed my-4">{children}</p>
     ),
     h2: ({ children }) => (
-      <h2 className="font-display font-bold text-white uppercase tracking-[.03em] text-2xl md:text-3xl mt-10 mb-3">
+      <h2 className="h-display text-content tracking-[.02em] text-2xl md:text-3xl mt-10 mb-3">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="font-display font-bold text-white uppercase tracking-[.03em] text-xl mt-8 mb-2">
+      <h3 className="h-display text-content tracking-[.02em] text-xl mt-8 mb-2">
         {children}
       </h3>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-croatia pl-5 my-6 italic text-slateblue-50">
+      <blockquote className="border-l-4 border-croatia pl-5 my-6 italic text-content">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc pl-6 my-4 space-y-1 text-slateblue-100 marker:text-croatia">{children}</ul>
+      <ul className="list-disc pl-6 my-4 space-y-1 text-content-soft marker:text-croatia">{children}</ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal pl-6 my-4 space-y-1 text-slateblue-100 marker:text-croatia">{children}</ol>
+      <ol className="list-decimal pl-6 my-4 space-y-1 text-content-soft marker:text-croatia">{children}</ol>
     ),
   },
   marks: {
-    strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+    strong: ({ children }) => <strong className="font-semibold text-content">{children}</strong>,
     em: ({ children }) => <em>{children}</em>,
     link: ({ children, value }) => (
       <a
         href={value?.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-royal-light underline underline-offset-2 hover:text-white transition-colors"
+        className="text-croatia underline underline-offset-2 hover:text-croatia-dark transition-colors"
       >
         {children}
       </a>
@@ -58,10 +58,10 @@ const components: PortableTextComponents = {
             alt={value.alt || ''}
             width={1200}
             height={800}
-            className="w-full h-auto rounded-lg border border-slateblue-900"
+            className="w-full h-auto border border-line"
           />
           {value.alt && (
-            <figcaption className="text-sm text-slateblue-400 mt-2">{value.alt}</figcaption>
+            <figcaption className="text-sm text-content-muted mt-2">{value.alt}</figcaption>
           )}
         </figure>
       ) : null,

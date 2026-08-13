@@ -37,7 +37,7 @@ export function NewsList({ news, locale }: { news: Novost[]; locale: string }) {
         className={`font-display font-bold uppercase text-xs tracking-wider2 px-4 py-2 rounded-full border transition-colors ${
           on
             ? 'bg-croatia border-croatia text-white'
-            : 'border-slateblue-800 text-slateblue-200 hover:text-white hover:border-slateblue-600'
+            : 'border-line text-content-soft hover:text-croatia hover:border-croatia'
         }`}
       >
         {label}

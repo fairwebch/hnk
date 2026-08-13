@@ -18,7 +18,7 @@ export function EventCard({
   return (
     <Link
       href={`/dogadjaji/${dogadjaj.slug}`}
-      className="card rounded-lg group flex flex-col md:flex-row overflow-hidden hover:border-slateblue-700 transition-colors"
+      className="card card-hover group flex flex-col md:flex-row"
     >
       <div className="relative md:w-64 aspect-[16/10] md:aspect-auto overflow-hidden flex-shrink-0">
         <SanityImage
@@ -30,7 +30,7 @@ export function EventCard({
         />
       </div>
       <div className="p-5 flex flex-col flex-1 gap-3">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-display font-bold uppercase text-[11px] tracking-wider2 text-slateblue-400">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-display font-bold uppercase text-[11px] tracking-wider2 text-content-muted">
           <time className="text-croatia">
             {formatDate(dogadjaj.date, locale, {
               weekday: 'short',
@@ -43,7 +43,7 @@ export function EventCard({
           </time>
           {dogadjaj.location && <span>· {dogadjaj.location}</span>}
         </div>
-        <h3 className="font-display font-bold text-white text-2xl leading-tight group-hover:text-croatia transition-colors">
+        <h3 className="h-display text-2xl leading-tight text-content group-hover:text-croatia transition-colors">
           {name}
         </h3>
         {showCountdown && (

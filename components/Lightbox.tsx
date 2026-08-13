@@ -40,7 +40,7 @@ export function GalleryGrid({ images }: { images: LightboxImage[] }) {
             key={i}
             type="button"
             onClick={() => setOpen(i)}
-            className="group relative aspect-square overflow-hidden rounded-lg border border-slateblue-900 bg-ink-700"
+            className="group relative aspect-square overflow-hidden border border-line bg-paper"
           >
             <Image
               src={img.thumb}

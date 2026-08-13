@@ -30,19 +30,19 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
       <PageHero title={t('sponsors.title')} subtitle={t('sponsors.subtitle')} />
 
       {/* Packages */}
-      <section className="bg-ink-800 border-b border-slateblue-900">
+      <section className="bg-paper border-b border-line">
         <div className="container-x py-14">
-          <h2 className="font-display font-bold text-white uppercase text-2xl tracking-[.03em] mb-8">
+          <h2 className="h-display text-content text-2xl tracking-[.02em] mb-8">
             {t('sponsors.packagesHeading')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TIERS.map((tier, i) => (
               <div
                 key={tier}
-                className={`rounded-xl border p-7 flex flex-col ${
+                className={`border p-7 flex flex-col ${
                   tier === 'Premium'
-                    ? 'border-croatia bg-ink-700'
-                    : 'border-slateblue-900 bg-ink-700'
+                    ? 'border-2 border-croatia bg-white'
+                    : 'border border-line bg-white'
                 }`}
               >
                 {tier === 'Premium' && (
@@ -50,11 +50,11 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
                     ★
                   </span>
                 )}
-                <h3 className="font-display font-extrabold text-white uppercase text-3xl leading-none">
+                <h3 className="h-display text-content text-3xl leading-none">
                   {tier}
                 </h3>
                 <div className="mt-3 flex-1">
-                  <ul className="space-y-2 font-sans text-sm text-slateblue-300">
+                  <ul className="space-y-2 font-sans text-sm text-content-soft">
                     {Array.from({ length: 3 - i > 0 ? 3 - i : 1 }).map((_, k) => (
                       <li key={k} className="flex items-start gap-2">
                         <span className="text-croatia mt-0.5">✓</span>
@@ -79,9 +79,9 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
       </section>
 
       {/* Sponsor grid */}
-      <section className="bg-ink-700">
+      <section className="bg-white">
         <div className="container-x py-14">
-          <h2 className="font-display font-bold text-white uppercase text-2xl tracking-[.03em] mb-8">
+          <h2 className="h-display text-content text-2xl tracking-[.02em] mb-8">
             {t('sponsors.ourSponsors')}
           </h2>
 
@@ -100,7 +100,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {group.map((s) => {
                         const inner = (
-                          <div className="bg-white rounded-lg h-32 flex items-center justify-center p-6 transition-transform group-hover:scale-[1.02]">
+                          <div className="bg-white border border-line h-32 flex items-center justify-center p-6 transition-transform group-hover:scale-[1.02]">
                             {s.logo?.asset ? (
                               <Image
                                 src={urlFor(s.logo).height(140).fit('max').auto('format').url()}

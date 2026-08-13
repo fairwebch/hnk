@@ -18,7 +18,7 @@ export function NewsCard({
   return (
     <Link
       href={`/novosti/${novost.slug}`}
-      className="card rounded-lg group flex flex-col hover:border-slateblue-700 transition-colors"
+      className="card card-hover group flex flex-col"
     >
       <div className="relative aspect-[16/10] overflow-hidden">
         <SanityImage
@@ -35,14 +35,14 @@ export function NewsCard({
         )}
       </div>
       <div className="p-5 flex flex-col flex-1">
-        <time className="font-display font-bold uppercase text-[11px] tracking-wider2 text-slateblue-400">
+        <time className="font-display font-bold uppercase text-[11px] tracking-wider2 text-content-muted">
           {formatDate(novost.date, locale)}
         </time>
-        <h3 className="font-display font-bold text-white text-xl leading-tight mt-2 group-hover:text-croatia transition-colors">
+        <h3 className="h-display text-[22px] leading-tight mt-2 text-content group-hover:text-croatia transition-colors">
           {title}
         </h3>
         {excerpt && (
-          <p className="font-sans text-sm text-slateblue-300 mt-2 line-clamp-3">{excerpt}</p>
+          <p className="font-sans text-sm text-content-soft mt-2 line-clamp-3">{excerpt}</p>
         )}
       </div>
     </Link>

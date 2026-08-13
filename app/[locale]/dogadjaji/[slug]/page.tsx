@@ -73,7 +73,7 @@ export default async function DogadjajPage({
             </span>
             {d.location && <span className="text-slateblue-300">· {d.location}</span>}
           </div>
-          <h1 className="font-display font-extrabold text-white uppercase text-5xl md:text-7xl leading-none mt-4 max-w-4xl">
+          <h1 className="h-display text-white text-5xl md:text-7xl leading-none mt-4 max-w-4xl">
             {name}
           </h1>
 
@@ -92,7 +92,7 @@ export default async function DogadjajPage({
         {body && body.length > 0 ? (
           <PortableText value={body} />
         ) : (
-          <p className="text-slateblue-300">{t('empty.pageSub')}</p>
+          <p className="text-content-soft">{t("empty.pageSub")}</p>
         )}
       </div>
     </article>

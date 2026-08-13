@@ -18,7 +18,7 @@ export function PageHero({
       />
       <div className="container-x py-14 md:py-20 relative">
         {kicker && <div className="kicker text-[13px] mb-3">{kicker}</div>}
-        <h1 className="font-display font-extrabold text-white uppercase tracking-[.02em] text-4xl md:text-6xl leading-[0.95]">
+        <h1 className="h-display text-white tracking-[.02em] text-4xl md:text-6xl leading-[0.95]">
           {title}
         </h1>
         {subtitle && (

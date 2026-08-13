@@ -53,12 +53,12 @@ export default async function GalerijaDetailPage({
       <div className="container-x py-12">
         <Link
           href="/galerija"
-          className="inline-flex items-center gap-2 font-display font-bold uppercase text-xs tracking-wider2 text-slateblue-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 font-display font-bold uppercase text-xs tracking-wider2 text-content-muted hover:text-croatia transition-colors"
         >
           <span aria-hidden>←</span> {t('gallery.title')}
         </Link>
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mt-5">
-          <h1 className="font-display font-extrabold text-white uppercase text-4xl md:text-5xl leading-none">
+          <h1 className="h-display text-content text-4xl md:text-5xl leading-none">
             {name}
           </h1>
           {g.date && (
@@ -68,7 +68,7 @@ export default async function GalerijaDetailPage({
           )}
         </div>
         {description && (
-          <p className="font-sans text-slateblue-300 mt-3 max-w-2xl">{description}</p>
+          <p className="font-sans text-content-soft mt-3 max-w-2xl">{description}</p>
         )}
 
         <div className="mt-8">
