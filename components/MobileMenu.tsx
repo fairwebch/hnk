@@ -88,6 +88,16 @@ export function MobileMenu() {
               </Link>
             );
           })}
+          <Link
+            href="/shop"
+            className={`py-3 font-display font-bold text-lg tracking-[.06em] uppercase border-b border-slateblue-900 transition-colors ${
+              pathname === '/shop' || pathname.startsWith('/shop/')
+                ? 'text-croatia'
+                : 'text-slateblue-50 hover:text-white'
+            }`}
+          >
+            {t('nav.shop')}
+          </Link>
         </nav>
 
         <div className="px-5 mt-2">

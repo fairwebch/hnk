@@ -12,7 +12,8 @@
     "galerija": "Galerija",
     "dogadjaji": "Događaji",
     "sponzoring": "Sponzoring",
-    "kontakt": "Kontakt"
+    "kontakt": "Kontakt",
+    "shop": "Shop"
   },
   "header": {
     "join": "Učlani se",
@@ -186,5 +187,17 @@
     "oNamaKicker": "Naša priča",
     "klubKicker": "O klubu",
     "postaniClanKicker": "Pridruži nam se"
+  },
+  "shop": {
+    "title": "Klupska trgovina",
+    "subtitle": "Službena klupska oprema — Nike, personalizirano za HNK Kroatien Schwyz.",
+    "buy": "Kupi",
+    "viewAll": "Pogledaj sve",
+    "pageTitle": "Trgovina",
+    "pageSubtitle": "Naruči službenu klupsku opremu putem 11teamsports.",
+    "kicker": "Naša oprema",
+    "checkMore": "Provjeri ostalo u trgovini",
+    "checkMoreSub": "Pogledaj cijelu klupsku ponudu na 11teamsports.",
+    "checkMoreBtn": "Otvori trgovinu"
   }
 }

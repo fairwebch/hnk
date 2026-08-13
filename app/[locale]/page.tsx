@@ -16,6 +16,8 @@ import { EventCountdown } from '@/components/EventCountdown';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SanityImage } from '@/components/ui/SanityImage';
+import { ShopSlider } from '@/components/shop/ShopSlider';
+import { shopProducts } from '@/lib/shop';
 import { urlFor } from '@/sanity/lib/image';
 import { pickLocale, formatDate } from '@/lib/locale';
 import { site } from '@/lib/site';
@@ -338,6 +340,19 @@ export default async function HomePage({
           </div>
         </section>
       )}
+
+      {/* CLUB SHOP */}
+      <section className="bg-white border-t border-line">
+        <div className="container-x py-16">
+          <SectionHeading
+            kicker={t('shop.kicker')}
+            title={t('shop.title')}
+            href="/shop"
+            linkLabel={t('shop.viewAll')}
+          />
+          <ShopSlider products={shopProducts} buyLabel={t('shop.buy')} />
+        </div>
+      </section>
     </>
   );
 }

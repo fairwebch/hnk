@@ -23,6 +23,7 @@ export async function Footer() {
     { label: t('footer.links.uprava'), href: '/uprava' },
     { label: t('footer.links.sponzoring'), href: '/sponzoring' },
     { label: t('footer.links.postaniClan'), href: '/postani-clan' },
+    { label: t('nav.shop'), href: '/shop' },
   ];
 
   return (

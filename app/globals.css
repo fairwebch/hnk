@@ -42,6 +42,19 @@
     transform: skewX(8deg);
   }
 
+  /* Secondary skewed CTA (outline) — pairs with .btn-cta on navy */
+  .btn-cta-outline {
+    @apply inline-flex items-center border-2 border-slateblue-600 bg-transparent text-white transition-colors;
+    transform: skewX(-8deg);
+  }
+  .btn-cta-outline:hover {
+    @apply border-croatia;
+  }
+  .btn-cta-outline > span {
+    @apply font-display font-extrabold uppercase tracking-wider2 whitespace-nowrap;
+    transform: skewX(8deg);
+  }
+
   /* Outlined ghost button — used on dark (navy) sections */
   .btn-ghost {
     @apply inline-flex items-center border-2 border-slateblue-700 text-white font-display font-bold uppercase tracking-wider2 transition-colors;
@@ -98,5 +111,12 @@
   }
   .container-wide {
     @apply mx-auto w-full max-w-[1440px] px-5 sm:px-10;
+  }
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

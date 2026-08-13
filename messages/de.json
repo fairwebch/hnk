@@ -12,7 +12,8 @@
     "galerija": "Galerie",
     "dogadjaji": "Events",
     "sponzoring": "Sponsoring",
-    "kontakt": "Kontakt"
+    "kontakt": "Kontakt",
+    "shop": "Shop"
   },
   "header": {
     "join": "Mitglied werden",
@@ -186,5 +187,17 @@
     "oNamaKicker": "Unsere Geschichte",
     "klubKicker": "Über den Verein",
     "postaniClanKicker": "Mach mit"
+  },
+  "shop": {
+    "title": "Vereinsshop",
+    "subtitle": "Offizielle Vereinsausrüstung — Nike, personalisiert für HNK Kroatien Schwyz.",
+    "buy": "Kaufen",
+    "viewAll": "Alle ansehen",
+    "pageTitle": "Shop",
+    "pageSubtitle": "Bestelle die offizielle Vereinsausrüstung über 11teamsports.",
+    "kicker": "Unsere Ausrüstung",
+    "checkMore": "Mehr im Shop entdecken",
+    "checkMoreSub": "Sieh dir das ganze Vereinssortiment auf 11teamsports an.",
+    "checkMoreBtn": "Shop öffnen"
   }
 }

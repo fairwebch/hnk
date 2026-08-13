@@ -57,8 +57,11 @@ export function Header() {
             );
           })}
         </nav>
-        <div className="ml-auto flex items-center gap-4 flex-shrink-0">
+        <div className="ml-auto flex items-center gap-3 flex-shrink-0">
           <LanguageSwitcher />
+          <Link href="/shop" className="btn-cta-outline px-5 py-3">
+            <span>{t('nav.shop')}</span>
+          </Link>
           <Link href="/postani-clan" className="btn-cta px-5 py-3">
             <span>{t('header.join')}</span>
           </Link>
