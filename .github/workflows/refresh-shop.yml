@@ -1,0 +1,69 @@
+name: Refresh shop data
+
+# Runs on the 1st of every month (06:00 UTC) and on demand.
+# Re-scrapes the 7 club-shop products from 11teamsports and, only if
+# something actually changed, commits the new prices/images and redeploys.
+# If the scrape fails, nothing is touched and the run goes red.
+on:
+  schedule:
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-shop
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      # Non-secret Vercel identifiers (safe to commit). The token is a secret.
+      VERCEL_ORG_ID: team_8ft2ltR0oYbY3lHKfOwLoovp
+      VERCEL_PROJECT_ID: prj_9rREhAY6yN2hg8GlL0i8KUNFCi1m
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Playwright + Chromium
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Scrape 11teamsports (Cloudflare via real Chromium)
+        run: xvfb-run -a node scripts/refresh-shop.mjs
+
+      - name: Commit updated shop data (only if changed)
+        id: commit
+        run: |
+          if [ -n "$(git status --porcelain lib/shop.data.json public/assets/shop)" ]; then
+            git config user.name "hnk-shop-bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add lib/shop.data.json public/assets/shop
+            git commit -m "chore(shop): refresh 11teamsports prices/images"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No shop changes — nothing to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Redeploy to Vercel
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::warning::VERCEL_TOKEN secret not set — data committed but not redeployed. Add the secret to enable auto-deploy."
+            exit 0
+          fi
+          npx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx vercel@latest build --prod --token="$VERCEL_TOKEN"
+          npx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
