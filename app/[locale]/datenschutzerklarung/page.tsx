@@ -17,6 +17,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       slug="datenschutzerklarung"
       locale={locale}
       fallbackTitle={t('footer.datenschutz')}
+      ghost="DSGVO"
     />
   );
 }

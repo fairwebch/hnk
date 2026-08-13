@@ -17,6 +17,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       slug="o-nama"
       locale={locale}
       fallbackTitle={t('footer.links.oNama')}
+      kicker={t('pages.oNamaKicker')}
+      ghost="KLUB"
     />
   );
 }

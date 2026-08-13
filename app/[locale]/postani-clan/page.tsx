@@ -17,6 +17,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
       slug="postani-clan"
       locale={locale}
       fallbackTitle={t('footer.links.postaniClan')}
+      kicker={t('pages.postaniClanKicker')}
+      ghost="ČLAN"
     />
   );
 }

@@ -27,7 +27,13 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
 
   return (
     <>
-      <PageHero title={t('sponsors.title')} subtitle={t('sponsors.subtitle')} />
+      <PageHero
+        kicker={t('sponsors.kicker')}
+        title={t('sponsors.title')}
+        subtitle={t('sponsors.subtitle')}
+        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.sponzoring') }]}
+        ghost="PARTNERS"
+      />
 
       {/* Packages */}
       <section className="bg-paper border-b border-line">

@@ -26,7 +26,13 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <PageHero title={t('contact.title')} subtitle={intro || t('contact.subtitle')} />
+      <PageHero
+        kicker={t('contact.kicker')}
+        title={t('contact.title')}
+        subtitle={intro || t('contact.subtitle')}
+        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.kontakt') }]}
+        ghost="CONTACT"
+      />
       <div className="container-x py-14 grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-12">
         {/* Info */}
         <div>

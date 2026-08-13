@@ -23,7 +23,17 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
 
   return (
     <>
-      <PageHero title={t('board.title')} subtitle={t('board.subtitle')} />
+      <PageHero
+        kicker={t('board.kicker')}
+        title={t('board.title')}
+        subtitle={t('board.subtitle')}
+        breadcrumb={[
+          { label: t('nav.pocetna'), href: '/' },
+          { label: t('nav.klub'), href: '/klub' },
+          { label: t('board.title') },
+        ]}
+        ghost="TEAM"
+      />
       <div className="container-x py-14">
         {members.length === 0 ? (
           <EmptyState title={t('empty.board')} subtitle={t('empty.boardSub')} icon="users" />

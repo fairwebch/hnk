@@ -69,7 +69,8 @@
   "news": {
     "title": "News",
     "subtitle": "Neuigkeiten, Ankündigungen und Ereignisse aus dem Verein.",
-    "filterAll": "Alle"
+    "filterAll": "Alle",
+    "kicker": "News & Mitteilungen"
   },
   "events": {
     "title": "Events",
@@ -82,21 +83,25 @@
     "minutes": "Min",
     "seconds": "Sek",
     "live": "Event läuft gerade!",
-    "finished": "Event beendet"
+    "finished": "Event beendet",
+    "kicker": "Vereinskalender"
   },
   "gallery": {
     "title": "Galerie",
     "subtitle": "Fotos von Spielen, Feiern und Vereinsanlässen.",
-    "photoCount": "{count, plural, one {# Foto} other {# Fotos}}"
+    "photoCount": "{count, plural, one {# Foto} other {# Fotos}}",
+    "kicker": "Vereinsmomente"
   },
   "teams": {
     "title": "Mannschaften",
     "subtitle": "Von den Jüngsten bis zu den Senioren — der Stolz des Vereins.",
-    "gallery": "Mannschaftsgalerie"
+    "gallery": "Mannschaftsgalerie",
+    "kicker": "Unsere Teams"
   },
   "board": {
     "title": "Vorstand",
-    "subtitle": "Die Menschen, die den Verein führen."
+    "subtitle": "Die Menschen, die den Verein führen.",
+    "kicker": "Menschen hinter dem Verein"
   },
   "sponsors": {
     "title": "Sponsoring",
@@ -104,7 +109,8 @@
     "packagesHeading": "Sponsoring-Pakete",
     "ourSponsors": "Unsere Sponsoren",
     "becomeSponsor": "Sponsor werden",
-    "visit": "Website besuchen"
+    "visit": "Website besuchen",
+    "kicker": "Unterstütze den Verein"
   },
   "contact": {
     "title": "Kontakt",
@@ -115,7 +121,8 @@
     "formSend": "Nachricht senden",
     "addressHeading": "Adresse",
     "phoneHeading": "Telefon",
-    "emailHeading": "E-Mail"
+    "emailHeading": "E-Mail",
+    "kicker": "Kontaktiere uns"
   },
   "empty": {
     "news": "News folgen in Kürze",
@@ -156,5 +163,10 @@
     "title": "Seite nicht gefunden",
     "subtitle": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
     "home": "Zurück zur Startseite"
+  },
+  "pages": {
+    "oNamaKicker": "Unsere Geschichte",
+    "klubKicker": "Über den Verein",
+    "postaniClanKicker": "Mach mit"
   }
 }

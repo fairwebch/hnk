@@ -24,7 +24,13 @@ export default async function GalerijaPage({ params }: { params: Promise<{ local
 
   return (
     <>
-      <PageHero title={t('gallery.title')} subtitle={t('gallery.subtitle')} />
+      <PageHero
+        kicker={t('gallery.kicker')}
+        title={t('gallery.title')}
+        subtitle={t('gallery.subtitle')}
+        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.galerija') }]}
+        ghost="GALLERY"
+      />
       <div className="container-x py-14">
         {galleries.length === 0 ? (
           <EmptyState title={t('empty.gallery')} subtitle={t('empty.gallerySub')} icon="photo" />

@@ -29,7 +29,13 @@ export default async function NovostiPage({
 
   return (
     <>
-      <PageHero title={t('news.title')} subtitle={t('news.subtitle')} />
+      <PageHero
+        kicker={t('news.kicker')}
+        title={t('news.title')}
+        subtitle={t('news.subtitle')}
+        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.novosti') }]}
+        ghost="NEWS"
+      />
       <div className="container-x py-14">
         <NewsList news={news} locale={locale} />
       </div>

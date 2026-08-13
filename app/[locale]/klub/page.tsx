@@ -12,5 +12,13 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations();
-  return <CmsPage slug="klub" locale={locale} fallbackTitle={t('nav.klub')} />;
+  return (
+    <CmsPage
+      slug="klub"
+      locale={locale}
+      fallbackTitle={t('nav.klub')}
+      kicker={t('pages.klubKicker')}
+      ghost="VEREIN"
+    />
+  );
 }

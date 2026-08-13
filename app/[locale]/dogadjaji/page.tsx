@@ -27,7 +27,13 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
 
   return (
     <>
-      <PageHero title={t('events.title')} subtitle={t('events.subtitle')} />
+      <PageHero
+        kicker={t('events.kicker')}
+        title={t('events.title')}
+        subtitle={t('events.subtitle')}
+        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.dogadjaji') }]}
+        ghost="EVENTS"
+      />
       <div className="container-x py-14 space-y-14">
         {nothing ? (
           <EmptyState title={t('empty.events')} subtitle={t('empty.eventsSub')} icon="calendar" />

@@ -16,11 +16,15 @@ export async function CmsPage({
   locale,
   fallbackTitle,
   fallbackSubtitle,
+  kicker,
+  ghost,
 }: {
   slug: string;
   locale: string;
   fallbackTitle: string;
   fallbackSubtitle?: string;
+  kicker?: string;
+  ghost?: string;
 }) {
   const t = await getTranslations();
   const page = await sanityFetch<Stranica | null>(stranicaBySlugQuery, { slug }, null);
@@ -31,7 +35,13 @@ export async function CmsPage({
 
   return (
     <>
-      <PageHero title={title} subtitle={intro || fallbackSubtitle} />
+      <PageHero
+        kicker={kicker}
+        title={title}
+        subtitle={intro || fallbackSubtitle}
+        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: title }]}
+        ghost={ghost}
+      />
       <div className="container-x max-w-3xl py-14">
         {body && body.length > 0 ? (
           <PortableText value={body} />

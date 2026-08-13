@@ -24,7 +24,13 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
 
   return (
     <>
-      <PageHero title={t('teams.title')} subtitle={t('teams.subtitle')} />
+      <PageHero
+        kicker={t('teams.kicker')}
+        title={t('teams.title')}
+        subtitle={t('teams.subtitle')}
+        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.momcadi') }]}
+        ghost="TEAMS"
+      />
       <div className="container-x py-14">
         {teams.length === 0 ? (
           <EmptyState title={t('empty.teams')} subtitle={t('empty.teamsSub')} icon="ball" />

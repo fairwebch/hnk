@@ -69,7 +69,8 @@
   "news": {
     "title": "Novosti",
     "subtitle": "Vijesti, najave i događanja iz kluba.",
-    "filterAll": "Sve"
+    "filterAll": "Sve",
+    "kicker": "Novosti i objave"
   },
   "events": {
     "title": "Događaji",
@@ -82,21 +83,25 @@
     "minutes": "min",
     "seconds": "sek",
     "live": "Događaj je u tijeku!",
-    "finished": "Događaj je završio"
+    "finished": "Događaj je završio",
+    "kicker": "Kalendar kluba"
   },
   "gallery": {
     "title": "Galerija",
     "subtitle": "Fotografije s utakmica, proslava i klupskih događanja.",
-    "photoCount": "{count, plural, one {# fotografija} few {# fotografije} other {# fotografija}}"
+    "photoCount": "{count, plural, one {# fotografija} few {# fotografije} other {# fotografija}}",
+    "kicker": "Trenuci kluba"
   },
   "teams": {
     "title": "Momčadi",
     "subtitle": "Od najmlađih do seniora — ponos kluba.",
-    "gallery": "Galerija momčadi"
+    "gallery": "Galerija momčadi",
+    "kicker": "Naše ekipe"
   },
   "board": {
     "title": "Uprava",
-    "subtitle": "Ljudi koji vode klub."
+    "subtitle": "Ljudi koji vode klub.",
+    "kicker": "Ljudi koji vode klub"
   },
   "sponsors": {
     "title": "Sponzoring",
@@ -104,7 +109,8 @@
     "packagesHeading": "Sponzorski paketi",
     "ourSponsors": "Naši sponzori",
     "becomeSponsor": "Postani sponzor",
-    "visit": "Posjeti web"
+    "visit": "Posjeti web",
+    "kicker": "Podrži klub"
   },
   "contact": {
     "title": "Kontakt",
@@ -115,7 +121,8 @@
     "formSend": "Pošalji poruku",
     "addressHeading": "Adresa",
     "phoneHeading": "Telefon",
-    "emailHeading": "E-mail"
+    "emailHeading": "E-mail",
+    "kicker": "Javi nam se"
   },
   "empty": {
     "news": "Novosti uskoro stižu",
@@ -156,5 +163,10 @@
     "title": "Stranica nije pronađena",
     "subtitle": "Tražena stranica ne postoji ili je premještena.",
     "home": "Natrag na početnu"
+  },
+  "pages": {
+    "oNamaKicker": "Naša priča",
+    "klubKicker": "O klubu",
+    "postaniClanKicker": "Pridruži nam se"
   }
 }
