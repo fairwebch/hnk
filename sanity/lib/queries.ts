@@ -21,19 +21,23 @@ export const novostBySlugQuery = groq`
 
 // Events
 const dogadjajFields = groq`
-  _id, name, "slug": slug.current, date, location, coverImage, description
+  _id, name, "slug": slug.current, kategorija, datumPocetak, datumKraj,
+  location, coverImage, description, kotizacija, prijavaLink, kapacitet, program,
+  "sponzorEventa": sponzorEventa->{name, logo, link},
+  "galerija": galerija->{name, "slug": slug.current}
 `;
 
+// "Effective end" = datumKraj ?? datumPocetak decides upcoming vs. past.
 export const nextDogadjajQuery = groq`
-  *[_type == "dogadjaj" && date >= now()] | order(date asc)[0]{ ${dogadjajFields} }
+  *[_type == "dogadjaj" && coalesce(datumKraj, datumPocetak) >= now()] | order(datumPocetak asc)[0]{ ${dogadjajFields} }
 `;
 
 export const upcomingDogadjajiQuery = groq`
-  *[_type == "dogadjaj" && date >= now()] | order(date asc){ ${dogadjajFields} }
+  *[_type == "dogadjaj" && coalesce(datumKraj, datumPocetak) >= now()] | order(datumPocetak asc){ ${dogadjajFields} }
 `;
 
 export const pastDogadjajiQuery = groq`
-  *[_type == "dogadjaj" && date < now()] | order(date desc){ ${dogadjajFields} }
+  *[_type == "dogadjaj" && coalesce(datumKraj, datumPocetak) < now()] | order(datumPocetak desc){ ${dogadjajFields} }
 `;
 
 export const dogadjajSlugsQuery = groq`*[_type == "dogadjaj" && defined(slug.current)].slug.current`;

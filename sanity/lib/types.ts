@@ -53,14 +53,28 @@ export interface Galerija {
   images?: SanityImg[];
 }
 
+export interface ProgramStavka {
+  _key?: string;
+  vrijeme?: string;
+  opis?: string;
+}
+
 export interface Dogadjaj {
   _id: string;
   name: LocaleString;
   slug: string;
-  date: string;
+  kategorija?: 'Turnir' | 'Zabava' | 'Izlet' | 'Skupština';
+  datumPocetak: string;
+  datumKraj?: string;
   location?: string;
   coverImage?: SanityImg;
   description?: LocaleBlocks;
+  kotizacija?: string;
+  prijavaLink?: string;
+  kapacitet?: string;
+  program?: ProgramStavka[];
+  sponzorEventa?: { name?: string; logo?: SanityImg; link?: string } | null;
+  galerija?: { name?: LocaleString; slug?: string } | null;
 }
 
 export interface Stranica {

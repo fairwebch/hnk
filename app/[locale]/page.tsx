@@ -148,14 +148,14 @@ export default async function HomePage({
                   </div>
                   <div className="mt-2 font-display font-bold uppercase text-[11px] tracking-wider2 text-slateblue-300">
                     <span className="text-croatia">
-                      {formatDate(nextEvent.date, locale, {
+                      {formatDate(nextEvent.datumPocetak, locale, {
                         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
                       })}
                     </span>
                     {nextEvent.location && <span> · {nextEvent.location}</span>}
                   </div>
                 </div>
-                <EventCountdown date={nextEvent.date} size="md" />
+                <EventCountdown date={nextEvent.datumPocetak} size="md" />
                 <Link href={`/dogadjaji/${nextEvent.slug}`} className="btn-cta px-5 py-3 w-fit">
                   <span>{t('home.eventRegister')}</span>
                 </Link>

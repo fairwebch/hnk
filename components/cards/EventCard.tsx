@@ -30,9 +30,10 @@ export function EventCard({
         />
       </div>
       <div className="p-5 flex flex-col flex-1 gap-3">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 font-display font-bold uppercase text-[11px] tracking-wider2 text-content-muted">
-          <time className="text-croatia">
-            {formatDate(dogadjaj.date, locale, {
+        <div className="flex flex-wrap items-center gap-3">
+          {dogadjaj.kategorija && <span className="chip">{dogadjaj.kategorija}</span>}
+          <time className="font-display font-bold uppercase text-[11px] tracking-wider2 text-croatia">
+            {formatDate(dogadjaj.datumPocetak, locale, {
               weekday: 'short',
               day: 'numeric',
               month: 'long',
@@ -41,14 +42,18 @@ export function EventCard({
               minute: '2-digit',
             })}
           </time>
-          {dogadjaj.location && <span>· {dogadjaj.location}</span>}
+          {dogadjaj.location && (
+            <span className="font-display font-bold uppercase text-[11px] tracking-wider2 text-content-muted">
+              · {dogadjaj.location}
+            </span>
+          )}
         </div>
         <h3 className="h-display text-2xl leading-tight text-content group-hover:text-croatia transition-colors">
           {name}
         </h3>
         {showCountdown && (
           <div className="mt-auto pt-2">
-            <EventCountdown date={dogadjaj.date} size="sm" />
+            <EventCountdown date={dogadjaj.datumPocetak} size="sm" />
           </div>
         )}
       </div>
