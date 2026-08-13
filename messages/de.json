@@ -70,7 +70,8 @@
     "title": "News",
     "subtitle": "Neuigkeiten, Ankündigungen und Ereignisse aus dem Verein.",
     "filterAll": "Alle",
-    "kicker": "News & Mitteilungen"
+    "kicker": "News & Mitteilungen",
+    "count": "{count} Beiträge"
   },
   "events": {
     "title": "Events",
@@ -107,10 +108,11 @@
     "title": "Sponsoring",
     "subtitle": "Unsere Partner machen diesen Verein möglich.",
     "packagesHeading": "Sponsoring-Pakete",
-    "ourSponsors": "Unsere Sponsoren",
+    "ourSponsors": "Unsere Sponsoren & Partner",
     "becomeSponsor": "Sponsor werden",
     "visit": "Website besuchen",
-    "kicker": "Unterstütze den Verein"
+    "kicker": "Unterstütze den Verein",
+    "mostPopular": "Am beliebtesten"
   },
   "contact": {
     "title": "Kontakt",

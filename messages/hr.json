@@ -70,7 +70,8 @@
     "title": "Novosti",
     "subtitle": "Vijesti, najave i događanja iz kluba.",
     "filterAll": "Sve",
-    "kicker": "Novosti i objave"
+    "kicker": "Novosti i objave",
+    "count": "{count} objava"
   },
   "events": {
     "title": "Događaji",
@@ -107,10 +108,11 @@
     "title": "Sponzoring",
     "subtitle": "Naši partneri čine ovaj klub mogućim.",
     "packagesHeading": "Sponzorski paketi",
-    "ourSponsors": "Naši sponzori",
+    "ourSponsors": "Naši sponzori i partneri",
     "becomeSponsor": "Postani sponzor",
     "visit": "Posjeti web",
-    "kicker": "Podrži klub"
+    "kicker": "Podrži klub",
+    "mostPopular": "Najpopularniji"
   },
   "contact": {
     "title": "Kontakt",

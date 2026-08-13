@@ -42,44 +42,45 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
             {t('sponsors.packagesHeading')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {TIERS.map((tier, i) => (
-              <div
-                key={tier}
-                className={`border p-7 flex flex-col ${
-                  tier === 'Premium'
-                    ? 'border-2 border-croatia bg-white'
-                    : 'border border-line bg-white'
-                }`}
-              >
-                {tier === 'Premium' && (
-                  <span className="self-start bg-croatia text-white font-display font-bold uppercase text-[10px] tracking-wider2 px-2 py-0.5 mb-3">
-                    ★
-                  </span>
-                )}
-                <h3 className="h-display text-content text-3xl leading-none">
-                  {tier}
-                </h3>
-                <div className="mt-3 flex-1">
-                  <ul className="space-y-2 font-sans text-sm text-content-soft">
-                    {Array.from({ length: 3 - i > 0 ? 3 - i : 1 }).map((_, k) => (
-                      <li key={k} className="flex items-start gap-2">
-                        <span className="text-croatia mt-0.5">✓</span>
-                        <span>
-                          {tier === 'Premium'
-                            ? ['Logo na naslovnici', 'Logo na dresovima', 'Objave na mrežama'][k]
-                            : tier === 'Standard'
-                              ? ['Logo na stranici sponzora', 'Objave na mrežama'][k] ?? ''
-                              : ['Logo na stranici sponzora'][k] ?? ''}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+            {TIERS.map((tier, i) => {
+              const isPremium = tier === 'Premium';
+              const wrap = isPremium
+                ? 'card-dark border-2 border-croatia'
+                : tier === 'Standard'
+                  ? 'bg-white border-2 border-ink-700'
+                  : 'bg-white border border-line';
+              return (
+                <div key={tier} className={`relative p-7 flex flex-col ${wrap}`}>
+                  {isPremium && (
+                    <span className="self-start bg-croatia text-white font-display font-bold uppercase text-[10px] tracking-wider2 px-2.5 py-1 mb-3">
+                      {t('sponsors.mostPopular')}
+                    </span>
+                  )}
+                  <h3 className={`h-display text-3xl leading-none ${isPremium ? 'text-white' : 'text-content'}`}>
+                    {tier}
+                  </h3>
+                  <div className="mt-3 flex-1">
+                    <ul className={`space-y-2 font-sans text-sm ${isPremium ? 'text-slateblue-200' : 'text-content-soft'}`}>
+                      {Array.from({ length: 3 - i > 0 ? 3 - i : 1 }).map((_, k) => (
+                        <li key={k} className="flex items-start gap-2">
+                          <span className="text-croatia mt-0.5">✓</span>
+                          <span>
+                            {isPremium
+                              ? ['Logo na naslovnici', 'Logo na dresovima', 'Objave na mrežama'][k]
+                              : tier === 'Standard'
+                                ? ['Logo na stranici sponzora', 'Objave na mrežama'][k] ?? ''
+                                : ['Logo na stranici sponzora'][k] ?? ''}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <Link href="/kontakt" className="btn-cta mt-6 px-5 py-3 w-fit">
+                    <span>{t('sponsors.becomeSponsor')}</span>
+                  </Link>
                 </div>
-                <Link href="/kontakt" className="btn-cta mt-6 px-5 py-3 w-fit">
-                  <span>{t('sponsors.becomeSponsor')}</span>
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

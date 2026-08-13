@@ -28,16 +28,16 @@ export function NewsCard({
           sizes="(max-width:768px) 100vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {novost.category && (
-          <span className="absolute top-3 left-3 bg-croatia text-white font-display font-bold uppercase text-[11px] tracking-wider2 px-2.5 py-1">
-            {categoryLabel ?? novost.category}
-          </span>
-        )}
       </div>
       <div className="p-5 flex flex-col flex-1">
-        <time className="font-display font-bold uppercase text-[11px] tracking-wider2 text-content-muted">
-          {formatDate(novost.date, locale)}
-        </time>
+        <div className="flex flex-wrap items-center gap-3">
+          {novost.category && (
+            <span className="chip">{categoryLabel ?? novost.category}</span>
+          )}
+          <time className="font-display font-bold uppercase text-[11px] tracking-wider2 text-content-muted">
+            {formatDate(novost.date, locale)}
+          </time>
+        </div>
         <h3 className="h-display text-[22px] leading-tight mt-2 text-content group-hover:text-croatia transition-colors">
           {title}
         </h3>

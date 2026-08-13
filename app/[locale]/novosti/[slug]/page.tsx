@@ -63,7 +63,7 @@ export default async function NovostPage({
 
         <div className="flex flex-wrap items-center gap-3 mt-6">
           {n.category && (
-            <span className="bg-croatia text-white font-display font-bold uppercase text-[11px] tracking-wider2 px-2.5 py-1">
+            <span className="chip">
               {t(`categories.${n.category}` as any)}
             </span>
           )}
