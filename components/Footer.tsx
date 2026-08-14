@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { site } from '@/lib/site';
+import { NewsletterForm } from '@/components/NewsletterForm';
 
 export async function Footer() {
   const t = await getTranslations();
@@ -29,6 +30,22 @@ export async function Footer() {
   return (
     <footer className="bg-ink-800">
       <div className="sahovnica-strip" />
+
+      {/* Newsletter band */}
+      <div className="border-b border-slateblue-900">
+        <div className="container-wide py-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div>
+            <div className="kicker text-xs mb-2">{t('newsletter.kicker')}</div>
+            <h2 className="h-display text-white text-2xl md:text-3xl leading-none">
+              {t('newsletter.title')}
+            </h2>
+            <p className="font-sans text-sm text-slateblue-300 mt-2 max-w-md">
+              {t('newsletter.subtitle')}
+            </p>
+          </div>
+          <NewsletterForm />
+        </div>
+      </div>
 
       {/* Desktop */}
       <div className="hidden md:block">

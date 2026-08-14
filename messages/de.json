@@ -141,7 +141,10 @@
     "addressHeading": "Adresse",
     "phoneHeading": "Telefon",
     "emailHeading": "E-Mail",
-    "kicker": "Kontaktiere uns"
+    "kicker": "Kontaktiere uns",
+    "formSending": "Senden…",
+    "formSuccess": "Nachricht gesendet!",
+    "formError": "Fehler beim Senden. Bitte erneut versuchen oder direkt schreiben."
   },
   "empty": {
     "news": "News folgen in Kürze",
@@ -199,5 +202,15 @@
     "checkMore": "Mehr im Shop entdecken",
     "checkMoreSub": "Sieh dir das ganze Vereinssortiment auf 11teamsports an.",
     "checkMoreBtn": "Shop öffnen"
+  },
+  "newsletter": {
+    "kicker": "Bleib auf dem Laufenden",
+    "title": "Melde dich für unseren Newsletter an",
+    "subtitle": "News, Events und Vereinsinfos — direkt in dein Postfach.",
+    "placeholder": "Deine E-Mail",
+    "button": "Anmelden",
+    "sending": "Senden…",
+    "success": "Danke für die Anmeldung!",
+    "error": "Fehler bei der Anmeldung. Bitte erneut versuchen."
   }
 }

@@ -141,7 +141,10 @@
     "addressHeading": "Adresa",
     "phoneHeading": "Telefon",
     "emailHeading": "E-mail",
-    "kicker": "Javi nam se"
+    "kicker": "Javi nam se",
+    "formSending": "Šaljem…",
+    "formSuccess": "Poruka je poslana!",
+    "formError": "Greška pri slanju. Pokušajte ponovo ili nam pišite direktno."
   },
   "empty": {
     "news": "Novosti uskoro stižu",
@@ -199,5 +202,15 @@
     "checkMore": "Provjeri ostalo u trgovini",
     "checkMoreSub": "Pogledaj cijelu klupsku ponudu na 11teamsports.",
     "checkMoreBtn": "Otvori trgovinu"
+  },
+  "newsletter": {
+    "kicker": "Ostani u toku",
+    "title": "Prijavite se na naš newsletter",
+    "subtitle": "Novosti, događaji i obavijesti kluba — direktno u inbox.",
+    "placeholder": "Vaš email",
+    "button": "Prijavi se",
+    "sending": "Šaljem…",
+    "success": "Hvala na prijavi!",
+    "error": "Greška pri prijavi. Pokušajte ponovo."
   }
 }
