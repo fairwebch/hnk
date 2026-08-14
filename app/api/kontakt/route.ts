@@ -8,9 +8,8 @@ export const dynamic = 'force-dynamic';
 // CONTACT_TO env var while the Resend domain is still being verified
 // (Resend only delivers to the account owner until then).
 const CONTACT_TO = process.env.CONTACT_TO || 'info@kroatien-schwyz.ch';
-// Sender: Resend test domain for now; switch to info@kroatien-schwyz.ch once
-// the domain is verified in Resend.
-const FROM = 'HNK Kroatien Schwyz <onboarding@resend.dev>';
+// Sender: verified kroatien-schwyz.ch domain in Resend.
+const FROM = 'HNK Kroatien Schwyz <info@kroatien-schwyz.ch>';
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const esc = (s: string) =>
