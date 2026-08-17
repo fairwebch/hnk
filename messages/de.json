@@ -210,8 +210,11 @@
     "placeholder": "Deine E-Mail",
     "button": "Anmelden",
     "sending": "Senden…",
-    "success": "Danke für die Anmeldung!",
-    "error": "Fehler bei der Anmeldung. Bitte erneut versuchen."
+    "success": "Fast geschafft! Prüfe deine E-Mails und bestätige die Anmeldung.",
+    "error": "Fehler bei der Anmeldung. Bitte erneut versuchen.",
+    "confirmTitle": "Anmeldung bestätigt!",
+    "confirmText": "Ab jetzt erhältst du unsere News, Event-Infos und Vereinsnachrichten direkt in dein Postfach.",
+    "backHome": "Zurück zur Startseite"
   },
   "membership": {
     "subtitle": "Füllen Sie das Formular aus und werden Sie Teil unserer Klubfamilie.",

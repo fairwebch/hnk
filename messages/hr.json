@@ -210,8 +210,11 @@
     "placeholder": "Vaš email",
     "button": "Prijavi se",
     "sending": "Šaljem…",
-    "success": "Hvala na prijavi!",
-    "error": "Greška pri prijavi. Pokušajte ponovo."
+    "success": "Skoro gotovo! Provjerite email i potvrdite prijavu.",
+    "error": "Greška pri prijavi. Pokušajte ponovo.",
+    "confirmTitle": "Prijava potvrđena!",
+    "confirmText": "Od sada ćete primati novosti, obavijesti o događajima i rezultatima kluba direktno u inbox.",
+    "backHome": "Natrag na početnu"
   },
   "membership": {
     "subtitle": "Ispunite formu i postanite dio naše klupske obitelji.",

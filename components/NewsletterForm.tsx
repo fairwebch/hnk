@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Status = 'idle' | 'sending' | 'ok' | 'error';
 
 export function NewsletterForm() {
   const t = useTranslations('newsletter');
+  const locale = useLocale();
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState(''); // honeypot
   const [status, setStatus] = useState<Status>('idle');
@@ -19,7 +20,7 @@ export function NewsletterForm() {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email, company }),
+        body: JSON.stringify({ email, company, locale }),
       });
       if (!res.ok) throw new Error(String(res.status));
       setStatus('ok');
