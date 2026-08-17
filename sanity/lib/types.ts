@@ -48,9 +48,23 @@ export interface Galerija {
   _id: string;
   name: LocaleString;
   slug: string;
+  kategorija?: 'sport' | 'feste';
+  godina?: number;
   date?: string;
   description?: LocaleText;
   images?: SanityImg[];
+}
+
+/** Lightweight listing shape for the gallery index (no full image arrays). */
+export interface GalerijaTeaser {
+  _id: string;
+  name: LocaleString;
+  slug: string;
+  kategorija?: 'sport' | 'feste';
+  godina?: number;
+  date?: string;
+  cover?: SanityImg;
+  count?: number;
 }
 
 export interface ProgramStavka {

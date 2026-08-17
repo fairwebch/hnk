@@ -48,8 +48,9 @@ export const dogadjajBySlugQuery = groq`
 
 // Galleries
 export const allGalerijeQuery = groq`
-  *[_type == "galerija"] | order(date desc){
-    _id, name, "slug": slug.current, date, description, images
+  *[_type == "galerija"] | order(coalesce(godina, 0) desc, date desc){
+    _id, name, "slug": slug.current, kategorija, godina, date,
+    "cover": images[0], "count": count(images)
   }
 `;
 
@@ -57,7 +58,7 @@ export const galerijaSlugsQuery = groq`*[_type == "galerija" && defined(slug.cur
 
 export const galerijaBySlugQuery = groq`
   *[_type == "galerija" && slug.current == $slug][0]{
-    _id, name, "slug": slug.current, date, description, images
+    _id, name, "slug": slug.current, kategorija, godina, date, description, images
   }
 `;
 

@@ -19,6 +19,26 @@ export const galerija = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'kategorija',
+      title: 'Kategorija',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Sport i turniri', value: 'sport' },
+          { title: 'Zabave i feste', value: 'feste' },
+        ],
+        layout: 'radio',
+      },
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'godina',
+      title: 'Godina',
+      type: 'number',
+      description: 'Za grupisanje prikaza po godinama (npr. 2024).',
+      validation: (r) => r.required().integer().min(1990).max(2100),
+    }),
+    defineField({
       name: 'date',
       title: 'Datum',
       type: 'date',
@@ -48,6 +68,10 @@ export const galerija = defineType({
     { title: 'Datum, najnovije', name: 'dateDesc', by: [{ field: 'date', direction: 'desc' }] },
   ],
   preview: {
-    select: { title: 'name.hr', subtitle: 'date', media: 'images.0' },
+    select: { title: 'name.hr', godina: 'godina', kategorija: 'kategorija', media: 'images.0' },
+    prepare({ title, godina, kategorija, media }) {
+      const cat = kategorija === 'sport' ? 'Sport i turniri' : kategorija === 'feste' ? 'Zabave i feste' : '';
+      return { title, subtitle: [godina, cat].filter(Boolean).join(' · '), media };
+    },
   },
 });

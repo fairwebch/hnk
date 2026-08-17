@@ -108,7 +108,11 @@
     "title": "Galerie",
     "subtitle": "Fotos von Spielen, Feiern und Vereinsanlässen.",
     "photoCount": "{count, plural, one {# Foto} other {# Fotos}}",
-    "kicker": "Vereinsmomente"
+    "kicker": "Vereinsmomente",
+    "filterAll": "Alle",
+    "catSport": "Sport & Turniere",
+    "catFeste": "Feste & Anlässe",
+    "albumCount": "{count, plural, one {# Album} other {# Alben}}"
   },
   "teams": {
     "title": "Mannschaften",

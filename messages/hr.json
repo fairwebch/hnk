@@ -108,7 +108,11 @@
     "title": "Galerija",
     "subtitle": "Fotografije s utakmica, proslava i klupskih događanja.",
     "photoCount": "{count, plural, one {# fotografija} few {# fotografije} other {# fotografija}}",
-    "kicker": "Trenuci kluba"
+    "kicker": "Trenuci kluba",
+    "filterAll": "Sve",
+    "catSport": "Sport i turniri",
+    "catFeste": "Zabave i feste",
+    "albumCount": "{count, plural, one {# album} few {# albuma} other {# albuma}}"
   },
   "teams": {
     "title": "Momčadi",
