@@ -11,6 +11,15 @@ const CLUB_PHONE = '+41 79 279 72 32';
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const plzRe = /^\d{4}$/;
+// Free-text fields end up in email subjects/bodies — strip control chars
+// (no injected line breaks) and cap the length.
+const clean = (v: unknown) =>
+  String(v ?? '')
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\x00-\x1f\x7f]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 200);
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
 
@@ -24,7 +33,7 @@ function autoReply(locale: string, gender: Gender, firstName: string, lastName: 
       subject: 'Danke für Ihr Interesse an einer Mitgliedschaft — HNK Kroatien Schwyz',
       text: `${salutation},
 
-Herzlichen Dank für Ihr Interesse an einer Mitgliedschaft beim HNK Kroatien Schwyz! Wir haben Ihre Anmeldung erhalten und senden Ihnen in Kürze per Post einen Einzahlungsschein für den Mitgliederbeitrag an die von Ihnen angegebene Adresse.
+herzlichen Dank für Ihr Interesse an einer Mitgliedschaft beim HNK Kroatien Schwyz! Wir haben Ihre Anmeldung erhalten und senden Ihnen in Kürze per Post einen Einzahlungsschein für den Mitgliederbeitrag an die von Ihnen angegebene Adresse.
 
 Bei Fragen erreichen Sie uns jederzeit unter info@kroatien-schwyz.ch oder ${CLUB_PHONE}.
 
@@ -70,12 +79,12 @@ export async function POST(req: Request) {
   if (body?.company) return NextResponse.json({ ok: true });
 
   const gender: Gender | null = body?.gender === 'm' ? 'm' : body?.gender === 'f' ? 'f' : null;
-  const firstName = String(body?.firstName ?? '').trim();
-  const lastName = String(body?.lastName ?? '').trim();
-  const street = String(body?.street ?? '').trim();
+  const firstName = clean(body?.firstName);
+  const lastName = clean(body?.lastName);
+  const street = clean(body?.street);
   const plz = String(body?.plz ?? '').trim();
-  const city = String(body?.city ?? '').trim();
-  const phone = String(body?.phone ?? '').trim();
+  const city = clean(body?.city);
+  const phone = clean(body?.phone);
   const email = String(body?.email ?? '').trim();
   const locale = body?.locale === 'de' ? 'de' : 'hr';
 

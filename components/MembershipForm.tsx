@@ -43,6 +43,13 @@ export function MembershipForm() {
   const skipPlzLookup = useRef(false); // PLZ set from a picked suggestion — don't re-resolve the city
   const cityTouched = useRef(false); // user typed the city manually — don't overwrite
   const abortRef = useRef<AbortController | null>(null);
+  const okRef = useRef<HTMLDivElement | null>(null);
+
+  // Move focus to the confirmation so screen readers announce the outcome
+  // (the submit button the user focused is unmounted with the form).
+  useEffect(() => {
+    if (status === 'ok') okRef.current?.focus();
+  }, [status]);
 
   // Live address search (debounced) while typing in the street field.
   useEffect(() => {
@@ -52,6 +59,7 @@ export function MembershipForm() {
     }
     const q = street.trim();
     if (q.length < 3) {
+      abortRef.current?.abort(); // a late response must not reopen the list
       setSuggestions([]);
       setOpen(false);
       return;
@@ -104,7 +112,9 @@ export function MembershipForm() {
           // "<b>6436 - Muotathal</b>"
           const m = stripTags(String(r?.attrs?.label ?? '')).match(/^(\d{4})\s*-\s*(.+)$/);
           if (m && m[1] === plz) {
-            setCity(m[2]);
+            // Re-check: the user may have started typing the city while the
+            // request was in flight.
+            if (!cityTouched.current) setCity(m[2]);
             break;
           }
         }
@@ -116,8 +126,11 @@ export function MembershipForm() {
   }, [plz]);
 
   function pick(s: Suggestion) {
-    skipSearch.current = true;
-    setStreet(s.street);
+    abortRef.current?.abort(); // a late response must not reopen the list
+    if (s.street !== street) {
+      skipSearch.current = true;
+      setStreet(s.street);
+    }
     if (s.plz && s.plz !== plz) {
       skipPlzLookup.current = true;
       setPlz(s.plz);
@@ -170,7 +183,7 @@ export function MembershipForm() {
 
   if (status === 'ok') {
     return (
-      <div className="py-6 text-center">
+      <div ref={okRef} tabIndex={-1} className="py-6 text-center outline-none">
         <div className="font-display font-extrabold italic text-croatia text-3xl mb-3">✓</div>
         <p className="font-display font-bold uppercase text-sm tracking-wider2 text-content">
           {t('success')}
@@ -188,7 +201,7 @@ export function MembershipForm() {
           {(['m', 'f'] as const).map((g) => (
             <label
               key={g}
-              className={`cursor-pointer border px-6 py-3 font-display font-bold uppercase text-xs tracking-wider2 transition-colors ${
+              className={`cursor-pointer border px-6 py-3 font-display font-bold uppercase text-xs tracking-wider2 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-content has-[:focus-visible]:ring-offset-2 ${
                 gender === g
                   ? 'border-croatia text-croatia'
                   : 'border-line text-content-soft hover:border-content-soft'
@@ -234,6 +247,7 @@ export function MembershipForm() {
           aria-expanded={open}
           aria-autocomplete="list"
           aria-controls="mf-street-list"
+          aria-activedescendant={open && active >= 0 ? `mf-street-opt-${active}` : undefined}
           placeholder={t('streetPlaceholder')}
           value={street}
           disabled={sending}
@@ -247,11 +261,13 @@ export function MembershipForm() {
           <ul
             id="mf-street-list"
             role="listbox"
+            onMouseDown={(e) => e.preventDefault()} // scrollbar drag must not blur-close the list
             className="absolute z-20 left-0 right-0 top-full mt-1 bg-white border border-line shadow-lg max-h-72 overflow-auto"
           >
             {suggestions.map((s, i) => (
               <li
                 key={s.id}
+                id={`mf-street-opt-${i}`}
                 role="option"
                 aria-selected={i === active}
                 onMouseDown={(e) => {
@@ -332,7 +348,7 @@ export function MembershipForm() {
           <span>{sending ? t('sending') : t('send')}</span>
         </button>
         {status === 'error' && (
-          <span className="font-display font-bold uppercase text-xs tracking-wider2 text-content-muted">
+          <span role="alert" className="font-display font-bold uppercase text-xs tracking-wider2 text-content-muted">
             {t('error')}
           </span>
         )}
