@@ -212,5 +212,24 @@
     "sending": "Šaljem…",
     "success": "Hvala na prijavi!",
     "error": "Greška pri prijavi. Pokušajte ponovo."
+  },
+  "membership": {
+    "subtitle": "Ispunite formu i postanite dio naše klupske obitelji.",
+    "gender": "Spol",
+    "male": "Muško",
+    "female": "Žensko",
+    "firstName": "Ime",
+    "lastName": "Prezime",
+    "street": "Ulica i broj",
+    "streetPlaceholder": "npr. Hauptstrasse 5",
+    "plz": "Poštanski broj",
+    "city": "Mjesto",
+    "phone": "Broj telefona",
+    "optional": "opciono",
+    "email": "E-mail",
+    "send": "Pošalji zahtjev",
+    "sending": "Šaljem…",
+    "success": "Hvala! Provjerite email — poslali smo vam potvrdu.",
+    "error": "Greška pri slanju. Pokušajte ponovo ili nam pišite na info@kroatien-schwyz.ch."
   }
 }

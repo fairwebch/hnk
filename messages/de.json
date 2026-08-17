@@ -212,5 +212,24 @@
     "sending": "Senden…",
     "success": "Danke für die Anmeldung!",
     "error": "Fehler bei der Anmeldung. Bitte erneut versuchen."
+  },
+  "membership": {
+    "subtitle": "Füllen Sie das Formular aus und werden Sie Teil unserer Klubfamilie.",
+    "gender": "Geschlecht",
+    "male": "Männlich",
+    "female": "Weiblich",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "street": "Strasse und Nr.",
+    "streetPlaceholder": "z. B. Hauptstrasse 5",
+    "plz": "PLZ",
+    "city": "Ort",
+    "phone": "Telefonnummer",
+    "optional": "optional",
+    "email": "E-Mail",
+    "send": "Antrag senden",
+    "sending": "Wird gesendet…",
+    "success": "Danke! Prüfen Sie Ihr E-Mail-Postfach — wir haben Ihnen eine Bestätigung gesendet.",
+    "error": "Fehler beim Senden. Bitte erneut versuchen oder schreiben Sie uns an info@kroatien-schwyz.ch."
   }
 }
