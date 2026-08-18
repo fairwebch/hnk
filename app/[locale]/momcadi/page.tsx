@@ -28,7 +28,11 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
         kicker={t('teams.kicker')}
         title={t('teams.title')}
         subtitle={t('teams.subtitle')}
-        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.momcadi') }]}
+        breadcrumb={[
+          { label: t('nav.pocetna'), href: '/' },
+          { label: t('nav.klub'), href: '/klub' },
+          { label: t('nav.momcadi') },
+        ]}
         ghost="TEAMS"
       />
       <div className="container-x py-14">

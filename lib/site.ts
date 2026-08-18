@@ -12,22 +12,22 @@ export const site = {
   },
 };
 
-/** Main navigation — labels come from messages `nav.*`, hrefs are shared across locales. */
+/** Main navigation — labels come from messages `nav.*`, hrefs are shared across locales.
+ *  Home lives on the logo; Shop is a CTA button, not a list item. */
 export const navItems = [
-  { id: 'pocetna', href: '/' },
-  { id: 'klub', href: '/klub' },
-  { id: 'momcadi', href: '/momcadi' },
   { id: 'novosti', href: '/novosti' },
-  { id: 'galerija', href: '/galerija' },
   { id: 'dogadjaji', href: '/dogadjaji' },
+  { id: 'klub', href: '/klub' },
+  { id: 'galerija', href: '/galerija' },
   { id: 'sponzoring', href: '/sponzoring' },
   { id: 'kontakt', href: '/kontakt' },
 ] as const;
 
-/** "Klub" dropdown / sub-group — labels from messages `nav.*`. */
+/** "Klub" dropdown / accordion sub-group — labels from messages `nav.*`. */
 export const klubSubItems = [
   { id: 'oKlubu', href: '/klub' },
   { id: 'uprava', href: '/uprava' },
+  { id: 'momcadi', href: '/momcadi' },
   { id: 'postaniClan', href: '/postani-clan' },
 ] as const;
 
