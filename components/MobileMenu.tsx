@@ -163,7 +163,7 @@ export function MobileMenu() {
         aria-modal="true"
         aria-hidden={!open}
         aria-label={t('header.openMenu')}
-        className={`fixed inset-0 z-50 bg-ink-900 outline-none transition-transform duration-[250ms] ease-out lg:hidden ${
+        className={`fixed inset-0 z-50 bg-ink-900 outline-none overflow-hidden transition-transform duration-[250ms] ease-out lg:hidden ${
           open ? 'translate-y-0' : 'pointer-events-none -translate-y-full'
         }`}
         onClick={(e) => {
@@ -172,11 +172,15 @@ export function MobileMenu() {
         }}
       >
         {/* Diagonal accent: darker navy band cutting the lower-right corner,
-            matching the site's skewX(-8deg). Pure decoration. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-24 -right-40 h-[72%] w-[95%] bg-black/25 [transform:skewX(-8deg)]"
-        />
+            matching the site's skewX(-8deg). Pure decoration — rendered ONLY
+            while open (its -bottom overhang would otherwise poke out below
+            the parked curtain), and clipped by the overlay's overflow. */}
+        {open && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-24 -right-40 h-[72%] w-[95%] bg-black/25 [transform:skewX(-8deg)]"
+          />
+        )}
 
         {/* Spacer under the (raised) header bar */}
         <div
