@@ -95,13 +95,11 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile bar */}
+      {/* Mobile bar — crest, switcher and burger live inside MobileMenu so the
+          crest and the burger/X are the SAME elements whether the menu is open
+          or closed (they sit above the overlay; nothing can jump). */}
       <div className="lg:hidden bg-ink-700 h-16 flex items-center justify-between px-4">
-        <Logo size={38} />
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher size="sm" />
-          <MobileMenu />
-        </div>
+        <MobileMenu />
       </div>
     </header>
   );

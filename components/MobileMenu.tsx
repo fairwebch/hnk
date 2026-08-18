@@ -81,9 +81,10 @@ export function MobileMenu() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false);
       if (e.key === 'Tab') {
-        const list = Array.from(
-          dialogRef.current?.querySelectorAll<HTMLElement>('a, button') ?? [],
-        );
+        const list = [
+          ...(burgerRef.current ? [burgerRef.current] : []), // the X stays reachable
+          ...Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('a, button') ?? []),
+        ];
         if (!list.length) return;
         const cur = document.activeElement as HTMLElement;
         let i = list.indexOf(cur);
@@ -102,30 +103,68 @@ export function MobileMenu() {
 
   return (
     <>
-      {/* Hamburger */}
-      <button
-        ref={burgerRef}
-        type="button"
-        aria-label={t('header.openMenu')}
-        aria-expanded={open}
-        onClick={() => setOpen(true)}
-        className="flex flex-col gap-1 p-2"
-        style={{ touchAction: 'manipulation' }}
+      {/* Crest — one single element for open AND closed state, raised above
+          the overlay so nothing can jump between states. */}
+      <div
+        className="relative z-[60]"
+        onClick={() => {
+          if (!open) return;
+          // Going home must not have its navigation undone by the history
+          // cleanup; closing directly covers the already-on-home case.
+          closedByNav.current = pathname !== '/';
+          setOpen(false);
+        }}
       >
-        <span className="block w-5 h-[2px] bg-white" />
-        <span className="block w-5 h-[2px] bg-white" />
-        <span className="block w-[14px] h-[2px] bg-croatia" />
-      </button>
+        <Logo size={38} />
+      </div>
 
-      {/* Full-screen overlay: fade + slight slide from top */}
+      <div className="flex items-center gap-3">
+        {/* Header switcher: sits below the overlay, so it's covered (and
+            untappable) whenever the menu is open — no duplicate on screen. */}
+        <LanguageSwitcher size="sm" />
+
+        {/* Burger morphs into X in place — same element, same position. */}
+        <button
+          ref={burgerRef}
+          type="button"
+          aria-label={open ? t('header.closeMenu') : t('header.openMenu')}
+          aria-expanded={open}
+          onClick={() => setOpen((v) => !v)}
+          className="relative z-[60] w-9 h-9 text-white"
+          style={{ touchAction: 'manipulation' }}
+        >
+          <span className="absolute -inset-1.5" aria-hidden />
+          <span
+            className={`absolute left-1/2 top-1/2 w-5 h-[2px] bg-white transition-transform duration-200 ${
+              open ? '-translate-x-1/2 -translate-y-1/2 rotate-45' : '-translate-x-1/2 -translate-y-[7px]'
+            }`}
+          />
+          <span
+            className={`absolute left-1/2 top-1/2 w-5 h-[2px] bg-white -translate-x-1/2 -translate-y-1/2 transition-opacity duration-150 ${
+              open ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+          <span
+            className={`absolute left-1/2 top-1/2 h-[2px] transition-all duration-200 ${
+              open
+                ? 'w-5 bg-white -translate-x-1/2 -translate-y-1/2 -rotate-45'
+                : 'w-[14px] bg-croatia -translate-x-1/2 translate-y-[5px]'
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Full-screen overlay: fully opaque curtain that slides from the top —
+          transform only, NO opacity, so page and menu can never blend. */}
       <div
         ref={dialogRef}
         tabIndex={-1}
         role="dialog"
         aria-modal="true"
+        aria-hidden={!open}
         aria-label={t('header.openMenu')}
-        className={`fixed inset-0 z-50 bg-ink-900 outline-none transition-all duration-200 ease-out lg:hidden ${
-          open ? 'opacity-100 translate-y-0' : 'pointer-events-none opacity-0 -translate-y-3'
+        className={`fixed inset-0 z-50 bg-ink-900 outline-none transition-transform duration-[250ms] ease-out lg:hidden ${
+          open ? 'translate-y-0' : 'pointer-events-none -translate-y-full'
         }`}
         onClick={(e) => {
           // Tap on the empty backdrop (not on a link/button) closes.
@@ -133,42 +172,18 @@ export function MobileMenu() {
         }}
       >
         {/* Diagonal accent: darker navy band cutting the lower-right corner,
-            matching the site's skewX(-8deg). Pure decoration — fades in with
-            the menu, never intercepts taps. */}
+            matching the site's skewX(-8deg). Pure decoration. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -bottom-24 -right-40 h-[72%] w-[95%] bg-black/25 [transform:skewX(-8deg)]"
         />
 
-        {/* Top bar mirrors the closed header bar exactly (h-16 px-4, crest 38px
-            left, X on the hamburger's spot) — no layout jump on open/close. */}
+        {/* Spacer under the (raised) header bar */}
         <div
-          className="relative flex items-center justify-between h-16 px-4 border-b border-slateblue-900"
-          style={{ paddingTop: 'env(safe-area-inset-top)' }}
-        >
-          <div
-            onClick={() => {
-              // Going home must not have its navigation undone by the history
-              // cleanup; closing directly covers the already-on-home case.
-              closedByNav.current = pathname !== '/';
-              setOpen(false);
-            }}
-          >
-            <Logo size={38} />
-          </div>
-          <button
-            type="button"
-            aria-label={t('header.closeMenu')}
-            onClick={() => setOpen(false)}
-            className="relative w-9 h-9 text-white"
-            style={{ touchAction: 'manipulation' }}
-          >
-            {/* invisible 48px hit area around the visual X */}
-            <span className="absolute -inset-1.5" aria-hidden />
-            <span className="absolute left-1/2 top-1/2 w-5 h-[2px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-45" />
-            <span className="absolute left-1/2 top-1/2 w-5 h-[2px] bg-white -translate-x-1/2 -translate-y-1/2 -rotate-45" />
-          </button>
-        </div>
+          className="h-16 border-b border-slateblue-900"
+          style={{ marginTop: 'env(safe-area-inset-top)' }}
+          aria-hidden
+        />
 
         {/* Scrollable items */}
         <nav
@@ -265,7 +280,15 @@ export function MobileMenu() {
           className="absolute left-0 right-0 bottom-0 border-t border-slateblue-900 bg-ink-900 px-6 pt-4"
           style={{ paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}
         >
-          <div className="flex justify-center mb-4">
+          <div
+            className="flex justify-center mb-4"
+            onClickCapture={() => {
+              // Locale switch uses history.replaceState on the menu's pushed
+              // entry — the close cleanup must NOT history.back() over it.
+              closedByNav.current = true;
+              setOpen(false);
+            }}
+          >
             <LanguageSwitcher />
           </div>
           <div className="grid grid-cols-2 gap-3">
