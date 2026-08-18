@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { navItems, klubSubItems } from '@/lib/site';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { Logo } from './Logo';
 
 const isActive = (pathname: string, href: string) =>
   href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
@@ -131,23 +132,41 @@ export function MobileMenu() {
           if (e.target === e.currentTarget) setOpen(false);
         }}
       >
-        {/* Top bar: brand + X where the hamburger was */}
+        {/* Diagonal accent: darker navy band cutting the lower-right corner,
+            matching the site's skewX(-8deg). Pure decoration — fades in with
+            the menu, never intercepts taps. */}
         <div
-          className="flex items-center justify-between h-16 px-4 border-b border-slateblue-900"
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-24 -right-40 h-[72%] w-[95%] bg-black/25 [transform:skewX(-8deg)]"
+        />
+
+        {/* Top bar mirrors the closed header bar exactly (h-16 px-4, crest 38px
+            left, X on the hamburger's spot) — no layout jump on open/close. */}
+        <div
+          className="relative flex items-center justify-between h-16 px-4 border-b border-slateblue-900"
           style={{ paddingTop: 'env(safe-area-inset-top)' }}
         >
-          <span className="font-display font-extrabold italic text-white tracking-[.03em]">
-            HNK KROATIEN SCHWYZ
-          </span>
+          <div
+            onClick={() => {
+              // Going home must not have its navigation undone by the history
+              // cleanup; closing directly covers the already-on-home case.
+              closedByNav.current = pathname !== '/';
+              setOpen(false);
+            }}
+          >
+            <Logo size={38} />
+          </div>
           <button
             type="button"
             aria-label={t('header.closeMenu')}
             onClick={() => setOpen(false)}
-            className="relative w-12 h-12 -mr-2 text-white"
+            className="relative w-9 h-9 text-white"
             style={{ touchAction: 'manipulation' }}
           >
-            <span className="absolute left-1/2 top-1/2 w-6 h-[2px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-45" />
-            <span className="absolute left-1/2 top-1/2 w-6 h-[2px] bg-white -translate-x-1/2 -translate-y-1/2 -rotate-45" />
+            {/* invisible 48px hit area around the visual X */}
+            <span className="absolute -inset-1.5" aria-hidden />
+            <span className="absolute left-1/2 top-1/2 w-5 h-[2px] bg-white -translate-x-1/2 -translate-y-1/2 rotate-45" />
+            <span className="absolute left-1/2 top-1/2 w-5 h-[2px] bg-white -translate-x-1/2 -translate-y-1/2 -rotate-45" />
           </button>
         </div>
 
