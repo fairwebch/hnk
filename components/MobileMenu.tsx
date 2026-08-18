@@ -49,7 +49,11 @@ export function MobileMenu() {
       b.style.left = '';
       b.style.right = '';
       b.style.overflow = '';
-      window.scrollTo(0, y);
+      // Restore the position only when the menu closed on the SAME page
+      // (X, backdrop, Escape, back). After a navigation the new route must
+      // start at the top — restoring here would scroll the new page down.
+      if (closedByNav.current) window.scrollTo(0, 0);
+      else window.scrollTo(0, y);
     };
   }, [open]);
 
