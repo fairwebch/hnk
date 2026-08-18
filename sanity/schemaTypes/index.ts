@@ -12,6 +12,7 @@ import { sponzor } from './documents/sponzor';
 import { galerija } from './documents/galerija';
 import { dogadjaj } from './documents/dogadjaj';
 import { stranica } from './documents/stranica';
+import { klubStranica } from './documents/klubStranica';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -28,5 +29,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     galerija,
     dogadjaj,
     stranica,
+    klubStranica,
   ],
 };

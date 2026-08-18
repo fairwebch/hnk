@@ -23,3 +23,11 @@ export const navItems = [
   { id: 'sponzoring', href: '/sponzoring' },
   { id: 'kontakt', href: '/kontakt' },
 ] as const;
+
+/** "Klub" dropdown / sub-group — labels from messages `nav.*`. */
+export const klubSubItems = [
+  { id: 'oKlubu', href: '/klub' },
+  { id: 'uprava', href: '/uprava' },
+  { id: 'postaniClan', href: '/postani-clan' },
+] as const;
+

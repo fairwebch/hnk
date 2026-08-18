@@ -20,11 +20,9 @@ export async function Footer() {
     { label: t('footer.links.juniori12'), href: '/momcadi' },
   ];
   const clubLinks = [
-    { label: t('footer.links.oNama'), href: '/o-nama' },
+    { label: t('nav.oKlubu'), href: '/klub' },
     { label: t('footer.links.uprava'), href: '/uprava' },
-    { label: t('footer.links.sponzoring'), href: '/sponzoring' },
     { label: t('footer.links.postaniClan'), href: '/postani-clan' },
-    { label: t('nav.shop'), href: '/shop' },
   ];
 
   return (

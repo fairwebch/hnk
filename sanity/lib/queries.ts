@@ -46,6 +46,11 @@ export const dogadjajBySlugQuery = groq`
   *[_type == "dogadjaj" && slug.current == $slug][0]{ ${dogadjajFields} }
 `;
 
+// Club story (singleton)
+export const klubStranicaQuery = groq`
+  *[_type == "klubStranica"][0]{ uvod, timeline, zavrsniTekst }
+`;
+
 // Galleries
 export const allGalerijeQuery = groq`
   *[_type == "galerija"] | order(coalesce(godina, 0) desc, date desc){

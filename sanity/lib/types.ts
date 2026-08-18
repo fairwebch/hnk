@@ -67,6 +67,21 @@ export interface GalerijaTeaser {
   count?: number;
 }
 
+export interface TimelineStavka {
+  _key?: string;
+  godina: number;
+  godinaLabela?: LocaleString;
+  naslov: LocaleString;
+  tekst: LocaleText;
+  slika?: SanityImg;
+}
+
+export interface KlubStranica {
+  uvod?: { hr?: any[]; de?: any[] };
+  timeline?: TimelineStavka[];
+  zavrsniTekst?: { hr?: any[]; de?: any[] };
+}
+
 export interface ProgramStavka {
   _key?: string;
   vrijeme?: string;

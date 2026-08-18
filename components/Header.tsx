@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
-import { navItems, site } from '@/lib/site';
+import { navItems, klubSubItems, site } from '@/lib/site';
 import { Logo } from './Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileMenu } from './MobileMenu';
@@ -41,17 +41,44 @@ export function Header() {
         <Logo size={48} />
         <nav className="flex h-[84px]" aria-label="Glavna navigacija">
           {navItems.map((item) => {
-            const active = isActive(pathname, item.href);
+            const active =
+              item.id === 'klub'
+                ? klubSubItems.some((s) => isActive(pathname, s.href))
+                : isActive(pathname, item.href);
+            const linkCls = `flex items-center gap-1.5 h-[84px] px-[11px] font-display font-bold text-[15px] tracking-[.08em] uppercase whitespace-nowrap border-t-[3px] border-t-transparent transition-colors ${
+              active
+                ? 'text-white border-b-[3px] border-b-croatia'
+                : 'text-slateblue-50 border-b-[3px] border-b-transparent hover:text-white'
+            }`;
+
+            if (item.id === 'klub') {
+              return (
+                <div key={item.id} className="relative group">
+                  <Link href={item.href} className={linkCls} aria-haspopup="true">
+                    {t(`nav.${item.id}`)}
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden className="mt-px transition-transform group-hover:rotate-180"><path d="M6 9l6 6 6-6" /></svg>
+                  </Link>
+                  {/* Dropdown: opens on hover and on keyboard focus */}
+                  <div className="absolute left-0 top-full min-w-[220px] bg-ink-700 border border-slateblue-900 shadow-2xl opacity-0 -translate-y-1 pointer-events-none transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto">
+                    <div className="h-[3px] bg-croatia" aria-hidden />
+                    {klubSubItems.map((s) => (
+                      <Link
+                        key={s.id}
+                        href={s.href}
+                        className={`block px-5 py-3 font-display font-bold text-[14px] tracking-[.07em] uppercase border-b border-slateblue-900 last:border-b-0 transition-colors ${
+                          isActive(pathname, s.href) ? 'text-croatia' : 'text-slateblue-50 hover:text-white hover:bg-ink-600'
+                        }`}
+                      >
+                        {t(`nav.${s.id}`)}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+
             return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={`flex items-center h-[84px] px-[11px] font-display font-bold text-[15px] tracking-[.08em] uppercase whitespace-nowrap border-t-[3px] border-t-transparent transition-colors ${
-                  active
-                    ? 'text-white border-b-[3px] border-b-croatia'
-                    : 'text-slateblue-50 border-b-[3px] border-b-transparent hover:text-white'
-                }`}
-              >
+              <Link key={item.id} href={item.href} className={linkCls}>
                 {t(`nav.${item.id}`)}
               </Link>
             );

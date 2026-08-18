@@ -18,7 +18,7 @@ export const stranica = defineType({
       type: 'slug',
       options: { source: 'title.hr', maxLength: 96 },
       description:
-        'Mora odgovarati ruti: o-nama, klub, postani-clan, kontakt, impressum, datenschutzerklarung.',
+        'Mora odgovarati ruti: postani-clan, kontakt, impressum, datenschutzerklarung.',
       validation: (r) => r.required(),
     }),
     defineField({

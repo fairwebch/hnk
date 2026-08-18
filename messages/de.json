@@ -13,7 +13,10 @@
     "dogadjaji": "Events",
     "sponzoring": "Sponsoring",
     "kontakt": "Kontakt",
-    "shop": "Shop"
+    "shop": "Shop",
+    "oKlubu": "Über den Verein",
+    "uprava": "Vorstand",
+    "postaniClan": "Mitglied werden"
   },
   "header": {
     "join": "Mitglied werden",
@@ -179,7 +182,6 @@
       "seniori": "Senioren",
       "juniori16": "Junioren U16",
       "juniori12": "Junioren U12",
-      "oNama": "Über uns",
       "uprava": "Vorstand",
       "sponzoring": "Sponsoring",
       "postaniClan": "Mitglied werden"
@@ -191,8 +193,7 @@
     "home": "Zurück zur Startseite"
   },
   "pages": {
-    "oNamaKicker": "Unsere Geschichte",
-    "klubKicker": "Über den Verein",
+    "klubKicker": "Unsere Geschichte",
     "postaniClanKicker": "Mach mit"
   },
   "shop": {
@@ -238,5 +239,14 @@
     "sending": "Wird gesendet…",
     "success": "Danke! Prüfen Sie Ihr E-Mail-Postfach — wir haben Ihnen eine Bestätigung gesendet.",
     "error": "Fehler beim Senden. Bitte erneut versuchen oder schreiben Sie uns an info@kroatien-schwyz.ch."
+  },
+  "klub": {
+    "subtitle": "Seit 1995 — die Geschichte eines Vereins, einer Gemeinschaft und der Liebe zum Fussball.",
+    "empty": "Die Geschichte ist in Arbeit.",
+    "emptySub": "Die Vereins-Timeline folgt in Kürze.",
+    "ctaUpravaTitle": "Lerne die Menschen kennen, die den Verein führen",
+    "ctaUpravaBtn": "Vorstand",
+    "ctaClanTitle": "Werde Teil der Geschichte",
+    "ctaClanBtn": "Mitglied werden"
   }
 }

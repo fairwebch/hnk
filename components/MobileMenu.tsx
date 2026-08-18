@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
-import { navItems, site } from '@/lib/site';
+import { navItems, klubSubItems, site } from '@/lib/site';
 
 export function MobileMenu() {
   const t = useTranslations();
@@ -76,6 +76,33 @@ export function MobileMenu() {
               item.href === '/'
                 ? pathname === '/'
                 : pathname === item.href || pathname.startsWith(item.href + '/');
+
+            if (item.id === 'klub') {
+              return (
+                <div key={item.id} className="border-b border-slateblue-900">
+                  <span className="block pt-3 pb-1 font-display font-bold text-lg tracking-[.06em] uppercase text-slateblue-400">
+                    {t('nav.klub')}
+                  </span>
+                  {klubSubItems.map((s) => {
+                    const subActive = pathname === s.href || pathname.startsWith(s.href + '/');
+                    return (
+                      <Link
+                        key={s.id}
+                        href={s.href}
+                        className={`flex items-center gap-2 py-2 pl-4 font-display font-bold text-base tracking-[.06em] uppercase transition-colors ${
+                          subActive ? 'text-croatia' : 'text-slateblue-50 hover:text-white'
+                        }`}
+                      >
+                        <span className="w-1.5 h-1.5 rotate-45 bg-croatia/60 shrink-0" aria-hidden />
+                        {t(`nav.${s.id}`)}
+                      </Link>
+                    );
+                  })}
+                  <div className="pb-2" />
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={item.id}

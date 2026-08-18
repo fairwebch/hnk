@@ -31,7 +31,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         kicker={t('pages.postaniClanKicker')}
         title={title}
         subtitle={intro || t('membership.subtitle')}
-        breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: title }]}
+        breadcrumb={[
+          { label: t('nav.pocetna'), href: '/' },
+          { label: t('nav.klub'), href: '/klub' },
+          { label: title },
+        ]}
         ghost="ČLAN"
       />
       <div className="container-x max-w-3xl py-14">

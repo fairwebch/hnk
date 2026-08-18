@@ -13,7 +13,10 @@
     "dogadjaji": "Događaji",
     "sponzoring": "Sponzoring",
     "kontakt": "Kontakt",
-    "shop": "Shop"
+    "shop": "Shop",
+    "oKlubu": "O klubu",
+    "uprava": "Uprava",
+    "postaniClan": "Postani član"
   },
   "header": {
     "join": "Učlani se",
@@ -179,7 +182,6 @@
       "seniori": "Seniori",
       "juniori16": "Juniori U16",
       "juniori12": "Juniori U12",
-      "oNama": "O nama",
       "uprava": "Uprava",
       "sponzoring": "Sponzoring",
       "postaniClan": "Postani član"
@@ -191,8 +193,7 @@
     "home": "Natrag na početnu"
   },
   "pages": {
-    "oNamaKicker": "Naša priča",
-    "klubKicker": "O klubu",
+    "klubKicker": "Naša priča",
     "postaniClanKicker": "Pridruži nam se"
   },
   "shop": {
@@ -238,5 +239,14 @@
     "sending": "Šaljem…",
     "success": "Hvala! Provjerite email — poslali smo vam potvrdu.",
     "error": "Greška pri slanju. Pokušajte ponovo ili nam pišite na info@kroatien-schwyz.ch."
+  },
+  "klub": {
+    "subtitle": "Od 1995. godine — priča o klubu, zajednici i ljubavi prema nogometu.",
+    "empty": "Priča je u pripremi.",
+    "emptySub": "Timeline kluba uskoro stiže.",
+    "ctaUpravaTitle": "Upoznaj ljude koji vode klub",
+    "ctaUpravaBtn": "Uprava",
+    "ctaClanTitle": "Postani dio priče",
+    "ctaClanBtn": "Učlani se"
   }
 }
