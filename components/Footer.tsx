@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation';
 import { site } from '@/lib/site';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { SocialIcon } from '@/components/SocialIcon';
+import { CookieSettingsLink } from '@/components/CookieSettingsLink';
 
 export async function Footer() {
   const t = await getTranslations();
@@ -106,6 +107,8 @@ export async function Footer() {
             <Link href="/impressum" className="hover:text-white transition-colors">{t('footer.impressum')}</Link>
             <span>·</span>
             <Link href="/datenschutzerklarung" className="hover:text-white transition-colors">{t('footer.datenschutz')}</Link>
+            <span>·</span>
+            <CookieSettingsLink />
           </span>
         </div>
       </div>
@@ -137,10 +140,12 @@ export async function Footer() {
             Webseite erstellt von{' '}
             <a href="https://fairweb.ch" target="_blank" rel="noopener" className="underline underline-offset-2">Fairweb</a>
           </span>
-          <span className="flex gap-2">
+          <span className="flex flex-wrap gap-2">
             <Link href="/impressum">{t('footer.impressum')}</Link>
             <span>·</span>
             <Link href="/datenschutzerklarung">{t('footer.datenschutz')}</Link>
+            <span>·</span>
+            <CookieSettingsLink />
           </span>
         </div>
       </div>

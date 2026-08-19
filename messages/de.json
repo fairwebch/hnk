@@ -257,5 +257,69 @@
     "ctaUpravaBtn": "Vorstand",
     "ctaClanTitle": "Werde Teil der Geschichte",
     "ctaClanBtn": "Mitglied werden"
+  },
+  "consent": {
+    "bannerTitle": "Cookies",
+    "bannerText": "Wir verwenden notwendige Cookies für den Betrieb der Website. Statistik und externe Inhalte (z. B. Google Karte) laden wir nur mit Ihrer Einwilligung, die Sie jederzeit widerrufen können. Mehr Informationen in unserer <link>Datenschutzerklärung</link>.",
+    "acceptAll": "Alle akzeptieren",
+    "rejectAll": "Alle ablehnen",
+    "settings": "Einstellungen",
+    "settingsTitle": "Cookie-Einstellungen",
+    "settingsIntro": "Hier können Sie wählen, welche Cookie-Kategorien und externen Dienste Sie zulassen. Ihre Auswahl können Sie jederzeit über den Link «Cookie-Einstellungen» im Seitenfuss ändern.",
+    "save": "Auswahl speichern",
+    "close": "Schliessen",
+    "alwaysOn": "Immer aktiv",
+    "footerLink": "Cookie-Einstellungen",
+    "showServices": "Dienste anzeigen",
+    "hideServices": "Details ausblenden",
+    "providerLabel": "Anbieter",
+    "purposeLabel": "Zweck",
+    "durationLabel": "Speicherdauer",
+    "cat": {
+      "necessary": {
+        "name": "Notwendig",
+        "desc": "Erforderlich für den Grundbetrieb der Website: Sprache, Sicherheit und Speicherung Ihrer Cookie-Auswahl. Können nicht deaktiviert werden."
+      },
+      "statistics": {
+        "name": "Statistik",
+        "desc": "Anonymisierte Besucherstatistik, die uns hilft, die Website zu verbessern. Wird nur mit Ihrer Einwilligung geladen."
+      },
+      "external": {
+        "name": "Externe Inhalte",
+        "desc": "Inhalte von Drittanbietern, z. B. die Google Karte auf der Kontaktseite. Ohne Einwilligung wird keine Verbindung zu externen Servern aufgebaut."
+      }
+    },
+    "services": {
+      "consentStore": {
+        "name": "hnk-consent (localStorage)",
+        "provider": "HNK Kroatien Schwyz (diese Website)",
+        "purpose": "Speichert Ihre Cookie-Auswahl, einschliesslich Banner-Version und genauem Zeitpunkt der Einwilligung.",
+        "duration": "12 Monate"
+      },
+      "locale": {
+        "name": "NEXT_LOCALE (Cookie)",
+        "provider": "HNK Kroatien Schwyz (diese Website)",
+        "purpose": "Merkt sich die gewählte Sprache der Website (HR/DE).",
+        "duration": "Bis zum Ende der Browsersitzung"
+      },
+      "ga": {
+        "name": "Google Analytics 4 (_ga, _ga_*) — derzeit inaktiv",
+        "provider": "Google Ireland Limited, Dublin, Irland",
+        "purpose": "Anonymisierte Besucherstatistik zur Verbesserung der Website. Wird erst nach Einwilligung geladen (Google Consent Mode v2).",
+        "duration": "Bis zu 2 Jahre"
+      },
+      "maps": {
+        "name": "Google Maps",
+        "provider": "Google Ireland Limited, Dublin, Irland",
+        "purpose": "Anzeige einer interaktiven Karte mit dem Vereinsstandort auf der Kontaktseite.",
+        "duration": "Bis zu 6 Monate"
+      }
+    },
+    "map": {
+      "title": "Google Karte",
+      "text": "Die Karte wird erst nach Ihrer Einwilligung von Google-Servern geladen. Mit Klick auf «Karte anzeigen» willigen Sie in die Kategorie «Externe Inhalte» ein — Ihre Auswahl wird gespeichert.",
+      "button": "Karte anzeigen",
+      "external": "Oder Karte direkt auf Google Maps öffnen"
+    }
   }
 }

@@ -5,6 +5,7 @@ import { stranicaBySlugQuery } from '@/sanity/lib/queries';
 import type { Stranica } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { ContactForm } from '@/components/ContactForm';
+import { MapEmbed } from '@/components/MapEmbed';
 import { PortableText } from '@/components/ui/PortableText';
 import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
 import { site } from '@/lib/site';
@@ -46,6 +47,9 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
               <PortableText value={body} />
             </div>
           )}
+          <div className="mt-8">
+            <MapEmbed />
+          </div>
         </div>
 
         {/* Form */}

@@ -257,5 +257,69 @@
     "ctaUpravaBtn": "Uprava",
     "ctaClanTitle": "Postani dio priče",
     "ctaClanBtn": "Učlani se"
+  },
+  "consent": {
+    "bannerTitle": "Kolačići",
+    "bannerText": "Koristimo nužne kolačiće za rad stranice. Statistiku i vanjske sadržaje (npr. Google kartu) učitavamo samo uz vašu privolu, koju možete u svakom trenutku opozvati. Više informacija u našoj <link>izjavi o zaštiti podataka</link>.",
+    "acceptAll": "Prihvati sve",
+    "rejectAll": "Odbij sve",
+    "settings": "Postavke",
+    "settingsTitle": "Postavke kolačića",
+    "settingsIntro": "Ovdje možete odabrati koje kategorije kolačića i vanjskih usluga dopuštate. Svoj izbor možete u svakom trenutku promijeniti putem poveznice „Postavke kolačića“ u podnožju stranice.",
+    "save": "Spremi izbor",
+    "close": "Zatvori",
+    "alwaysOn": "Uvijek aktivno",
+    "footerLink": "Postavke kolačića",
+    "showServices": "Prikaži detalje usluga",
+    "hideServices": "Sakrij detalje",
+    "providerLabel": "Pružatelj",
+    "purposeLabel": "Svrha",
+    "durationLabel": "Trajanje pohrane",
+    "cat": {
+      "necessary": {
+        "name": "Nužni",
+        "desc": "Potrebni za osnovni rad stranice: jezik, sigurnost i pohrana vašeg odabira kolačića. Ne mogu se isključiti."
+      },
+      "statistics": {
+        "name": "Statistika",
+        "desc": "Anonimizirana statistika posjeta koja nam pomaže poboljšati stranicu. Učitava se samo uz vašu privolu."
+      },
+      "external": {
+        "name": "Vanjski sadržaj",
+        "desc": "Sadržaj trećih strana, npr. Google karta na stranici Kontakt. Bez privole se ne uspostavlja veza s vanjskim poslužiteljima."
+      }
+    },
+    "services": {
+      "consentStore": {
+        "name": "hnk-consent (localStorage)",
+        "provider": "HNK Kroatien Schwyz (ova stranica)",
+        "purpose": "Pohranjuje vaš odabir kolačića, uključujući verziju bannera i točno vrijeme privole.",
+        "duration": "12 mjeseci"
+      },
+      "locale": {
+        "name": "NEXT_LOCALE (kolačić)",
+        "provider": "HNK Kroatien Schwyz (ova stranica)",
+        "purpose": "Pamti odabrani jezik stranice (HR/DE).",
+        "duration": "Do kraja sesije preglednika"
+      },
+      "ga": {
+        "name": "Google Analytics 4 (_ga, _ga_*) — trenutno neaktivno",
+        "provider": "Google Ireland Limited, Dublin, Irska",
+        "purpose": "Anonimizirana statistika posjeta radi poboljšanja stranice. Učitava se tek nakon privole (Google Consent Mode v2).",
+        "duration": "Do 2 godine"
+      },
+      "maps": {
+        "name": "Google Maps",
+        "provider": "Google Ireland Limited, Dublin, Irska",
+        "purpose": "Prikaz interaktivne karte s lokacijom kluba na stranici Kontakt.",
+        "duration": "Do 6 mjeseci"
+      }
+    },
+    "map": {
+      "title": "Google karta",
+      "text": "Karta se učitava s Googleovih poslužitelja tek nakon vaše privole. Klikom na „Prikaži kartu“ pristajete na kategoriju „Vanjski sadržaj“ — vaš izbor bit će spremljen.",
+      "button": "Prikaži kartu",
+      "external": "Ili otvori kartu izravno na Google Maps"
+    }
   }
 }
