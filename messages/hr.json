@@ -121,7 +121,19 @@
     "title": "Momčadi",
     "subtitle": "Od najmlađih do seniora — ponos kluba.",
     "gallery": "Galerija momčadi",
-    "kicker": "Naše ekipe"
+    "kicker": "Naše ekipe",
+    "trener": "Trener",
+    "liga": "Liga / natjecanje",
+    "termin": "Termin treninga",
+    "soon": "Uskoro",
+    "playerCount": "{count, plural, one {# igrač} few {# igrača} other {# igrača}}",
+    "pozicije": {
+      "golman": "Golmani",
+      "obrana": "Obrana",
+      "vezni": "Vezni red",
+      "napad": "Napad",
+      "ostali": "Igrači"
+    }
   },
   "board": {
     "title": "Uprava",
@@ -178,11 +190,10 @@
     "links": {
       "aktivni": "Aktivni",
       "seniori": "Seniori",
-      "juniori16": "Juniori U16",
-      "juniori12": "Juniori U12",
       "uprava": "Uprava",
       "sponzoring": "Sponzoring",
-      "postaniClan": "Postani član"
+      "postaniClan": "Postani član",
+      "juniori": "Juniori"
     }
   },
   "notFound": {

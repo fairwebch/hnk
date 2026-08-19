@@ -121,7 +121,19 @@
     "title": "Mannschaften",
     "subtitle": "Von den Jüngsten bis zu den Senioren — der Stolz des Vereins.",
     "gallery": "Mannschaftsgalerie",
-    "kicker": "Unsere Teams"
+    "kicker": "Unsere Teams",
+    "trener": "Trainer",
+    "liga": "Liga / Wettbewerb",
+    "termin": "Training",
+    "soon": "Demnächst",
+    "playerCount": "{count, plural, one {# Spieler} other {# Spieler}}",
+    "pozicije": {
+      "golman": "Torhüter",
+      "obrana": "Abwehr",
+      "vezni": "Mittelfeld",
+      "napad": "Angriff",
+      "ostali": "Spieler"
+    }
   },
   "board": {
     "title": "Vorstand",
@@ -178,11 +190,10 @@
     "links": {
       "aktivni": "Aktive",
       "seniori": "Senioren",
-      "juniori16": "Junioren U16",
-      "juniori12": "Junioren U12",
       "uprava": "Vorstand",
       "sponzoring": "Sponsoring",
-      "postaniClan": "Mitglied werden"
+      "postaniClan": "Mitglied werden",
+      "juniori": "Junioren"
     }
   },
   "notFound": {

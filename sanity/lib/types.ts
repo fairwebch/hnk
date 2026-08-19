@@ -26,6 +26,23 @@ export interface ClanUprave {
   order: number;
 }
 
+export type Pozicija = 'golman' | 'obrana' | 'vezni' | 'napad';
+
+export interface Igrac {
+  _key?: string;
+  ime: string;
+  prezime?: string;
+  broj?: number;
+  pozicija?: Pozicija;
+  slika?: SanityImg;
+}
+
+export interface RedImena {
+  _key?: string;
+  oznakaReda?: LocaleString;
+  imena?: string;
+}
+
 export interface Momcad {
   _id: string;
   name: LocaleString;
@@ -33,6 +50,14 @@ export interface Momcad {
   coverImage?: SanityImg;
   description?: LocaleBlocks;
   gallery?: SanityImg[];
+  grupnaFotografija?: SanityImg;
+  popisImena?: RedImena[];
+  igraci?: Igrac[];
+  trener?: { ime?: string; funkcija?: LocaleString; slika?: SanityImg };
+  liga?: LocaleString;
+  terminTreninga?: LocaleString;
+  /** Only on the listing query. */
+  brojIgraca?: number;
 }
 
 export interface Sponzor {

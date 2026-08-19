@@ -40,27 +40,64 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
           <EmptyState title={t('empty.teams')} subtitle={t('empty.teamsSub')} icon="ball" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {teams.map((team) => (
-              <Link
-                key={team._id}
-                href={`/momcadi/${team.slug}`}
-                className="card card-hover group overflow-hidden"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <SanityImage
-                    image={team.coverImage}
-                    alt={pickLocale(team.name, locale)}
-                    fill
-                    sizes="(max-width:640px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink-900/90 to-transparent" />
-                  <h3 className="absolute bottom-0 left-0 p-5 h-display text-white text-2xl leading-none group-hover:text-croatia transition-colors">
-                    {pickLocale(team.name, locale)}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+            {teams.map((team) => {
+              const name = pickLocale(team.name, locale);
+              const photo = team.grupnaFotografija?.asset ? team.grupnaFotografija : team.coverImage;
+              // Real head count: roster if filled, otherwise the pictured
+              // names from the old site (the "*" placeholder doesn't count).
+              const namesCount = (team.popisImena ?? [])
+                .flatMap((r) => (r.imena ?? '').split(','))
+                .map((n) => n.trim())
+                .filter((n) => n && n !== '*').length;
+              const count = team.brojIgraca || namesCount;
+              const empty = !photo?.asset && !count;
+
+              if (empty) {
+                return (
+                  <div
+                    key={team._id}
+                    className="border-2 border-dashed border-line flex flex-col items-center justify-center aspect-[16/10] text-center p-6"
+                  >
+                    <h3 className="h-display text-content text-2xl leading-none">{name}</h3>
+                    <p className="font-display font-bold uppercase text-xs tracking-wider2 text-content-muted mt-2">
+                      {t('teams.soon')}
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={team._id}
+                  href={`/momcadi/${team.slug}`}
+                  className="group relative block overflow-hidden border border-line bg-ink-800 transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <SanityImage
+                      image={photo}
+                      alt={name}
+                      fill
+                      sizes="(max-width:640px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/40 to-ink-900/10" />
+                    {count > 0 && (
+                      <span className="absolute top-3 right-3 bg-croatia text-white font-display font-bold uppercase text-[11px] tracking-wider2 px-3 py-1.5">
+                        {t('teams.playerCount', { count })}
+                      </span>
+                    )}
+                    <div className="absolute bottom-0 left-0 p-5">
+                      <h3 className="h-display text-white text-3xl leading-none group-hover:text-croatia transition-colors">
+                        {name}
+                      </h3>
+                      {pickLocale(team.liga, locale) && (
+                        <div className="kicker text-[11px] mt-2">{pickLocale(team.liga, locale)}</div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

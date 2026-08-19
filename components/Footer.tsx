@@ -15,10 +15,9 @@ export async function Footer() {
     { label: 'WHATSAPP', icon: 'whatsapp' as const, href: site.social.whatsapp },
   ];
   const teamLinks = [
-    { label: t('footer.links.aktivni'), href: '/momcadi' },
-    { label: t('footer.links.seniori'), href: '/momcadi' },
-    { label: t('footer.links.juniori16'), href: '/momcadi' },
-    { label: t('footer.links.juniori12'), href: '/momcadi' },
+    { label: t('footer.links.aktivni'), href: '/momcadi/aktivni' },
+    { label: t('footer.links.seniori'), href: '/momcadi/seniori' },
+    { label: t('footer.links.juniori'), href: '/momcadi/juniori' },
   ];
   const clubLinks = [
     { label: t('nav.oKlubu'), href: '/klub' },

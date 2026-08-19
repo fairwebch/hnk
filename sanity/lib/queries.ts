@@ -76,7 +76,8 @@ export const galerijeTeaserQuery = groq`
 // Teams
 export const allMomcadiQuery = groq`
   *[_type == "momcad"] | order(order asc){
-    _id, name, "slug": slug.current, coverImage, description
+    _id, name, "slug": slug.current, coverImage, grupnaFotografija,
+    popisImena, "brojIgraca": count(igraci), liga
   }
 `;
 
@@ -84,7 +85,8 @@ export const momcadSlugsQuery = groq`*[_type == "momcad" && defined(slug.current
 
 export const momcadBySlugQuery = groq`
   *[_type == "momcad" && slug.current == $slug][0]{
-    _id, name, "slug": slug.current, coverImage, description, gallery
+    _id, name, "slug": slug.current, coverImage, description, gallery,
+    grupnaFotografija, popisImena, igraci, trener, liga, terminTreninga
   }
 `;
 
