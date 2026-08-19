@@ -3,15 +3,16 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { site } from '@/lib/site';
 import { NewsletterForm } from '@/components/NewsletterForm';
+import { SocialIcon } from '@/components/SocialIcon';
 
 export async function Footer() {
   const t = await getTranslations();
   const year = new Date().getFullYear();
 
   const socials = [
-    { label: 'FACEBOOK', href: site.social.facebook },
-    { label: 'INSTAGRAM', href: site.social.instagram },
-    { label: 'WHATSAPP', href: site.social.whatsapp },
+    { label: 'FACEBOOK', icon: 'facebook' as const, href: site.social.facebook },
+    { label: 'INSTAGRAM', icon: 'instagram' as const, href: site.social.instagram },
+    { label: 'WHATSAPP', icon: 'whatsapp' as const, href: site.social.whatsapp },
   ];
   const teamLinks = [
     { label: t('footer.links.aktivni'), href: '/momcadi' },
@@ -61,9 +62,6 @@ export async function Footer() {
                 </div>
               </div>
             </div>
-            <p className="font-sans text-sm leading-relaxed text-slateblue-300 mt-[18px] max-w-[340px]">
-              {t('footer.tagline')}
-            </p>
             <div className="flex gap-[10px] mt-[22px]">
               {socials.map((s) => (
                 <a
@@ -71,8 +69,9 @@ export async function Footer() {
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn-ghost px-[14px] py-[7px] text-[11px] tracking-wider2"
+                  className="btn-ghost inline-flex items-center gap-2 px-[14px] py-[7px] text-[11px] tracking-wider2"
                 >
+                  <SocialIcon name={s.icon} size={15} />
                   {s.label}
                 </a>
               ))}
@@ -94,8 +93,16 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slateblue-900 px-[72px] py-5 flex justify-between font-sans font-medium text-xs text-slateblue-500">
-          <span>© {year} HNK Kroatien Schwyz — {t('footer.rights')}</span>
+        <div className="border-t border-slateblue-900 px-[72px] py-5 flex justify-between items-baseline font-sans font-medium text-xs text-slateblue-500">
+          <span className="flex flex-col gap-1">
+            <span>© {year}, HNK Kroatien Schwyz. All rights reserved.</span>
+            <span className="text-[11px] text-slateblue-600">
+              Webseite erstellt von{' '}
+              <a href="https://fairweb.ch" target="_blank" rel="noopener" className="hover:text-white transition-colors underline underline-offset-2">
+                Fairweb
+              </a>
+            </span>
+          </span>
           <span className="flex gap-2">
             <Link href="/impressum" className="hover:text-white transition-colors">{t('footer.impressum')}</Link>
             <span>·</span>
@@ -112,23 +119,25 @@ export async function Footer() {
             HNK KROATIEN SCHWYZ
           </div>
         </div>
-        <p className="font-sans text-[13px] leading-relaxed text-slateblue-300 mt-[14px]">
-          {t('footer.tagline')}
-        </p>
         <div className="flex flex-col gap-2 font-sans font-medium text-[13px] text-slateblue-200 mt-[18px]">
           <a href={site.phoneHref}>{site.phone}</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>
           <span>{site.address}</span>
         </div>
-        <div className="flex gap-[10px] mt-5">
+        <div className="flex flex-wrap gap-[10px] mt-5">
           {socials.map((s) => (
-            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="btn-ghost px-3 py-2 text-[10px]">
+            <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="btn-ghost inline-flex items-center gap-1.5 px-3 py-2 text-[10px]">
+              <SocialIcon name={s.icon} size={13} />
               {s.label}
             </a>
           ))}
         </div>
         <div className="border-t border-slateblue-900 mt-[26px] py-[22px] flex flex-col gap-[6px] font-sans font-medium text-[11px] text-slateblue-500">
-          <span>© {year} HNK Kroatien Schwyz — {t('footer.rights')}</span>
+          <span>© {year}, HNK Kroatien Schwyz. All rights reserved.</span>
+          <span className="text-[10px] text-slateblue-600">
+            Webseite erstellt von{' '}
+            <a href="https://fairweb.ch" target="_blank" rel="noopener" className="underline underline-offset-2">Fairweb</a>
+          </span>
           <span className="flex gap-2">
             <Link href="/impressum">{t('footer.impressum')}</Link>
             <span>·</span>

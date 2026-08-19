@@ -37,7 +37,7 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
         {/* Info */}
         <div>
           <div className="space-y-6">
-            <InfoRow heading={t('contact.addressHeading')} value={site.address} />
+            <InfoRow heading={t('contact.addressHeading')} value={site.address} href={site.mapsUrl} />
             <InfoRow heading={t('contact.phoneHeading')} value={site.phone} href={site.phoneHref} />
             <InfoRow heading={t('contact.emailHeading')} value={site.email} href={`mailto:${site.email}`} />
           </div>
@@ -64,7 +64,11 @@ function InfoRow({ heading, value, href }: { heading: string; value: string; hre
         {heading}
       </div>
       {href ? (
-        <a href={href} className="font-sans text-lg text-content hover:text-croatia transition-colors">
+        <a
+          href={href}
+          {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}
+          className="font-sans text-lg text-content hover:text-croatia transition-colors"
+        >
           {value}
         </a>
       ) : (

@@ -6,6 +6,7 @@ import { navItems, klubSubItems, site } from '@/lib/site';
 import { Logo } from './Logo';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileMenu } from './MobileMenu';
+import { SocialIcon } from './SocialIcon';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
@@ -30,9 +31,9 @@ export function Header() {
           </a>
         </div>
         <div className="flex gap-[18px]">
-          <a href={site.social.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Facebook</a>
-          <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Instagram</a>
-          <a href={site.social.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">WhatsApp</a>
+          <a href={site.social.facebook} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-white transition-colors"><SocialIcon name="facebook" size={13} />Facebook</a>
+          <a href={site.social.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-white transition-colors"><SocialIcon name="instagram" size={13} />Instagram</a>
+          <a href={site.social.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-white transition-colors"><SocialIcon name="whatsapp" size={13} />WhatsApp</a>
         </div>
       </div>
 

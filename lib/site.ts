@@ -4,7 +4,8 @@ export const site = {
   phone: '+41 79 279 72 32',
   phoneHref: 'tel:+41792797232',
   email: 'info@kroatien-schwyz.ch',
-  address: 'Igralište Widmen, 6436 Muotathal',
+  address: 'Mythencenterstrasse 21, 6438 Ibach',
+  mapsUrl: 'https://maps.google.com/?q=Mythencenterstrasse+21,+6438+Ibach',
   social: {
     facebook: 'https://www.facebook.com/profile.php?id=100092469495528',
     instagram: 'https://www.instagram.com/hnk_kroatienschwyz/',

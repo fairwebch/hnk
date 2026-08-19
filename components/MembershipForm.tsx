@@ -10,7 +10,7 @@ const SEARCH_URL = 'https://api3.geo.admin.ch/rest/services/api/SearchServer';
 
 const stripTags = (s: string) => s.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
-/** "Hauptstrasse 5 <b>6436 Muotathal</b>" → street / plz / city */
+/** "Mythencenterstrasse 21 <b>6438 Ibach</b>" → street / plz / city */
 function parseAddressLabel(label: string): { street: string; plz: string; city: string } {
   const m = label.match(/^(.*?)<b>(.*?)<\/b>/);
   if (!m) return { street: stripTags(label), plz: '', city: '' };
@@ -109,7 +109,7 @@ export function MembershipForm() {
         if (!res.ok) return;
         const data = await res.json();
         for (const r of data?.results ?? []) {
-          // "<b>6436 - Muotathal</b>"
+          // "<b>6438 - Ibach</b>"
           const m = stripTags(String(r?.attrs?.label ?? '')).match(/^(\d{4})\s*-\s*(.+)$/);
           if (m && m[1] === plz) {
             // Re-check: the user may have started typing the city while the
