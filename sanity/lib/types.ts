@@ -126,6 +126,10 @@ export interface Dogadjaj {
   kotizacija?: string;
   prijavaLink?: string;
   kapacitet?: string;
+  vrstaPrijave?: 'bez' | 'osoba' | 'ekipa';
+  pristupPrijavi?: 'javna' | 'clanovi';
+  prijaveOtvorene?: boolean;
+  rokPrijave?: string;
   program?: ProgramStavka[];
   sponzorEventa?: { name?: string; logo?: SanityImg; link?: string } | null;
   galerija?: { name?: LocaleString; slug?: string } | null;

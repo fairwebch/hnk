@@ -11,6 +11,7 @@ import type { Dogadjaj } from '@/sanity/lib/types';
 import { SanityImage } from '@/components/ui/SanityImage';
 import { PortableText } from '@/components/ui/PortableText';
 import { EventCountdown } from '@/components/EventCountdown';
+import { EventRegistration } from '@/components/EventRegistration';
 import { urlFor } from '@/sanity/lib/image';
 import { pickLocale, pickLocaleBlocks, formatDate } from '@/lib/locale';
 
@@ -51,6 +52,7 @@ export default async function DogadjajPage({
   const effectiveEnd = d.datumKraj || d.datumPocetak;
   const isUpcoming = new Date(effectiveEnd).getTime() > Date.now();
   const sponsor = d.sponzorEventa;
+  const imaPrijave = d.vrstaPrijave === 'osoba' || d.vrstaPrijave === 'ekipa';
 
   const dateFull = (v: string) =>
     formatDate(v, locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -128,6 +130,18 @@ export default async function DogadjajPage({
             </div>
           )}
 
+          {/* Registration */}
+          {imaPrijave && isUpcoming && (
+            <EventRegistration
+              slug={d.slug}
+              vrsta={d.vrstaPrijave as 'osoba' | 'ekipa'}
+              pristup={d.pristupPrijavi === 'clanovi' ? 'clanovi' : 'javna'}
+              otvorene={Boolean(d.prijaveOtvorene)}
+              rok={d.rokPrijave}
+              kotizacija={d.kotizacija}
+            />
+          )}
+
           {/* Event sponsor */}
           {sponsor && (
             <div className="mt-10">
@@ -169,11 +183,15 @@ export default async function DogadjajPage({
                 </div>
               ))}
             </dl>
-            {d.prijavaLink && (
+            {imaPrijave && isUpcoming && d.prijaveOtvorene ? (
+              <a href="#prijava" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
+                <span>{t('events.register')}</span>
+              </a>
+            ) : d.prijavaLink ? (
               <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
                 <span>{t('events.register')}</span>
               </a>
-            )}
+            ) : null}
           </div>
         </aside>
       </div>

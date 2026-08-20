@@ -4,6 +4,8 @@ import { setRequestLocale, getTranslations, getMessages } from 'next-intl/server
 import type { Metadata } from 'next';
 import { routing, type Locale } from '@/i18n/routing';
 import { barlow, barlowCondensed } from '@/lib/fonts';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
@@ -54,6 +56,9 @@ export default async function LocaleLayout({
           <Footer />
           <CookieConsent />
         </NextIntlClientProvider>
+        {/* Cookieless, consent-exempt analytics (no personal identifiers). */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

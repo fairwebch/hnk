@@ -16,5 +16,10 @@ export default defineConfig({
     structureTool({ structure }),
     visionTool({ defaultApiVersion: apiVersion }),
   ],
+  document: {
+    // Registrations are created only through the public form / API route.
+    newDocumentOptions: (prev) =>
+      prev.filter((t) => !['prijavaOsoba', 'prijavaEkipa'].includes(t.templateId)),
+  },
   title: 'HNK Kroatien Schwyz',
 });

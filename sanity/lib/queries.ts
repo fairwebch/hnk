@@ -20,9 +20,12 @@ export const novostBySlugQuery = groq`
 `;
 
 // Events
+// NOTE: deliberately no tajniKod here — the member code must never reach the
+// public site payload; it is validated server-side in /api/prijava only.
 const dogadjajFields = groq`
   _id, name, "slug": slug.current, kategorija, datumPocetak, datumKraj,
   location, coverImage, description, kotizacija, prijavaLink, kapacitet, program,
+  vrstaPrijave, pristupPrijavi, prijaveOtvorene, rokPrijave,
   "sponzorEventa": sponzorEventa->{name, logo, link},
   "galerija": galerija->{name, "slug": slug.current}
 `;
