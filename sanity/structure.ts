@@ -1,6 +1,7 @@
 import type { StructureResolver } from 'sanity/structure';
-import { ClipboardIcon } from '@sanity/icons';
+import { ClipboardIcon, RocketIcon } from '@sanity/icons';
 import { PrijaveDashboard } from './components/PrijaveDashboard';
+import { IzletPane } from './components/IzletPane';
 
 export const structure: StructureResolver = (S) =>
   S.list()
@@ -26,6 +27,10 @@ export const structure: StructureResolver = (S) =>
                 .options({ eventId }),
             ),
         ),
+      S.listItem()
+        .title('Izlet Europapark')
+        .icon(RocketIcon)
+        .child(S.component(IzletPane).id('izlet-europapark').title('Izlet Europapark')),
       S.divider(),
       S.documentTypeListItem('momcad').title('Momčadi'),
       S.documentTypeListItem('clanUprave').title('Uprava'),
