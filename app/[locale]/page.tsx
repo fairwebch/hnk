@@ -13,7 +13,7 @@ import {
   openTeamEventSlugQuery,
 } from '@/sanity/lib/queries';
 import type { Novost, Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
-import { NewsCard } from '@/components/cards/NewsCard';
+import { NewsHighlights } from '@/components/NewsHighlights';
 import { EventCountdown } from '@/components/EventCountdown';
 import { HeroBackdrop } from '@/components/HeroBackdrop';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -44,7 +44,7 @@ export default async function HomePage({
 
   const [news, nextEvent, teams, sponsors, galleries, counts, postavke, teamEventSlug] =
     await Promise.all([
-      sanityFetch<Novost[]>(latestNovostiQuery, { limit: 6 }, []),
+      sanityFetch<Novost[]>(latestNovostiQuery, { limit: 3 }, []),
       sanityFetch<Dogadjaj | null>(nextDogadjajQuery, {}, null),
       sanityFetch<Momcad[]>(allMomcadiQuery, {}, []),
       sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),
@@ -173,16 +173,7 @@ export default async function HomePage({
           {news.length === 0 ? (
             <EmptyState title={t('empty.news')} subtitle={t('empty.newsSub')} icon="ball" />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {news.slice(0, 6).map((n) => (
-                <NewsCard
-                  key={n._id}
-                  novost={n}
-                  locale={locale}
-                  categoryLabel={n.category ? t(`categories.${n.category}` as any) : undefined}
-                />
-              ))}
-            </div>
+            <NewsHighlights items={news} locale={locale} />
           )}
         </div>
       </section>

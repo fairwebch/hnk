@@ -103,6 +103,19 @@
   .card-dashed {
     @apply border-2 border-dashed border-line bg-white/60;
   }
+
+  /* White surface with the bottom-right corner cut off on the diagonal —
+     same 45° as the sahovnica strip. Size via --cut. */
+  .corner-cut {
+    --cut: 28px;
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - var(--cut)),
+      calc(100% - var(--cut)) 100%,
+      0 100%
+    );
+  }
 }
 
 @layer utilities {
