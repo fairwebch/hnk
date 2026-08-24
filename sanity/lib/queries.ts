@@ -126,6 +126,13 @@ export const postavkeSajtaQuery = groq`
   *[_type == "postavkeSajta" && _id == "postavke-sajta"][0]{ heroSlike }
 `;
 
+// Page-header photos for the three pages that carry one (join / club / sponsoring).
+export const pageHeaderSlikeQuery = groq`
+  *[_type == "postavkeSajta" && _id == "postavke-sajta"][0]{
+    headerPostaniClan, headerKlub, headerSponzoring
+  }
+`;
+
 // First upcoming event with OPEN team registration → hero "Prijavi ekipu" CTA
 // links straight to it; falls back to /dogadjaji when none exists.
 export const openTeamEventSlugQuery = groq`

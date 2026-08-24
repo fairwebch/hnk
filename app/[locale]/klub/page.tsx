@@ -6,6 +6,7 @@ import { sanityFetch } from '@/sanity/lib/fetch';
 import { klubStranicaQuery } from '@/sanity/lib/queries';
 import type { KlubStranica, TimelineStavka } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
+import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
 import { PortableText } from '@/components/ui/PortableText';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { urlFor } from '@/sanity/lib/image';
@@ -22,7 +23,10 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const doc = await sanityFetch<KlubStranica | null>(klubStranicaQuery, {}, null);
+  const [doc, headers] = await Promise.all([
+    sanityFetch<KlubStranica | null>(klubStranicaQuery, {}, null),
+    sanityFetch<{ headerKlub?: any } | null>(pageHeaderSlikeQuery, {}, null),
+  ]);
   const uvod = doc ? pickLocaleBlocks<any[]>(doc.uvod, locale) : undefined;
   const zavrsni = doc ? pickLocaleBlocks<any[]>(doc.zavrsniTekst, locale) : undefined;
   const timeline = doc?.timeline ?? [];
@@ -34,6 +38,7 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
         title={t('nav.oKlubu')}
         subtitle={t('klub.subtitle')}
         breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.klub') }]}
+        image={headers?.headerKlub}
         ghost="1995"
       />
 

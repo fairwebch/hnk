@@ -4,6 +4,7 @@ import { sanityFetch } from '@/sanity/lib/fetch';
 import { stranicaBySlugQuery } from '@/sanity/lib/queries';
 import type { Stranica } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
+import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
 import { PortableText } from '@/components/ui/PortableText';
 import { MembershipForm } from '@/components/MembershipForm';
 import { Card } from '@/components/ui/Card';
@@ -21,7 +22,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const page = await sanityFetch<Stranica | null>(stranicaBySlugQuery, { slug: 'postani-clan' }, null);
+  const [page, headers] = await Promise.all([
+    sanityFetch<Stranica | null>(stranicaBySlugQuery, { slug: 'postani-clan' }, null),
+    sanityFetch<{ headerPostaniClan?: any } | null>(pageHeaderSlikeQuery, {}, null),
+  ]);
   const title = (page && pickLocale(page.title, locale)) || t('footer.links.postaniClan');
   const intro = page ? pickLocale(page.intro, locale) : '';
   const body = page ? pickLocaleBlocks(page.body, locale) : undefined;
@@ -37,6 +41,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           { label: t('nav.klub'), href: '/klub' },
           { label: title },
         ]}
+        image={headers?.headerPostaniClan}
         ghost="ČLAN"
       />
       <div className="container-x max-w-3xl py-14">

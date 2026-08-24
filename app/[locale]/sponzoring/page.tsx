@@ -6,6 +6,7 @@ import { sanityFetch } from '@/sanity/lib/fetch';
 import { sponzoriQuery } from '@/sanity/lib/queries';
 import type { Sponzor } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
+import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { urlFor } from '@/sanity/lib/image';
 import { Card } from '@/components/ui/Card';
@@ -24,7 +25,10 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const sponsors = await sanityFetch<Sponzor[]>(sponzoriQuery, {}, []);
+  const [sponsors, headers] = await Promise.all([
+    sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),
+    sanityFetch<{ headerSponzoring?: any } | null>(pageHeaderSlikeQuery, {}, null),
+  ]);
 
   return (
     <>
@@ -33,6 +37,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
         title={t('sponsors.title')}
         subtitle={t('sponsors.subtitle')}
         breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.sponzoring') }]}
+        image={headers?.headerSponzoring}
         ghost="PARTNERS"
       />
 
