@@ -5,6 +5,7 @@ import { stranicaBySlugQuery } from '@/sanity/lib/queries';
 import type { Stranica } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { ContactForm } from '@/components/ContactForm';
+import { Card } from '@/components/ui/Card';
 import { MapEmbed } from '@/components/MapEmbed';
 import { PortableText } from '@/components/ui/PortableText';
 import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
@@ -53,9 +54,9 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
         </div>
 
         {/* Form */}
-        <div className="card p-6 md:p-8">
+        <Card className="p-6 md:p-8">
           <ContactForm />
-        </div>
+        </Card>
       </div>
     </>
   );

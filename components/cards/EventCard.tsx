@@ -1,4 +1,4 @@
-import { Link } from '@/i18n/navigation';
+import { Card, cardImage, cardTitle } from '@/components/ui/Card';
 import { SanityImage } from '@/components/ui/SanityImage';
 import { EventCountdown } from '@/components/EventCountdown';
 import { pickLocale, formatDate } from '@/lib/locale';
@@ -16,9 +16,10 @@ export function EventCard({
   const name = pickLocale(dogadjaj.name, locale);
 
   return (
-    <Link
+    <Card
+      variant="content"
       href={`/dogadjaji/${dogadjaj.slug}`}
-      className="card card-hover group flex flex-col md:flex-row"
+      className="flex flex-col md:flex-row"
     >
       <div className="relative md:w-64 aspect-[16/10] md:aspect-auto overflow-hidden flex-shrink-0">
         <SanityImage
@@ -26,7 +27,7 @@ export function EventCard({
           alt={name}
           fill
           sizes="(max-width:768px) 100vw, 256px"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className={cardImage}
         />
       </div>
       <div className="p-5 flex flex-col flex-1 gap-3">
@@ -48,7 +49,7 @@ export function EventCard({
             </span>
           )}
         </div>
-        <h3 className="h-display text-2xl leading-tight text-content group-hover:text-croatia transition-colors">
+        <h3 className={`h-display text-2xl leading-tight text-content ${cardTitle}`}>
           {name}
         </h3>
         {showCountdown && (
@@ -57,6 +58,6 @@ export function EventCard({
           </div>
         )}
       </div>
-    </Link>
+    </Card>
   );
 }

@@ -7,6 +7,7 @@ import type { Dogadjaj } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { EventCard } from '@/components/cards/EventCard';
+import { Card } from '@/components/ui/Card';
 import { EventCountdown } from '@/components/EventCountdown';
 import { SanityImage } from '@/components/ui/SanityImage';
 import { pickLocale, formatDate } from '@/lib/locale';
@@ -56,7 +57,7 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
         {featured ? (
           <section>
             <div className="kicker text-xs mb-4">{t('events.featuredKicker')} · {t('events.next')}</div>
-            <div className="relative card-dark overflow-hidden">
+            <Card tone="dark" className="overflow-hidden">
               {featured.coverImage?.asset && (
                 <div className="absolute inset-0">
                   <SanityImage image={featured.coverImage} alt="" fill sizes="100vw" className="object-cover opacity-30" />
@@ -94,7 +95,7 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           </section>
         ) : (
           <EmptyState title={t('empty.events')} subtitle={t('empty.eventsSub')} icon="calendar" />

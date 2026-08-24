@@ -6,6 +6,7 @@ import type { Stranica } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { PortableText } from '@/components/ui/PortableText';
 import { MembershipForm } from '@/components/MembershipForm';
+import { Card } from '@/components/ui/Card';
 import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
 import { stranicaMetadata } from '@/components/CmsPage';
 
@@ -44,9 +45,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             <PortableText value={body} />
           </div>
         )}
-        <div className="card p-6 md:p-8">
+        <Card className="p-6 md:p-8">
           <MembershipForm />
-        </div>
+        </Card>
       </div>
     </>
   );

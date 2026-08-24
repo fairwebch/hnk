@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { Card } from '@/components/ui/Card';
 
 type Status = 'idle' | 'sending' | 'ok' | 'already' | 'notFound' | 'error';
 
@@ -48,12 +49,12 @@ function CancelInner() {
   }
 
   if (!token) {
-    return <Card tone="muted" title={t('otkaziNemaTokena')} text={t('otkaziNemaTokenaTekst')} />;
+    return <Notice title={t('otkaziNemaTokena')} text={t('otkaziNemaTokenaTekst')} />;
   }
 
   if (status === 'ok' || status === 'already') {
     return (
-      <div className="card border-l-4 border-l-croatia px-6 py-8">
+      <Card className="border-l-4 border-l-croatia px-6 py-8">
         <p className="font-display font-bold uppercase text-sm tracking-wider2 text-croatia mb-2">
           ✓ {status === 'already' ? t('otkaziVec') : t('otkaziUspjeh')}
         </p>
@@ -63,16 +64,16 @@ function CancelInner() {
         <Link href="/dogadjaji" className="btn-ghost-light mt-6 inline-flex px-5 py-2.5 text-xs">
           {t('natragNaDogadjaje')}
         </Link>
-      </div>
+      </Card>
     );
   }
 
   if (status === 'notFound') {
-    return <Card tone="muted" title={t('otkaziNijePronadjena')} text={t('otkaziNijePronadjenaTekst')} />;
+    return <Notice title={t('otkaziNijePronadjena')} text={t('otkaziNijePronadjenaTekst')} />;
   }
 
   return (
-    <div className="card px-6 py-8">
+    <Card className="px-6 py-8">
       <p className="font-sans text-content-soft mb-6">{t('otkaziPotvrdaTekst')}</p>
       <div className="flex flex-wrap items-center gap-4">
         <button
@@ -87,11 +88,11 @@ function CancelInner() {
           <span className="font-display font-bold uppercase text-xs tracking-wider2 text-content-muted">{t('greska')}</span>
         )}
       </div>
-    </div>
+    </Card>
   );
 }
 
-function Card({ title, text }: { tone?: string; title: string; text: string }) {
+function Notice({ title, text }: { title: string; text: string }) {
   return (
     <div className="card-dashed px-6 py-8">
       <p className="font-display font-bold uppercase text-sm tracking-wider2 text-content mb-2">{title}</p>

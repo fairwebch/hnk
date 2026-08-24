@@ -8,6 +8,7 @@ import { sanityConfigured } from '@/sanity/env';
 import { momcadBySlugQuery, momcadSlugsQuery } from '@/sanity/lib/queries';
 import type { Momcad, Igrac, Pozicija } from '@/sanity/lib/types';
 import { SanityImage } from '@/components/ui/SanityImage';
+import { Card } from '@/components/ui/Card';
 import { PortableText } from '@/components/ui/PortableText';
 import { GalleryGrid } from '@/components/Lightbox';
 import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
@@ -222,7 +223,7 @@ function Roster({ igraci, t }: { igraci: Igrac[]; t: any }) {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {g.players.map((p, i) => (
-              <div key={p._key ?? i} className="card overflow-hidden">
+              <Card key={p._key ?? i} className="overflow-hidden">
                 <div className="relative aspect-[4/5] bg-paper">
                   {p.slika?.asset ? (
                     <SanityImage image={p.slika} alt={`${p.ime} ${p.prezime ?? ''}`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover" />
@@ -244,7 +245,7 @@ function Roster({ igraci, t }: { igraci: Igrac[]; t: any }) {
                     {p.prezime && <> {p.prezime}</>}
                   </div>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         </section>

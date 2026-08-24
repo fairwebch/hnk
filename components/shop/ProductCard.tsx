@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import type { ShopProduct } from '@/lib/shop';
+import { Card, cardTitle } from '@/components/ui/Card';
 
 export function ProductCard({
   product,
@@ -9,18 +10,18 @@ export function ProductCard({
   buyLabel: string;
 }) {
   return (
-    <div className="card group flex flex-col h-full">
+    <Card variant="plain" className="flex flex-col h-full">
       <div className="relative aspect-[3/4] bg-ink-800 overflow-hidden">
         <Image
           src={product.image}
           alt={product.name}
           fill
           sizes="(max-width:768px) 80vw, 25vw"
-          className="object-contain transition-transform duration-500 group-hover:scale-105"
+          className="object-contain transition-transform duration-700 group-hover:scale-[1.04]"
         />
       </div>
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-display font-bold uppercase text-content text-sm leading-snug tracking-[.01em] flex-1">
+        <h3 className={`font-display font-bold uppercase text-content text-sm leading-snug tracking-[.01em] flex-1 ${cardTitle}`}>
           {product.name}
         </h3>
         <div className="mt-4 flex items-center justify-between gap-3">
@@ -37,6 +38,6 @@ export function ProductCard({
           </a>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

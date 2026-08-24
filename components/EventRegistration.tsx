@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import { Card } from '@/components/ui/Card';
 
 type Props = {
   slug: string;
@@ -148,10 +149,10 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
 
   if (status === 'ok') {
     return (
-      <div className="card border-l-4 border-l-croatia px-6 py-8">
+      <Card className="border-l-4 border-l-croatia px-6 py-8">
         <p className="font-display font-bold uppercase text-sm tracking-wider2 text-croatia mb-2">✓ {t('uspjehNaslov')}</p>
         <p className="font-sans text-content-soft">{t('uspjehTekst')}</p>
-      </div>
+      </Card>
     );
   }
   if (status === 'closed') return <Notice text={t('zatvorene')} />;
@@ -163,7 +164,7 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
   const sending = status === 'sending';
 
   return (
-    <form onSubmit={submit} className="card p-6 md:p-8 space-y-4" noValidate>
+    <Card className="p-6 md:p-8"><form onSubmit={submit} className="space-y-4" noValidate>
       {vrsta === 'osoba' ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -239,6 +240,6 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
         )}
       </div>
       <p className="font-sans text-xs text-content-muted">{t('privatnost')}</p>
-    </form>
+    </form></Card>
   );
 }

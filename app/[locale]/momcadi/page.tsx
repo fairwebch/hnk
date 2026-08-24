@@ -7,6 +7,7 @@ import type { Momcad } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SanityImage } from '@/components/ui/SanityImage';
+import { Card, cardImage, cardTitle } from '@/components/ui/Card';
 import { pickLocale } from '@/lib/locale';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -67,10 +68,12 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
               }
 
               return (
-                <Link
+                <Card
                   key={team._id}
+                  variant="content"
+                  tone="dark"
                   href={`/momcadi/${team.slug}`}
-                  className="group relative block overflow-hidden border border-line bg-ink-800 transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  className="block overflow-hidden"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <SanityImage
@@ -78,7 +81,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                       alt={name}
                       fill
                       sizes="(max-width:640px) 100vw, 33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className={cardImage}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/40 to-ink-900/10" />
                     {count > 0 && (
@@ -87,7 +90,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                       </span>
                     )}
                     <div className="absolute bottom-0 left-0 p-5">
-                      <h3 className="h-display text-white text-3xl leading-none group-hover:text-croatia transition-colors">
+                      <h3 className={`h-display text-white text-3xl leading-none ${cardTitle}`}>
                         {name}
                       </h3>
                       {pickLocale(team.liga, locale) && (
@@ -95,7 +98,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                       )}
                     </div>
                   </div>
-                </Link>
+                </Card>
               );
             })}
           </div>

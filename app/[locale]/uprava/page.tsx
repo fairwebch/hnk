@@ -5,6 +5,7 @@ import { upravaQuery } from '@/sanity/lib/queries';
 import type { ClanUprave } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { Card } from '@/components/ui/Card';
 import { SanityImage } from '@/components/ui/SanityImage';
 import { pickLocale } from '@/lib/locale';
 
@@ -40,7 +41,7 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {members.map((m) => (
-              <div key={m._id} className="card overflow-hidden">
+              <Card key={m._id} className="overflow-hidden">
                 <div className="relative aspect-[4/5] bg-line">
                   <SanityImage
                     image={m.image}
@@ -64,7 +65,7 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
                     </a>
                   )}
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         )}

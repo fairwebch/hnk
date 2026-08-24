@@ -10,6 +10,7 @@ import { dogadjajBySlugQuery, dogadjajSlugsQuery } from '@/sanity/lib/queries';
 import type { Dogadjaj } from '@/sanity/lib/types';
 import { SanityImage } from '@/components/ui/SanityImage';
 import { PortableText } from '@/components/ui/PortableText';
+import { Card } from '@/components/ui/Card';
 import { EventCountdown } from '@/components/EventCountdown';
 import { EventRegistration } from '@/components/EventRegistration';
 import { urlFor } from '@/sanity/lib/image';
@@ -173,7 +174,7 @@ export default async function DogadjajPage({
 
         {/* Info card */}
         <aside className="lg:sticky lg:top-28 self-start">
-          <div className="card p-6">
+          <Card className="p-6">
             <h2 className="h-display text-content text-xl tracking-[.02em] mb-4">{t('events.infoTitle')}</h2>
             <dl className="space-y-3">
               {info.map((row, i) => (
@@ -192,7 +193,7 @@ export default async function DogadjajPage({
                 <span>{t('events.register')}</span>
               </a>
             ) : null}
-          </div>
+          </Card>
         </aside>
       </div>
     </article>

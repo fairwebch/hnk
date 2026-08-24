@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { readConsent, saveConsent, subscribeConsent } from '@/lib/consent';
 import { site } from '@/lib/site';
+import { Card } from '@/components/ui/Card';
 
 const EMBED_SRC =
   'https://www.google.com/maps?q=Mythencenterstrasse+21,+6438+Ibach&output=embed';
@@ -23,7 +24,7 @@ export function MapEmbed() {
 
   if (allowed) {
     return (
-      <div className="card overflow-hidden">
+      <Card className="overflow-hidden">
         <iframe
           src={EMBED_SRC}
           title={t('title')}
@@ -34,7 +35,7 @@ export function MapEmbed() {
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
         />
-      </div>
+      </Card>
     );
   }
 

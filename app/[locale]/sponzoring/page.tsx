@@ -8,6 +8,7 @@ import type { Sponzor } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { urlFor } from '@/sanity/lib/image';
+import { Card } from '@/components/ui/Card';
 import { pickLocale } from '@/lib/locale';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -44,13 +45,15 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TIERS.map((tier, i) => {
               const isPremium = tier === 'Premium';
+              // Deliberate offer hierarchy: each tier keeps its own border ON TOP
+              // of the shared static card base (Premium must stand out).
               const wrap = isPremium
-                ? 'card-dark border-2 border-croatia'
+                ? 'border-2 border-croatia'
                 : tier === 'Standard'
-                  ? 'bg-white border-2 border-ink-700'
-                  : 'bg-white border border-line';
+                  ? 'border-2 border-ink-700'
+                  : '';
               return (
-                <div key={tier} className={`relative p-7 flex flex-col ${wrap}`}>
+                <Card key={tier} tone={isPremium ? 'darkPlain' : 'light'} className={`p-7 flex flex-col ${wrap}`}>
                   {isPremium && (
                     <span className="self-start bg-croatia text-white font-display font-bold uppercase text-[10px] tracking-wider2 px-2.5 py-1 mb-3">
                       {t('sponsors.mostPopular')}
@@ -78,7 +81,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
                   <Link href="/kontakt" className="btn-cta mt-6 px-5 py-3 w-fit">
                     <span>{t('sponsors.becomeSponsor')}</span>
                   </Link>
-                </div>
+                </Card>
               );
             })}
           </div>
@@ -107,7 +110,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {group.map((s) => {
                         const inner = (
-                          <div className="bg-white border border-line h-32 flex items-center justify-center p-6 transition-transform group-hover:scale-[1.02]">
+                          <Card variant="plain" className="h-32 flex items-center justify-center p-6">
                             {s.logo?.asset ? (
                               <Image
                                 src={urlFor(s.logo).height(140).fit('max').auto('format').url()}
@@ -119,7 +122,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
                             ) : (
                               <span className="font-display font-bold text-ink-700 text-lg">{s.name}</span>
                             )}
-                          </div>
+                          </Card>
                         );
                         return s.link ? (
                           <a

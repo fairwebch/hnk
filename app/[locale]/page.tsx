@@ -14,6 +14,7 @@ import {
 } from '@/sanity/lib/queries';
 import type { Novost, Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
 import { NewsHighlights } from '@/components/NewsHighlights';
+import { Card, cardImage } from '@/components/ui/Card';
 import { EventCountdown } from '@/components/EventCountdown';
 import { HeroBackdrop } from '@/components/HeroBackdrop';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -146,7 +147,7 @@ export default async function HomePage({
       {/* STATS — white card overlapping the hero */}
       <div className="relative z-10 -mt-16 md:-mt-20">
         <div className="container-x">
-          <div className="bg-white border border-line shadow-[0_18px_40px_rgba(19,31,51,.12)] grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-line">
+          <Card shadow={false} className="shadow-[0_18px_40px_rgba(19,31,51,.12)] grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-line">
             {stats.map((s, i) => (
               <div key={i} className="py-8 md:py-10 px-4 text-center">
                 <div className="font-display font-extrabold text-content text-4xl md:text-5xl leading-none">
@@ -157,7 +158,7 @@ export default async function HomePage({
                 </div>
               </div>
             ))}
-          </div>
+          </Card>
         </div>
       </div>
 
@@ -191,10 +192,12 @@ export default async function HomePage({
             />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {teams.slice(0, 3).map((team, i) => (
-                <Link
+                <Card
                   key={team._id}
+                  variant="content"
+                  tone="dark"
                   href={`/momcadi/${team.slug}`}
-                  className="card-dark group relative overflow-hidden flex flex-col justify-end min-h-[220px] p-6 hover:border-croatia transition-colors"
+                  className="overflow-hidden flex flex-col justify-end min-h-[220px] p-6"
                 >
                   {team.coverImage?.asset && (
                     <div className="absolute inset-0">
@@ -216,7 +219,7 @@ export default async function HomePage({
                       {t('common.learnMore')} →
                     </div>
                   </div>
-                </Link>
+                </Card>
               ))}
             </div>
           </div>
@@ -237,17 +240,18 @@ export default async function HomePage({
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {galleries.map((g) => (
-                <Link
+                <Card
                   key={g._id}
+                  variant="content"
                   href={`/galerija/${g.slug}`}
-                  className="group relative aspect-square overflow-hidden border border-line"
+                  className="aspect-square overflow-hidden"
                 >
                   <SanityImage
                     image={g.cover}
                     alt={pickLocale(g.name, locale)}
                     fill
                     sizes="(max-width:768px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className={cardImage}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-900/90 to-transparent" />
                   <div className="absolute bottom-0 left-0 p-4">
@@ -260,7 +264,7 @@ export default async function HomePage({
                       </div>
                     )}
                   </div>
-                </Link>
+                </Card>
               ))}
             </div>
           )}
@@ -310,9 +314,10 @@ export default async function HomePage({
             <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
               {sponsors.map((s) =>
                 s.logo?.asset ? (
-                  <div
+                  <Card
                     key={s._id}
-                    className="bg-white border border-line h-24 w-40 flex items-center justify-center p-5"
+                    variant="plain"
+                    className="h-24 w-40 flex items-center justify-center p-5"
                   >
                     <Image
                       src={urlFor(s.logo).height(120).fit('max').auto('format').url()}
@@ -321,7 +326,7 @@ export default async function HomePage({
                       height={90}
                       className="max-h-14 w-auto object-contain"
                     />
-                  </div>
+                  </Card>
                 ) : null,
               )}
             </div>

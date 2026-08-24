@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import { Card, cardImage, cardTitle } from '@/components/ui/Card';
 import { SanityImage } from '@/components/ui/SanityImage';
 import type { GalerijaTeaser } from '@/sanity/lib/types';
 import { pickLocale } from '@/lib/locale';
@@ -75,10 +75,11 @@ export function GalleryBrowser({ galleries }: { galleries: GalerijaTeaser[] }) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((g) => (
-              <Link
+              <Card
                 key={g._id}
                 href={`/galerija/${g.slug}`}
-                className="card card-hover group overflow-hidden"
+                variant="content"
+                className="overflow-hidden"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <SanityImage
@@ -86,11 +87,11 @@ export function GalleryBrowser({ galleries }: { galleries: GalerijaTeaser[] }) {
                     alt={pickLocale(g.name, locale)}
                     fill
                     sizes="(max-width:640px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className={cardImage}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-900/85 to-transparent" />
                   <div className="absolute bottom-0 left-0 p-5">
-                    <h3 className="h-display text-white text-xl leading-tight">
+                    <h3 className={`h-display text-white text-xl leading-tight ${cardTitle}`}>
                       {pickLocale(g.name, locale)}
                     </h3>
                     <div className="flex items-center gap-2 mt-1 font-sans text-xs text-slateblue-300">
@@ -108,7 +109,7 @@ export function GalleryBrowser({ galleries }: { galleries: GalerijaTeaser[] }) {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </Card>
             ))}
           </div>
         </section>

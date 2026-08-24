@@ -81,18 +81,9 @@
     @apply font-display font-extrabold italic uppercase;
   }
 
-  /* White card surface on light background (sharp corners per design) */
-  .card {
-    @apply bg-white border border-line overflow-hidden;
-  }
-  .card-hover {
-    @apply transition-all hover:-translate-y-1 hover:border-croatia hover:shadow-[0_12px_28px_rgba(19,31,51,.12)];
-  }
-
-  /* Dark card surface on navy sections */
-  .card-dark {
-    @apply bg-ink-550 border border-slateblue-700 overflow-hidden;
-  }
+  /* NOTE: card surfaces are drawn by components/ui/Card.tsx — the single
+     source of truth for card styling. Only the dashed empty-state surface
+     stays as a utility. */
 
   /* Category chip (pink) */
   .chip {
