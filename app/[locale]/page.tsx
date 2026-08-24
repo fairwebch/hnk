@@ -44,7 +44,7 @@ export default async function HomePage({
 
   const [news, nextEvent, teams, sponsors, galleries, counts, postavke, teamEventSlug] =
     await Promise.all([
-      sanityFetch<Novost[]>(latestNovostiQuery, { limit: 3 }, []),
+      sanityFetch<Novost[]>(latestNovostiQuery, { limit: 5 }, []),
       sanityFetch<Dogadjaj | null>(nextDogadjajQuery, {}, null),
       sanityFetch<Momcad[]>(allMomcadiQuery, {}, []),
       sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),

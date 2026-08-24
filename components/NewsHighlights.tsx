@@ -6,9 +6,10 @@ import type { Novost } from '@/sanity/lib/types';
 
 /**
  * Home "latest news": one featured story (photo left, white panel right)
- * plus up to two teasers below. Panels keep the site's sharp corners with a
+ * plus up to four teasers below. Panels keep the site's sharp corners with a
  * diagonal cut on the bottom-right — the same 45° as the sahovnica strip.
- * Degrades to featured-only (or featured + 1) when fewer stories exist.
+ * The teaser grid picks a column count that always fills its rows, so any
+ * story count from 1 to 5 lays out without a gap.
  */
 export async function NewsHighlights({
   items,
@@ -20,17 +21,30 @@ export async function NewsHighlights({
   const t = await getTranslations();
   if (items.length === 0) return null;
 
-  const [featured, ...rest] = items.slice(0, 3);
+  const [featured, ...rest] = items.slice(0, 5);
   const label = (n: Novost) =>
     n.category ? t(`categories.${n.category}` as any) : undefined;
+
+  // 3 teasers fill one row of three; 1, 2 and 4 fill rows of two.
+  const threeUp = rest.length === 3;
+  const cols = threeUp ? 'md:grid-cols-3' : 'md:grid-cols-2';
+  const teaserSizes = threeUp
+    ? '(max-width:768px) 100vw, (max-width:1200px) 33vw, 390px'
+    : '(max-width:768px) 100vw, (max-width:1200px) 50vw, 600px';
 
   return (
     <div className="flex flex-col gap-6">
       <FeaturedCard novost={featured} locale={locale} categoryLabel={label(featured)} />
       {rest.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className={`grid grid-cols-1 ${cols} gap-6`}>
           {rest.map((n) => (
-            <TeaserCard key={n._id} novost={n} locale={locale} categoryLabel={label(n)} />
+            <TeaserCard
+              key={n._id}
+              novost={n}
+              locale={locale}
+              categoryLabel={label(n)}
+              sizes={teaserSizes}
+            />
           ))}
         </div>
       )}
@@ -86,36 +100,38 @@ function TeaserCard({
   novost,
   locale,
   categoryLabel,
+  sizes,
 }: {
   novost: Novost;
   locale: string;
   categoryLabel?: string;
+  sizes: string;
 }) {
   const title = pickLocale(novost.title, locale);
 
   return (
     <Link
       href={`/novosti/${novost.slug}`}
-      className={`${CARD} flex flex-col [--cut:24px] md:[--cut:30px]`}
+      className={`${CARD} flex flex-col [--cut:22px] md:[--cut:26px]`}
     >
-      <div className="relative aspect-[16/10] overflow-hidden">
+      <div className="relative aspect-[16/9] overflow-hidden">
         <SanityImage
           image={novost.coverImage}
           alt={title}
           fill
-          sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 600px"
+          sizes={sizes}
           className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
         />
       </div>
-      <div className="p-6 md:p-7 flex flex-col flex-1">
-        <h3 className="h-display text-content text-[22px] md:text-[25px] leading-[1.05] group-hover:text-croatia transition-colors">
+      <div className="p-5 md:p-6 flex flex-col flex-1">
+        <h3 className="h-display text-content text-[20px] md:text-[22px] leading-[1.06] group-hover:text-croatia transition-colors">
           {title}
         </h3>
         <MetaRow
           novost={novost}
           locale={locale}
           categoryLabel={categoryLabel}
-          className="mt-auto pt-5"
+          className="mt-auto pt-4"
         />
       </div>
     </Link>
