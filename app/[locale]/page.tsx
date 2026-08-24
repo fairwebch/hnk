@@ -61,7 +61,7 @@ export default async function HomePage({
   const heroSrcs = (postavke?.heroSlike ?? [])
     .filter((img: any) => img?.asset)
     .slice(0, 3)
-    .map((img: any) => urlFor(img).width(1920).auto('format').quality(75).url());
+    .map((img: any) => urlFor(img).width(2560).auto('format').quality(75).url());
 
   const years = new Date().getFullYear() - site.founded;
   const stats = [

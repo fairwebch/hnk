@@ -1,8 +1,9 @@
 // Seeds the postavke-sajta singleton with the chosen hero photos.
-// The images reference EXISTING gallery assets (no re-upload):
-//   1. Zabavna večer 2024 — dance floor, elevated wide shot
-//   2. Film "DIVA" 2025 — full hall with balcony
-//   3. Malonogometni turnir 2023 — action shot in checkered kit
+// Dedicated hero assets, re-encoded from the old site's NextGEN *_backup
+// originals at max 2560px, WebP q82:
+//   1. Zabavna večer 2024 — dance floor (from 4032×3024 original)
+//   2. Film "DIVA" 2025 — full hall (from 6048×4024 original)
+//   3. Malonogometni turnir 2023 — action shot (from 2048×1152 original)
 // Run: SANITY_WRITE_TOKEN=... node scripts/migration/seed-postavke-sajta.mjs
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -12,9 +13,9 @@ const TOKEN =
   process.env.SANITY_WRITE_TOKEN || readFileSync(path.join(DIR, '.token'), 'utf8').trim();
 
 const HERO_ASSETS = [
-  'image-9c1af429917fbd6789c7cb1c617fbce0e3631640-1600x1200-webp',
-  'image-81b6999dee4c6a9d8fbdfc1af47854b8eade1af4-1800x1198-webp',
-  'image-2b41ce66c1ce36654c36f800334753360ac2c594-1800x1013-webp',
+  'image-130db2e28725913279e5534623692da721a81059-2560x1920-webp',
+  'image-96ff256f5d5797b9f1855ec538fd53367cb7eaf3-2560x1703-webp',
+  'image-4908c912fa0521607c511d4d1840cc7e1bb61146-2048x1152-webp',
 ];
 
 const doc = {
