@@ -191,7 +191,9 @@ export default async function HomePage({
               linkLabel={t('common.viewAll')}
             />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {teams.slice(0, 3).map((team, i) => (
+              {teams.slice(0, 3).map((team, i) => {
+                const photo = team.grupnaFotografija ?? team.coverImage;
+                return (
                 <Card
                   key={team._id}
                   variant="content"
@@ -199,15 +201,23 @@ export default async function HomePage({
                   href={`/momcadi/${team.slug}`}
                   className="overflow-hidden flex flex-col justify-end min-h-[220px] p-6"
                 >
-                  {team.coverImage?.asset && (
-                    <div className="absolute inset-0">
-                      <SanityImage image={team.coverImage} alt="" fill sizes="33vw" className="object-cover opacity-30" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-ink-550 via-ink-550/80 to-transparent" />
+                  {photo?.asset && (
+                    <div aria-hidden className="absolute inset-0 overflow-hidden">
+                      <SanityImage
+                        image={photo}
+                        alt=""
+                        fill
+                        sizes="(max-width:768px) 100vw, (max-width:1200px) 33vw, 380px"
+                        className={cardImage}
+                      />
+                      {/* ~70% navy wash, heavier at the text edge — keeps AA contrast */}
+                      <div className="absolute inset-0 bg-ink-550/55" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink-550/80 via-ink-550/30 to-transparent" />
                     </div>
                   )}
                   <span
                     aria-hidden
-                    className="absolute -top-4 -left-1 font-display font-extrabold italic text-white/[.06] text-[120px] leading-none pointer-events-none select-none"
+                    className={`absolute -top-4 -left-1 font-display font-extrabold italic text-[120px] leading-none pointer-events-none select-none ${photo?.asset ? 'text-white/[.14]' : 'text-white/[.06]'}`}
                   >
                     {String(i + 1).padStart(2, '0')}
                   </span>
@@ -220,7 +230,8 @@ export default async function HomePage({
                     </div>
                   </div>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
