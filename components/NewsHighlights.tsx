@@ -5,11 +5,11 @@ import { pickLocale, formatDate } from '@/lib/locale';
 import type { Novost } from '@/sanity/lib/types';
 
 /**
- * Home "latest news": one featured story (photo left, white panel right)
- * plus up to four teasers below. Panels keep the site's sharp corners with a
- * diagonal cut on the bottom-right — the same 45° as the sahovnica strip.
- * The teaser grid picks a column count that always fills its rows, so any
- * story count from 1 to 5 lays out without a gap.
+ * Home "latest news" in the compact reference layout: on desktop the featured
+ * story is only WIDER than the teasers — it shares the first row with one of
+ * them, so its height equals a teaser row and the whole section stays short.
+ * One 6-column grid; per-count span maps keep every row full (no holes) for
+ * any story count from 1 to 5. Panels keep the diagonal bottom-right cut.
  */
 export async function NewsHighlights({
   items,
@@ -25,29 +25,39 @@ export async function NewsHighlights({
   const label = (n: Novost) =>
     n.category ? t(`categories.${n.category}` as any) : undefined;
 
-  // 3 teasers fill one row of three; 1, 2 and 4 fill rows of two.
-  const threeUp = rest.length === 3;
-  const cols = threeUp ? 'md:grid-cols-3' : 'md:grid-cols-2';
-  const teaserSizes = threeUp
-    ? '(max-width:768px) 100vw, (max-width:1200px) 33vw, 390px'
-    : '(max-width:768px) 100vw, (max-width:1200px) 50vw, 600px';
+  // lg spans on the 6-col grid, chosen so every row is full:
+  //   4 teasers → [feat 4 + t 2] / [2, 2, 2]
+  //   3 teasers → [feat 4 + t 2] / [3, 3]
+  //   2 teasers → [feat 6] / [3, 3]   (a lone half-row teaser would be a hole)
+  //   1 teaser  → [feat 4 + t 2]
+  //   0         → [feat 6]
+  const n = rest.length;
+  const featSpan = n === 0 || n === 2 ? 'lg:col-span-6' : 'lg:col-span-4';
+  const teaserSpans: Record<number, string[]> = {
+    1: ['lg:col-span-2'],
+    2: ['lg:col-span-3', 'lg:col-span-3'],
+    3: ['lg:col-span-2', 'lg:col-span-3', 'lg:col-span-3'],
+    4: ['lg:col-span-2', 'lg:col-span-2', 'lg:col-span-2', 'lg:col-span-2'],
+  };
 
   return (
-    <div className="flex flex-col gap-6">
-      <FeaturedCard novost={featured} locale={locale} categoryLabel={label(featured)} />
-      {rest.length > 0 && (
-        <div className={`grid grid-cols-1 ${cols} gap-6`}>
-          {rest.map((n) => (
-            <TeaserCard
-              key={n._id}
-              novost={n}
-              locale={locale}
-              categoryLabel={label(n)}
-              sizes={teaserSizes}
-            />
-          ))}
-        </div>
-      )}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+      <FeaturedCard
+        novost={featured}
+        locale={locale}
+        categoryLabel={label(featured)}
+        className={`md:col-span-2 ${featSpan}`}
+      />
+      {rest.map((novost, i) => (
+        <TeaserCard
+          key={novost._id}
+          novost={novost}
+          locale={locale}
+          categoryLabel={label(novost)}
+          className={teaserSpans[n][i]}
+          sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 420px"
+        />
+      ))}
     </div>
   );
 }
@@ -59,10 +69,12 @@ function FeaturedCard({
   novost,
   locale,
   categoryLabel,
+  className = '',
 }: {
   novost: Novost;
   locale: string;
   categoryLabel?: string;
+  className?: string;
 }) {
   const title = pickLocale(novost.title, locale);
   const excerpt = pickLocale(novost.excerpt, locale);
@@ -70,27 +82,28 @@ function FeaturedCard({
   return (
     <Link
       href={`/novosti/${novost.slug}`}
-      className={`${CARD} grid grid-cols-1 md:grid-cols-[1.15fr_1fr] [--cut:26px] md:[--cut:38px]`}
+      className={`${CARD} grid grid-cols-1 md:grid-cols-[1.15fr_1fr] [--cut:26px] md:[--cut:34px] ${className}`}
     >
-      <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[360px] overflow-hidden">
+      {/* Height comes from the grid row (≈ a teaser card); the image just covers. */}
+      <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[280px] md:h-full overflow-hidden">
         <SanityImage
           image={novost.coverImage}
           alt={title}
           fill
-          sizes="(max-width:768px) 100vw, (max-width:1200px) 55vw, 660px"
+          sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 440px"
           className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
         />
       </div>
-      <div className="p-6 md:p-9 lg:p-10 flex flex-col justify-center">
-        <h3 className="h-display text-content text-[26px] md:text-[34px] lg:text-[38px] leading-[1.02] group-hover:text-croatia transition-colors">
+      <div className="p-6 md:p-7 flex flex-col justify-center">
+        <h3 className="h-display text-content text-[26px] lg:text-[30px] leading-[1.04] group-hover:text-croatia transition-colors">
           {title}
         </h3>
         {excerpt && (
-          <p className="font-sans text-[15px] md:text-base text-content-soft leading-relaxed mt-4 line-clamp-3">
+          <p className="font-sans text-[15px] text-content-soft leading-relaxed mt-3 line-clamp-2">
             {excerpt}
           </p>
         )}
-        <MetaRow novost={novost} locale={locale} categoryLabel={categoryLabel} className="mt-6" />
+        <MetaRow novost={novost} locale={locale} categoryLabel={categoryLabel} className="mt-5" />
       </div>
     </Link>
   );
@@ -101,18 +114,20 @@ function TeaserCard({
   locale,
   categoryLabel,
   sizes,
+  className = '',
 }: {
   novost: Novost;
   locale: string;
   categoryLabel?: string;
   sizes: string;
+  className?: string;
 }) {
   const title = pickLocale(novost.title, locale);
 
   return (
     <Link
       href={`/novosti/${novost.slug}`}
-      className={`${CARD} flex flex-col [--cut:22px] md:[--cut:26px]`}
+      className={`${CARD} flex flex-col [--cut:22px] md:[--cut:26px] ${className}`}
     >
       <div className="relative aspect-[16/9] overflow-hidden">
         <SanityImage
