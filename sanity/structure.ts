@@ -1,5 +1,5 @@
 import type { StructureResolver } from 'sanity/structure';
-import { ClipboardIcon, RocketIcon } from '@sanity/icons';
+import { ClipboardIcon, RocketIcon, CogIcon } from '@sanity/icons';
 import { PrijaveDashboard } from './components/PrijaveDashboard';
 import { IzletPane } from './components/IzletPane';
 
@@ -37,4 +37,10 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem('sponzor').title('Sponzori'),
       S.divider(),
       S.documentTypeListItem('stranica').title('Stranice'),
+      S.listItem()
+        .title('Postavke sajta')
+        .icon(CogIcon)
+        .child(
+          S.document().schemaType('postavkeSajta').documentId('postavke-sajta').title('Postavke sajta'),
+        ),
     ]);

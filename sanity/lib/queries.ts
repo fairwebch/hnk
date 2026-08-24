@@ -120,3 +120,17 @@ export const homeCountsQuery = groq`{
   "momcadi": count(*[_type == "momcad"]),
   "galerije": count(*[_type == "galerija"])
 }`;
+
+// Site settings (hero photos). Never expose registration fields here.
+export const postavkeSajtaQuery = groq`
+  *[_type == "postavkeSajta" && _id == "postavke-sajta"][0]{ heroSlike }
+`;
+
+// First upcoming event with OPEN team registration → hero "Prijavi ekipu" CTA
+// links straight to it; falls back to /dogadjaji when none exists.
+export const openTeamEventSlugQuery = groq`
+  *[_type == "dogadjaj" && vrstaPrijave == "ekipa" && prijaveOtvorene == true
+    && (!defined(rokPrijave) || rokPrijave > now())
+    && coalesce(datumKraj, datumPocetak) >= now()]
+  | order(datumPocetak asc)[0].slug.current
+`;

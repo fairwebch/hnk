@@ -13,6 +13,7 @@ import { galerija } from './documents/galerija';
 import { dogadjaj } from './documents/dogadjaj';
 import { stranica } from './documents/stranica';
 import { klubStranica } from './documents/klubStranica';
+import { postavkeSajta } from './documents/postavkeSajta';
 import { prijavaOsoba, prijavaEkipa } from './documents/prijave';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
@@ -31,6 +32,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     dogadjaj,
     stranica,
     klubStranica,
+    postavkeSajta,
     prijavaOsoba,
     prijavaEkipa,
   ],

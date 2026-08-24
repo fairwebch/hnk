@@ -9,10 +9,13 @@ import {
   sponzoriQuery,
   galerijeTeaserQuery,
   homeCountsQuery,
+  postavkeSajtaQuery,
+  openTeamEventSlugQuery,
 } from '@/sanity/lib/queries';
 import type { Novost, Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
 import { NewsCard } from '@/components/cards/NewsCard';
 import { EventCountdown } from '@/components/EventCountdown';
+import { HeroBackdrop } from '@/components/HeroBackdrop';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SanityImage } from '@/components/ui/SanityImage';
@@ -39,7 +42,7 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [news, nextEvent, teams, sponsors, galleries, counts] =
+  const [news, nextEvent, teams, sponsors, galleries, counts, postavke, teamEventSlug] =
     await Promise.all([
       sanityFetch<Novost[]>(latestNovostiQuery, { limit: 6 }, []),
       sanityFetch<Dogadjaj | null>(nextDogadjajQuery, {}, null),
@@ -51,7 +54,14 @@ export default async function HomePage({
         {},
         { novosti: 0, momcadi: 0, galerije: 0 },
       ),
+      sanityFetch<{ heroSlike?: any[] } | null>(postavkeSajtaQuery, {}, null),
+      sanityFetch<string | null>(openTeamEventSlugQuery, {}, null),
     ]);
+
+  const heroSrcs = (postavke?.heroSlike ?? [])
+    .filter((img: any) => img?.asset)
+    .slice(0, 3)
+    .map((img: any) => urlFor(img).width(1920).auto('format').quality(75).url());
 
   const years = new Date().getFullYear() - site.founded;
   const stats = [
@@ -63,47 +73,72 @@ export default async function HomePage({
 
   return (
     <>
-      {/* HERO */}
+      {/* HERO — photo backdrop (from Studio → Postavke sajta), slow crossfade */}
       <section className="relative overflow-hidden bg-ink-700">
-        <div className="sahovnica-strip" />
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            background:
-              'repeating-conic-gradient(#D8232F 0% 25%, transparent 0% 50%) 0 0 / 60px 60px',
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -right-40 top-1/2 -translate-y-1/2 w-[560px] h-[560px] opacity-[0.08] hidden md:block"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/assets/logo.svg" alt="" className="w-full h-full" />
-        </div>
+        <div className="sahovnica-strip relative z-20" />
+        {heroSrcs.length > 0 ? (
+          <HeroBackdrop srcs={heroSrcs} />
+        ) : (
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-[0.05]"
+            style={{
+              background:
+                'repeating-conic-gradient(#D8232F 0% 25%, transparent 0% 50%) 0 0 / 60px 60px',
+            }}
+          />
+        )}
 
-        <div className="container-x relative py-20 md:py-28 pb-28 md:pb-36">
-          <div className="kicker text-[13px] mb-4">{t('home.heroKicker')}</div>
-          {(() => {
-            const words = t('home.heroTitle').split(' ');
-            const last = words.pop();
-            return (
-              <h1 className="h-display text-white tracking-[.01em] text-[2.6rem] sm:text-6xl md:text-8xl leading-[0.9] max-w-4xl break-words">
-                <span className="block">{words.join(' ')}</span>
-                <span className="block text-croatia">{last}</span>
+        <div className="container-x relative z-10 py-20 md:py-28 pb-28 md:pb-36">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-10 lg:gap-14 items-center">
+            <div>
+              <div className="kicker text-[13px] mb-4">{t('home.heroKicker')}</div>
+              <h1 className="h-display text-white tracking-[.01em] text-[2.6rem] sm:text-6xl md:text-7xl leading-[0.92] max-w-4xl break-words">
+                <span className="block">{t('home.heroTitle1')}</span>
+                <span className="block text-croatia">{t('home.heroTitle2')}</span>
               </h1>
-            );
-          })()}
-          <p className="font-sans text-slateblue-200 mt-6 max-w-xl text-lg md:text-xl leading-relaxed">
-            {t('home.heroSubtitle')}
-          </p>
-          <div className="flex flex-wrap gap-4 mt-9">
-            <Link href="/postani-clan" className="btn-cta px-6 py-3.5">
-              <span>{t('home.ctaJoin')}</span>
-            </Link>
-            <Link href="/kontakt" className="btn-ghost px-6 py-3.5 text-sm">
-              {t('home.ctaTeam')} →
-            </Link>
+              <p className="font-sans text-slateblue-100 mt-6 max-w-xl text-lg md:text-xl leading-relaxed">
+                {t('home.heroSubtitle')}
+              </p>
+              <div className="flex flex-wrap gap-4 mt-9">
+                <Link href="/postani-clan" className="btn-cta px-6 py-3.5">
+                  <span>{t('home.ctaJoin')}</span>
+                </Link>
+                <Link
+                  href={teamEventSlug ? `/dogadjaji/${teamEventSlug}` : '/dogadjaji'}
+                  className="btn-ghost px-6 py-3.5 text-sm"
+                >
+                  {t('home.ctaTeam')} →
+                </Link>
+              </div>
+            </div>
+
+            {/* Next event card — inside the hero (right on desktop, below on mobile) */}
+            {nextEvent && (
+              <div className="bg-ink-800/80 backdrop-blur-sm border border-slateblue-700 p-6 md:p-7 max-w-md w-full lg:justify-self-end">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="w-2.5 h-2.5 rounded-full bg-croatia animate-pulse" />
+                  <span className="kicker text-[11px]">{t('home.nextEvent')}</span>
+                </div>
+                <div className="h-display text-white text-2xl md:text-[1.7rem] leading-none">
+                  {pickLocale(nextEvent.name, locale)}
+                </div>
+                <div className="mt-2.5 font-display font-bold uppercase text-[11px] tracking-wider2 text-slateblue-300">
+                  <span className="text-croatia">
+                    {formatDate(nextEvent.datumPocetak, locale, {
+                      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                    })}
+                  </span>
+                  {nextEvent.location && <span> · {nextEvent.location}</span>}
+                </div>
+                <div className="mt-5">
+                  <EventCountdown date={nextEvent.datumPocetak} size="md" />
+                </div>
+                <Link href={`/dogadjaji/${nextEvent.slug}`} className="btn-cta px-5 py-3 w-fit mt-6">
+                  <span>{t('home.eventRegister')}</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -125,44 +160,6 @@ export default async function HomePage({
           </div>
         </div>
       </div>
-
-      {/* NEXT EVENT BAR */}
-      <section className="bg-paper">
-        <div className="container-x pt-12">
-          <div className="bg-ink-700 border border-slateblue-700 px-6 md:px-8 py-6 flex flex-col lg:flex-row lg:items-center gap-6">
-            {nextEvent ? (
-              <>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-croatia animate-pulse" />
-                    <span className="kicker text-[11px]">{t('home.nextEvent')}</span>
-                  </div>
-                  <div className="h-display text-white text-2xl md:text-3xl leading-none">
-                    {pickLocale(nextEvent.name, locale)}
-                  </div>
-                  <div className="mt-2 font-display font-bold uppercase text-[11px] tracking-wider2 text-slateblue-300">
-                    <span className="text-croatia">
-                      {formatDate(nextEvent.datumPocetak, locale, {
-                        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-                      })}
-                    </span>
-                    {nextEvent.location && <span> · {nextEvent.location}</span>}
-                  </div>
-                </div>
-                <EventCountdown date={nextEvent.datumPocetak} size="md" />
-                <Link href={`/dogadjaji/${nextEvent.slug}`} className="btn-cta px-5 py-3 w-fit">
-                  <span>{t('home.eventRegister')}</span>
-                </Link>
-              </>
-            ) : (
-              <div className="flex items-center gap-3 text-slateblue-300 font-display font-bold uppercase text-sm tracking-wider2">
-                <span className="w-2.5 h-2.5 rounded-full bg-slateblue-600" />
-                {t('home.noUpcoming')}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* LATEST NEWS */}
       <section className="bg-paper">

@@ -44,8 +44,9 @@
   },
   "home": {
     "heroKicker": "Nogometni klub · Kanton Schwyz · 1995",
-    "heroTitle": "HNK Kroatien Schwyz",
-    "heroSubtitle": "Hrvatski nogometni klub u kantonu Schwyz. Od 1995. spajamo sport, prijateljstvo i tradiciju.",
+    "heroTitle1": "Još smo tu.",
+    "heroTitle2": "I tu ostajemo.",
+    "heroSubtitle": "Trideset godina hrvatske zajednice u Schwyzu — kroz uspone, padove i novi početak. Tradicija koja se ne gasi.",
     "ctaTeam": "Prijavi ekipu",
     "ctaJoin": "Učlani se",
     "stats": {
