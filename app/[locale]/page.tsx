@@ -210,9 +210,9 @@ export default async function HomePage({
                         sizes="(max-width:768px) 100vw, (max-width:1200px) 33vw, 380px"
                         className={cardImage}
                       />
-                      {/* ~70% navy wash, heavier at the text edge — keeps AA contrast */}
-                      <div className="absolute inset-0 bg-ink-550/55" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-ink-550/80 via-ink-550/30 to-transparent" />
+                      {/* Bottom-up navy gradient: opaque behind the text, gone by
+                          mid-card so the upper half of the photo stays untouched. */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink-550/90 from-0% via-ink-550/60 via-20% to-transparent to-[48%]" />
                     </div>
                   )}
                   <div className="relative">
