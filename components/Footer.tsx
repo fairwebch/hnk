@@ -19,6 +19,7 @@ export async function Footer() {
     { label: t('nav.oKlubu'), href: '/klub' },
     { label: t('footer.links.uprava'), href: '/uprava' },
     { label: t('nav.momcadi'), href: '/momcadi' },
+    { label: t('nav.shop'), href: '/shop' },
     { label: t('footer.links.postaniClan'), href: '/postani-clan' },
   ];
 

@@ -107,10 +107,27 @@ export function MobileMenu() {
 
   return (
     <>
-      {/* Crest — one single element for open AND closed state, raised above
-          the overlay so nothing can jump between states. */}
+      {/* Shop — left slot (FCZ pattern). Sits below the overlay, so the
+          open menu covers it; the menu's bottom CTA carries Shop instead. */}
+      <Link
+        href="/shop"
+        aria-label={t('nav.shop')}
+        className="flex flex-col items-center gap-[3px] w-10 text-white hover:text-croatia transition-colors"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+          <path d="M6 8h12l-1 12H7L6 8z" />
+          <path d="M9 10V6a3 3 0 0 1 6 0v4" />
+        </svg>
+        <span className="font-display font-bold uppercase text-[8px] tracking-widest3 leading-none">
+          {t('nav.shop')}
+        </span>
+      </Link>
+
+      {/* Crest — centered over the bar, bigger than the bar (FCZ overhang).
+          One single element for open AND closed state, raised above the
+          overlay so nothing can jump between states. */}
       <div
-        className="relative z-[60]"
+        className="absolute left-1/2 -translate-x-1/2 top-[4px] z-[60]"
         onClick={() => {
           if (!open) return;
           // Going home must not have its navigation undone by the history
@@ -119,7 +136,7 @@ export function MobileMenu() {
           setOpen(false);
         }}
       >
-        <Logo size={38} />
+        <Logo variant="mark" size={72} className="drop-shadow-[0_6px_14px_rgba(0,0,0,.4)]" />
       </div>
 
       <div className="flex items-center gap-3">
