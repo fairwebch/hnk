@@ -49,7 +49,7 @@ export async function Footer() {
 
       {/* Desktop */}
       <div className="hidden md:block">
-        <div className="grid grid-cols-[1.6fr_1fr_1fr_1.3fr] gap-14 px-[72px] pt-[60px] pb-[52px]">
+        <div className="grid grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.3fr] gap-10 lg:gap-14 px-10 lg:px-[72px] pt-[60px] pb-[52px]">
           <div>
             <div className="flex items-center gap-3">
               <Image src="/assets/logo.svg" alt="" width={44} height={44} className="block" />
@@ -93,7 +93,7 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slateblue-900 px-[72px] py-5 flex justify-between items-baseline font-sans font-medium text-xs text-slateblue-500">
+        <div className="border-t border-slateblue-900 px-10 lg:px-[72px] py-5 flex justify-between items-baseline font-sans font-medium text-xs text-slateblue-500">
           <span className="flex flex-col gap-1">
             <span>© {year}, HNK Kroatien Schwyz. All rights reserved.</span>
             <span className="text-[11px] text-slateblue-600">

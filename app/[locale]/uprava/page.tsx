@@ -39,7 +39,7 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
         {members.length === 0 ? (
           <EmptyState title={t('empty.board')} subtitle={t('empty.boardSub')} icon="users" />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {members.map((m) => (
               <Card key={m._id} className="overflow-hidden">
                 <div className="relative aspect-[4/5] bg-line">
@@ -47,15 +47,15 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
                     image={m.image}
                     alt={m.name}
                     fill
-                    sizes="(max-width:640px) 100vw, 33vw"
+                    sizes="(max-width:768px) 50vw, (max-width:1024px) 33vw, 270px"
                     className="object-cover"
                   />
                 </div>
-                <div className="p-5">
-                  <div className="font-display font-bold uppercase text-[11px] tracking-wider2 text-croatia">
+                <div className="p-4 sm:p-5">
+                  <div className="font-display font-bold uppercase text-[11px] leading-snug tracking-wider2 text-croatia">
                     {pickLocale(m.role, locale)}
                   </div>
-                  <h3 className="h-display text-content text-xl mt-1">{m.name}</h3>
+                  <h3 className="h-display text-content text-lg sm:text-xl mt-1">{m.name}</h3>
                   {m.phone && (
                     <a
                       href={`tel:${m.phone.replace(/\s/g, '')}`}
