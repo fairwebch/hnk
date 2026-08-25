@@ -197,22 +197,32 @@ export default async function HomePage({
                 <Card
                   key={team._id}
                   variant="content"
-                  tone="dark"
+                  /* darkPlain when a photo fills the card: the dark tone's 1px
+                     slateblue border isn't covered by the inset-0 photo and
+                     reads as a light seam along the bottom edge + corner cut. */
+                  tone={photo?.asset ? 'darkPlain' : 'dark'}
                   href={`/momcadi/${team.slug}`}
                   className="overflow-hidden flex flex-col justify-end min-h-[220px] p-6"
                 >
                   {photo?.asset && (
-                    <div aria-hidden className="absolute inset-0 overflow-hidden">
+                    /* The whole media block (photo + gradient) zooms together on
+                       hover — zooming only the img lets its bright, ungraded
+                       bottom row peek out past the gradient's antialiased edge
+                       as a light seam along the card edge and the corner cut. */
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]"
+                    >
                       <SanityImage
                         image={photo}
                         alt=""
                         fill
                         sizes="(max-width:768px) 100vw, (max-width:1200px) 33vw, 380px"
-                        className={cardImage}
+                        className="object-cover"
                       />
                       {/* Bottom-up navy gradient: opaque behind the text, gone by
                           mid-card so the upper half of the photo stays untouched. */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-ink-550/90 from-0% via-ink-550/60 via-20% to-transparent to-[48%]" />
+                      <div className="absolute -inset-px bg-gradient-to-t from-ink-550/90 from-0% via-ink-550/60 via-20% to-transparent to-[48%]" />
                     </div>
                   )}
                   <div className="relative">

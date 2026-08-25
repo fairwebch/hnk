@@ -7,7 +7,7 @@ import type { Momcad } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SanityImage } from '@/components/ui/SanityImage';
-import { Card, cardImage, cardTitle } from '@/components/ui/Card';
+import { Card, cardTitle } from '@/components/ui/Card';
 import { pickLocale } from '@/lib/locale';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -71,19 +71,29 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                 <Card
                   key={team._id}
                   variant="content"
-                  tone="dark"
+                  /* darkPlain: the dark tone's 1px border shows as a light seam
+                     around the full-bleed photo (same fix as the home cards). */
+                  tone={photo?.asset ? 'darkPlain' : 'dark'}
                   href={`/momcadi/${team.slug}`}
                   className="block overflow-hidden"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    <SanityImage
-                      image={photo}
-                      alt={name}
-                      fill
-                      sizes="(max-width:640px) 100vw, 33vw"
-                      className={cardImage}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/40 to-ink-900/10" />
+                    {/* Photo + gradient zoom together so the ungraded photo edge
+                        can't peek out under the gradient on hover. */}
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]"
+                    >
+                      {/* Decorative: the team name is in the card heading below. */}
+                      <SanityImage
+                        image={photo}
+                        alt=""
+                        fill
+                        sizes="(max-width:640px) 100vw, 33vw"
+                        className="object-cover"
+                      />
+                      <div className="absolute -inset-px bg-gradient-to-t from-ink-900/95 via-ink-900/40 to-ink-900/10" />
+                    </div>
                     {count > 0 && (
                       <span className="absolute top-3 right-3 bg-croatia text-white font-display font-bold uppercase text-[11px] tracking-wider2 px-3 py-1.5">
                         {t('teams.playerCount', { count })}
