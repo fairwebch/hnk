@@ -53,8 +53,9 @@ export function ContactForm() {
         <textarea id="cf-message" required rows={6} value={message} disabled={sending} onChange={(e) => setMessage(e.target.value)} className={field} />
       </div>
 
-      {/* Honeypot — hidden from users */}
-      <div className="hidden" aria-hidden>
+      {/* Honeypot — inline display:none as a belt-and-braces so the bare
+          "Company" label can never surface even if the utility CSS fails. */}
+      <div className="hidden" style={{ display: 'none' }} aria-hidden>
         <label htmlFor="cf-company">Company</label>
         <input id="cf-company" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
       </div>

@@ -58,8 +58,9 @@ export function NewsletterForm() {
         </button>
       </div>
 
-      {/* Honeypot */}
-      <div className="hidden" aria-hidden>
+      {/* Honeypot — inline display:none as a belt-and-braces so the bare
+          "Company" label can never surface even if the utility CSS fails. */}
+      <div className="hidden" style={{ display: 'none' }} aria-hidden>
         <label htmlFor="nl-company">Company</label>
         <input id="nl-company" tabIndex={-1} autoComplete="off" value={company} onChange={(e) => setCompany(e.target.value)} />
       </div>

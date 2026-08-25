@@ -15,11 +15,6 @@ export async function Footer() {
     { label: 'INSTAGRAM', icon: 'instagram' as const, href: site.social.instagram },
     { label: 'WHATSAPP', icon: 'whatsapp' as const, href: site.social.whatsapp },
   ];
-  const teamLinks = [
-    { label: t('footer.links.aktivni'), href: '/momcadi/aktivni' },
-    { label: t('footer.links.seniori'), href: '/momcadi/seniori' },
-    { label: t('footer.links.juniori'), href: '/momcadi/juniori' },
-  ];
   const clubLinks = [
     { label: t('nav.oKlubu'), href: '/klub' },
     { label: t('footer.links.uprava'), href: '/uprava' },
@@ -49,20 +44,23 @@ export async function Footer() {
 
       {/* Desktop */}
       <div className="hidden md:block">
-        <div className="grid grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1.3fr] gap-10 lg:gap-14 px-10 lg:px-[72px] pt-[60px] pb-[52px]">
-          <div>
-            <div className="flex items-center gap-3">
-              <Image src="/assets/logo.svg" alt="" width={44} height={44} className="block" />
+        {/* Momčadi links live inside the Klub column — the logo block is the
+            footer's anchor and gets the widest track. */}
+        <div className="grid grid-cols-2 lg:grid-cols-[1.9fr_1fr_1.3fr] gap-10 lg:gap-14 px-10 lg:px-[72px] pt-[60px] pb-[52px]">
+          {/* md: the logo block spans both rows on the left, Klub + Kontakt stack right. */}
+          <div className="md:row-span-2 lg:row-span-1">
+            <div className="flex items-center gap-4">
+              <Image src="/assets/logo.svg" alt="" width={72} height={72} className="block" />
               <div>
-                <div className="font-display font-extrabold italic text-white tracking-[.03em] text-[18px] leading-none">
+                <div className="font-display font-extrabold italic text-white tracking-[.03em] text-[30px] leading-none">
                   HNK KROATIEN
                 </div>
-                <div className="font-display font-bold text-slateblue-400 tracking-widest3 text-[9px] leading-none mt-[3px]">
+                <div className="font-display font-bold text-slateblue-400 tracking-widest3 text-[13px] leading-none mt-[6px]">
                   SCHWYZ · 1995
                 </div>
               </div>
             </div>
-            <div className="flex gap-[10px] mt-[22px]">
+            <div className="flex gap-[10px] mt-[26px]">
               {socials.map((s) => (
                 <a
                   key={s.label}
@@ -78,7 +76,6 @@ export async function Footer() {
             </div>
           </div>
 
-          <FooterCol title={t('footer.teamsHeading')} links={teamLinks} />
           <FooterCol title={t('footer.clubHeading')} links={clubLinks} />
 
           <div>
@@ -115,10 +112,15 @@ export async function Footer() {
 
       {/* Mobile */}
       <div className="md:hidden px-6 pt-9">
-        <div className="flex items-center gap-[10px]">
-          <Image src="/assets/logo.svg" alt="" width={38} height={38} className="block" />
-          <div className="font-display font-extrabold italic text-white tracking-[.03em] text-[16px] leading-none">
-            HNK KROATIEN SCHWYZ
+        <div className="flex items-center gap-3">
+          <Image src="/assets/logo.svg" alt="" width={56} height={56} className="block" />
+          <div>
+            <div className="font-display font-extrabold italic text-white tracking-[.03em] text-[24px] leading-none">
+              HNK KROATIEN
+            </div>
+            <div className="font-display font-bold text-slateblue-400 tracking-widest3 text-[11px] leading-none mt-[5px]">
+              SCHWYZ · 1995
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 font-sans font-medium text-[13px] text-slateblue-200 mt-[18px]">
