@@ -191,7 +191,7 @@ export default async function HomePage({
               linkLabel={t('common.viewAll')}
             />
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {teams.slice(0, 3).map((team, i) => {
+              {teams.slice(0, 3).map((team) => {
                 const photo = team.grupnaFotografija ?? team.coverImage;
                 return (
                 <Card
@@ -215,12 +215,6 @@ export default async function HomePage({
                       <div className="absolute inset-0 bg-gradient-to-t from-ink-550/80 via-ink-550/30 to-transparent" />
                     </div>
                   )}
-                  <span
-                    aria-hidden
-                    className={`absolute -top-4 -left-1 font-display font-extrabold italic text-[120px] leading-none pointer-events-none select-none ${photo?.asset ? 'text-white/[.14]' : 'text-white/[.06]'}`}
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
                   <div className="relative">
                     <h3 className="h-display text-white text-2xl leading-none group-hover:text-croatia transition-colors">
                       {pickLocale(team.name, locale)}
