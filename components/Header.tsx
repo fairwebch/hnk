@@ -50,8 +50,10 @@ export function Header() {
             {t(`nav.${item.id}`)}
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden className="mt-px transition-transform group-hover:rotate-180"><path d="M6 9l6 6 6-6" /></svg>
           </Link>
-          {/* Dropdown: opens on hover and on keyboard focus */}
-          <div className="absolute left-0 top-full min-w-[220px] bg-ink-700 border border-slateblue-900 shadow-2xl opacity-0 -translate-y-1 pointer-events-none transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto">
+          {/* Dropdown: opens on hover and on keyboard focus. z-20 keeps it
+              above the overhanging crest (z-10), which its top-right corner
+              can reach under. */}
+          <div className="absolute left-0 top-full z-20 min-w-[220px] bg-ink-700 border border-slateblue-900 shadow-2xl opacity-0 -translate-y-1 pointer-events-none transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto">
             <div className="h-[3px] bg-croatia" aria-hidden />
             {klubSubItems.map((s) => (
               <Link
@@ -111,17 +113,20 @@ export function Header() {
           className="grid grid-cols-[1fr_auto_1fr] items-center h-[84px] px-10"
         >
           <div className="flex justify-end h-[84px]">{leftItems.map(renderItem)}</div>
-          {/* Reserved center track — keeps the two halves clear of the crest. */}
-          <div className="w-[136px]" aria-hidden />
+          {/* Center track: the crest lives HERE in the DOM (between the two
+              nav halves) so tab/reading order matches the visual order; only
+              the overhang below the bar is done with absolute positioning. */}
+          <div className="relative w-[136px] h-[84px]">
+            <div className="absolute left-1/2 -translate-x-1/2 top-[5px] z-10">
+              <Logo
+                variant="mark"
+                size={100}
+                className="drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]"
+              />
+            </div>
+          </div>
           <div className="flex justify-start h-[84px]">{rightItems.map(renderItem)}</div>
         </nav>
-        <div className="absolute left-1/2 -translate-x-1/2 top-[5px] z-10">
-          <Logo
-            variant="mark"
-            size={100}
-            className="drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]"
-          />
-        </div>
       </div>
 
       {/* Mobile bar — shop left, crest centered (inside MobileMenu so the

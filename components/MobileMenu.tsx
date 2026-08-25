@@ -16,6 +16,7 @@ export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const [klubOpen, setKlubOpen] = useState(false);
   const burgerRef = useRef<HTMLButtonElement>(null);
+  const crestRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
 
   const klubActive = klubSubItems.some((s) => isActive(pathname, s.href));
@@ -85,7 +86,9 @@ export function MobileMenu() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false);
       if (e.key === 'Tab') {
+        const crestLink = crestRef.current?.querySelector<HTMLElement>('a');
         const list = [
+          ...(crestLink ? [crestLink] : []), // crest stays clickable above the overlay
           ...(burgerRef.current ? [burgerRef.current] : []), // the X stays reachable
           ...Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('a, button') ?? []),
         ];
@@ -127,7 +130,8 @@ export function MobileMenu() {
           One single element for open AND closed state, raised above the
           overlay so nothing can jump between states. */}
       <div
-        className="absolute left-1/2 -translate-x-1/2 top-[4px] z-[60]"
+        ref={crestRef}
+        className="absolute left-1/2 -translate-x-1/2 top-[4px] z-[60] origin-top max-[359px]:scale-75"
         onClick={() => {
           if (!open) return;
           // Going home must not have its navigation undone by the history

@@ -73,7 +73,7 @@ export function CookieConsent() {
         <div
           role="region"
           aria-label={t('settingsTitle')}
-          className="fixed inset-x-0 bottom-0 z-[70] bg-ink-800 border-t-2 border-croatia shadow-[0_-10px_30px_rgba(0,0,0,.35)]"
+          className="fixed inset-x-0 bottom-0 z-[35] bg-ink-800 border-t-2 border-croatia shadow-[0_-10px_30px_rgba(0,0,0,.35)]"
           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         >
           <div className="container-wide py-4 md:py-5 flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">
