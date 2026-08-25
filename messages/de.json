@@ -309,6 +309,12 @@
         "purpose": "Anonymisierte Besucherstatistik zur Verbesserung der Website. Wird erst nach Einwilligung geladen (Google Consent Mode v2).",
         "duration": "Bis zu 2 Jahre"
       },
+      "clarity": {
+        "name": "Microsoft Clarity (_clck, _clsk, MUID)",
+        "provider": "Microsoft Ireland Operations Ltd., Dublin, Irland",
+        "purpose": "Analyse der Website-Nutzung (Heatmaps, anonymisierte Sitzungsaufzeichnungen) zur Verbesserung der Benutzererfahrung. Wird erst nach Einwilligung geladen.",
+        "duration": "Bis zu 13 Monate"
+      },
       "maps": {
         "name": "Google Maps",
         "provider": "Google Ireland Limited, Dublin, Irland",

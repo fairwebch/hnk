@@ -3,7 +3,8 @@
 /** Cookie-consent model: versioned, 12-month validity, Google Consent Mode
  *  v2 aware. No external consent services. */
 
-export const CONSENT_VERSION = 1;
+// v2: Microsoft Clarity added to the statistics category (2026-08).
+export const CONSENT_VERSION = 2;
 const KEY = 'hnk-consent';
 const MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000; // 12 months
 

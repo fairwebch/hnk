@@ -163,7 +163,7 @@ export function CookieConsent() {
                 desc={t('cat.statistics.desc')}
                 checked={draft.statistics}
                 onChange={(v) => setDraft((d) => ({ ...d, statistics: v }))}
-                services={['ga']}
+                services={['clarity', 'ga']}
               />
               <Category
                 name={t('cat.external.name')}

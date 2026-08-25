@@ -9,6 +9,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CookieConsent } from '@/components/CookieConsent';
+import { ClarityAnalytics } from '@/components/ClarityAnalytics';
 
 /** Google Consent Mode v2 — everything denied by default, before any other
  *  script can run. CookieConsent sends gtag('consent','update', …) later. */
@@ -59,6 +60,8 @@ export default async function LocaleLayout({
         {/* Cookieless, consent-exempt analytics (no personal identifiers). */}
         <Analytics />
         <SpeedInsights />
+        {/* Loads only with "statistics" consent. */}
+        <ClarityAnalytics />
       </body>
     </html>
   );

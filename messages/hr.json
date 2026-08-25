@@ -309,6 +309,12 @@
         "purpose": "Anonimizirana statistika posjeta radi poboljšanja stranice. Učitava se tek nakon privole (Google Consent Mode v2).",
         "duration": "Do 2 godine"
       },
+      "clarity": {
+        "name": "Microsoft Clarity (_clck, _clsk, MUID)",
+        "provider": "Microsoft Ireland Operations Ltd., Dublin, Irska",
+        "purpose": "Analiza korištenja stranice (toplinske mape, anonimizirane snimke sesija) radi poboljšanja korisničkog iskustva. Učitava se tek nakon privole.",
+        "duration": "Do 13 mjeseci"
+      },
       "maps": {
         "name": "Google Maps",
         "provider": "Google Ireland Limited, Dublin, Irska",
