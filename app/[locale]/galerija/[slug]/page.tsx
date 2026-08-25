@@ -49,7 +49,6 @@ export default async function GalerijaDetailPage({
 
   return (
     <article>
-      <div className="sahovnica-strip" />
       <div className="container-x py-12">
         <Link
           href="/galerija"

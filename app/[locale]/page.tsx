@@ -76,7 +76,6 @@ export default async function HomePage({
     <>
       {/* HERO — photo backdrop (from Studio → Postavke sajta), slow crossfade */}
       <section className="relative overflow-hidden bg-ink-700">
-        <div className="sahovnica-strip relative z-20" />
         {heroSrcs.length > 0 ? (
           <HeroBackdrop srcs={heroSrcs} />
         ) : (

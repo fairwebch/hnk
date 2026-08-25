@@ -61,7 +61,6 @@ export default async function MomcadPage({
     <article>
       {/* Hero */}
       <section className="relative bg-ink-700 border-b border-slateblue-900">
-        <div className="sahovnica-strip" />
         {heroImg?.asset && (
           <div className="absolute inset-0">
             <SanityImage image={heroImg} alt="" fill sizes="100vw" className="object-cover opacity-25" />

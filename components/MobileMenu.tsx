@@ -126,12 +126,14 @@ export function MobileMenu() {
         </span>
       </Link>
 
-      {/* Crest — centered over the bar, bigger than the bar (FCZ overhang).
-          One single element for open AND closed state, raised above the
-          overlay so nothing can jump between states. */}
+      {/* Crest — centered over the bar, bigger than the bar (FCZ overhang,
+          pokes ~38px down into the hero; kept flush with the viewport top so
+          the circle is never clipped). One single element for open AND
+          closed state, raised above the overlay so nothing can jump. No
+          shrink on scroll on mobile — it keeps hanging over the content. */}
       <div
         ref={crestRef}
-        className="absolute left-1/2 -translate-x-1/2 top-[4px] z-[60] origin-top max-[359px]:scale-75"
+        className="absolute left-1/2 -translate-x-1/2 top-0 z-[60] w-[min(102px,calc(100vw_-_272px))] aspect-square"
         onClick={() => {
           if (!open) return;
           // Going home must not have its navigation undone by the history
@@ -140,7 +142,7 @@ export function MobileMenu() {
           setOpen(false);
         }}
       >
-        <Logo variant="mark" size={72} className="drop-shadow-[0_6px_14px_rgba(0,0,0,.4)]" />
+        <Logo variant="mark" fluid className="drop-shadow-[0_6px_14px_rgba(0,0,0,.4)]" />
       </div>
 
       <div className="flex items-center gap-3">

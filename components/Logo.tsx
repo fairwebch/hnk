@@ -4,16 +4,20 @@ import { Link } from '@/i18n/navigation';
 export function Logo({
   size = 48,
   variant = 'full',
+  fluid = false,
   className = '',
 }: {
   size?: number;
   variant?: 'full' | 'mark';
+  /** Fill the parent box (parent controls width/height, e.g. for CSS-animated
+   *  resizing). The parent MUST be square — the mark is 1:1. */
+  fluid?: boolean;
   className?: string;
 }) {
   return (
     <Link
       href="/"
-      className={`flex items-center gap-3 flex-shrink-0 ${className}`}
+      className={`flex items-center gap-3 flex-shrink-0 ${fluid ? 'w-full h-full' : ''} ${className}`}
       aria-label="HNK Kroatien Schwyz — početna"
     >
       <Image
@@ -23,7 +27,7 @@ export function Logo({
         height={size}
         priority
         className="block"
-        style={{ width: size, height: size }}
+        style={fluid ? { width: '100%', height: '100%' } : { width: size, height: size }}
       />
       {variant === 'full' && (
         <span className="leading-none">

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { navItems, klubSubItems, site } from '@/lib/site';
@@ -20,6 +21,16 @@ function isActive(pathname: string, href: string) {
 export function Header() {
   const t = useTranslations();
   const pathname = usePathname();
+
+  // Desktop shrink-on-scroll (FCZ behaviour): past 40px the top bar hides
+  // and the crest shrinks into the main bar. Mobile ignores this entirely.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const socials = [
     { label: 'Facebook', icon: 'facebook' as const, href: site.social.facebook },
@@ -50,10 +61,9 @@ export function Header() {
             {t(`nav.${item.id}`)}
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden className="mt-px transition-transform group-hover:rotate-180"><path d="M6 9l6 6 6-6" /></svg>
           </Link>
-          {/* Dropdown: opens on hover and on keyboard focus. z-20 keeps it
-              above the overhanging crest (z-10), which its top-right corner
-              can reach under. */}
-          <div className="absolute left-0 top-full z-20 min-w-[220px] bg-ink-700 border border-slateblue-900 shadow-2xl opacity-0 -translate-y-1 pointer-events-none transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto">
+          {/* Dropdown: opens on hover and on keyboard focus. z-40 keeps it
+              above the overhanging crest (z-30) — dropdown rows must win. */}
+          <div className="absolute left-0 top-full z-40 min-w-[220px] bg-ink-700 border border-slateblue-900 shadow-2xl opacity-0 -translate-y-1 pointer-events-none transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto">
             <div className="h-[3px] bg-croatia" aria-hidden />
             {klubSubItems.map((s) => (
               <Link
@@ -80,8 +90,13 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40">
-      {/* Top bar — desktop only: socials left, language + join CTA right. */}
-      <div className="hidden lg:flex bg-ink-900 h-11 items-center justify-between px-10">
+      {/* Top bar — desktop only: socials left, language + join CTA right.
+          Collapses away on scroll so the sticky header stays slim. */}
+      <div
+        className={`hidden lg:flex bg-ink-900 items-center justify-between px-10 overflow-hidden transition-all duration-200 ease-out ${
+          scrolled ? 'h-0 opacity-0 invisible' : 'h-11 opacity-100'
+        }`}
+      >
         <div className="flex items-center gap-1">
           {socials.map((s) => (
             <a
@@ -114,13 +129,20 @@ export function Header() {
         >
           <div className="flex justify-end h-[84px]">{leftItems.map(renderItem)}</div>
           {/* Center track: the crest lives HERE in the DOM (between the two
-              nav halves) so tab/reading order matches the visual order; only
-              the overhang below the bar is done with absolute positioning. */}
-          <div className="relative w-[136px] h-[84px]">
-            <div className="absolute left-1/2 -translate-x-1/2 top-[5px] z-10">
+              nav halves) so tab/reading order matches the visual order. The
+              wrapper carries an explicit square size — without it the
+              absolute box shrink-to-fits to half the track and squashes the
+              logo. At the top it pokes 26px up into the top bar and 16px
+              down into the hero; on scroll it shrinks into the bar. */}
+          <div className="relative w-[160px] h-[84px]">
+            <div
+              className={`absolute left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out ${
+                scrolled ? 'top-[10px] w-16 h-16' : 'top-[-26px] w-[126px] h-[126px]'
+              }`}
+            >
               <Logo
                 variant="mark"
-                size={100}
+                fluid
                 className="drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]"
               />
             </div>

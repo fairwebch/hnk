@@ -52,7 +52,6 @@ export default async function NovostPage({
 
   return (
     <article>
-      <div className="sahovnica-strip" />
       <div className="container-x max-w-3xl py-12">
         <Link
           href="/novosti"

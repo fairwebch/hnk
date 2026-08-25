@@ -5,7 +5,6 @@ export default async function NotFound() {
   const t = await getTranslations('notFound');
   return (
     <section className="bg-ink-700">
-      <div className="sahovnica-strip" />
       <div className="container-x py-24 md:py-32 text-center">
         <div className="font-display font-extrabold text-croatia text-7xl md:text-9xl leading-none">404</div>
         <h1 className="font-display font-bold text-white uppercase text-2xl md:text-3xl mt-4 tracking-[.03em]">
