@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { navItems, klubSubItems, site } from '@/lib/site';
@@ -16,6 +17,171 @@ const SHOP_IN_NAV = false;
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(href + '/');
+}
+
+/** "Klub" mega-panel: two columns (links with one-line descriptions + a join
+ *  CTA card). Opens on hover AND on focus/Enter; Escape closes and returns
+ *  focus to the trigger; ArrowUp/Down walk the panel links; a 120ms grace
+ *  period keeps it open on a diagonal mouse path. */
+function KlubMenu({ linkCls }: { linkCls: string }) {
+  const t = useTranslations();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLAnchorElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const cancelClose = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+  const openNow = () => {
+    cancelClose();
+    setOpen(true);
+  };
+  const closeSoon = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpen(false), 120);
+  };
+  useEffect(() => cancelClose, []);
+
+  const items = () =>
+    Array.from(panelRef.current?.querySelectorAll<HTMLElement>('a') ?? []);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus({ preventScroll: true });
+      return;
+    }
+    const list = items();
+    const idx = list.indexOf(document.activeElement as HTMLElement);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) {
+        openNow();
+        requestAnimationFrame(() => items()[0]?.focus());
+        return;
+      }
+      (list[idx + 1] ?? list[0])?.focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) return;
+      (idx <= 0 ? list[list.length - 1] : list[idx - 1])?.focus();
+    } else if (
+      (e.key === 'Enter' || e.key === ' ') &&
+      document.activeElement === triggerRef.current
+    ) {
+      // Enter on the trigger opens the panel (focus already opened it, so
+      // this moves focus to the first row) instead of navigating — the
+      // panel's first row (O klubu) still leads to /klub.
+      e.preventDefault();
+      openNow();
+      requestAnimationFrame(() => items()[0]?.focus());
+    }
+  };
+
+  return (
+    <div
+      ref={wrapRef}
+      className="relative"
+      onMouseEnter={openNow}
+      onMouseLeave={closeSoon}
+      onFocusCapture={(e) => {
+        // Open only when focus ENTERS from outside — the internal focus
+        // return after Escape must not re-open the panel.
+        if (wrapRef.current?.contains(e.relatedTarget as Node)) return;
+        openNow();
+      }}
+      onBlurCapture={(e) => {
+        if (!wrapRef.current?.contains(e.relatedTarget as Node)) setOpen(false);
+      }}
+      onKeyDown={onKeyDown}
+    >
+      <Link
+        ref={triggerRef}
+        href="/klub"
+        className={linkCls}
+        aria-haspopup="true"
+        aria-expanded={open}
+      >
+        {t('nav.klub')}
+        <svg
+          viewBox="0 0 24 24"
+          width="12"
+          height="12"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          aria-hidden
+          className={`mt-px transition-transform ${open ? 'rotate-180' : ''}`}
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </Link>
+
+      {/* pt-4 pushes the visible box below the crest's 16px overhang (no
+          overlap with the crest) while the transparent strip keeps the hover
+          path connected. z-40 stays above the crest (z-30) but inside the
+          fixed header, so it can never cover the header itself. */}
+      <div
+        ref={panelRef}
+        role="group"
+        aria-label={t('nav.klub')}
+        className={`absolute left-0 top-full z-40 w-[640px] pt-4 transition-all duration-150 ${
+          open
+            ? 'opacity-100 translate-y-0'
+            : 'opacity-0 -translate-y-1 pointer-events-none invisible'
+        }`}
+      >
+        <div className="bg-ink-700 border border-slateblue-900 shadow-2xl">
+          <div className="h-[3px] bg-croatia" aria-hidden />
+          <div className="grid grid-cols-[1.35fr_1fr] gap-3 p-3">
+            <div>
+              {klubSubItems.map((s) => (
+                <Link
+                  key={s.id}
+                  href={s.href}
+                  className="group/row block px-4 py-3 transition-colors hover:bg-ink-600"
+                >
+                  <span
+                    className={`block font-display font-bold text-[15px] tracking-[.07em] uppercase transition-colors ${
+                      isActive(pathname, s.href)
+                        ? 'text-croatia'
+                        : 'text-white group-hover/row:text-croatia'
+                    }`}
+                  >
+                    {t(`nav.${s.id}`)}
+                  </span>
+                  <span className="block font-sans text-xs text-slateblue-400 mt-0.5">
+                    {t(`klubMenu.${s.id}Desc`)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+
+            {/* CTA card */}
+            <div className="bg-ink-600 border border-slateblue-900 p-5 flex flex-col items-start">
+              <Image src="/assets/logo.svg" alt="" width={44} height={44} className="block" />
+              <div className="font-display font-extrabold italic uppercase text-white text-lg leading-tight mt-3">
+                {t('klubMenu.ctaTitle')}
+              </div>
+              <p className="font-sans text-xs text-slateblue-300 leading-relaxed mt-1.5">
+                {t('klubMenu.ctaText')}
+              </p>
+              <Link href="/postani-clan" className="btn-cta px-4 py-2 mt-4">
+                <span className="text-[12px]">{t('header.join')}</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function Header() {
@@ -69,30 +235,7 @@ export function Header() {
     }`;
 
     if (item.id === 'klub') {
-      return (
-        <div key={item.id} className="relative group">
-          <Link href={item.href} className={linkCls} aria-haspopup="true">
-            {t(`nav.${item.id}`)}
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden className="mt-px transition-transform group-hover:rotate-180"><path d="M6 9l6 6 6-6" /></svg>
-          </Link>
-          {/* Dropdown: opens on hover and on keyboard focus. z-40 keeps it
-              above the overhanging crest (z-30) — dropdown rows must win. */}
-          <div className="absolute left-0 top-full z-40 min-w-[220px] bg-ink-700 border border-slateblue-900 shadow-2xl opacity-0 -translate-y-1 pointer-events-none transition-all duration-150 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:translate-y-0 group-focus-within:pointer-events-auto">
-            <div className="h-[3px] bg-croatia" aria-hidden />
-            {klubSubItems.map((s) => (
-              <Link
-                key={s.id}
-                href={s.href}
-                className={`block px-5 py-3 font-display font-bold text-[14px] tracking-[.07em] uppercase border-b border-slateblue-900 last:border-b-0 transition-colors ${
-                  isActive(pathname, s.href) ? 'text-croatia' : 'text-slateblue-50 hover:text-white hover:bg-ink-600'
-                }`}
-              >
-                {t(`nav.${s.id}`)}
-              </Link>
-            ))}
-          </div>
-        </div>
-      );
+      return <KlubMenu key={item.id} linkCls={linkCls} />;
     }
 
     return (

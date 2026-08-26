@@ -18,6 +18,14 @@
     "uprava": "Uprava",
     "postaniClan": "Postani član"
   },
+  "klubMenu": {
+    "oKlubuDesc": "Povijest kluba od 1995. godine",
+    "upravaDesc": "Tko vodi klub",
+    "momcadiDesc": "Aktivni, seniori i juniori",
+    "postaniClanDesc": "Pridruži se — na terenu ili izvan njega",
+    "ctaTitle": "Postani dio kluba",
+    "ctaText": "Više od 250 članova i navijača — treniraj, navijaj ili podrži klub."
+  },
   "header": {
     "join": "Učlani se",
     "openMenu": "Otvori izbornik",

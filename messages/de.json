@@ -18,6 +18,14 @@
     "uprava": "Vorstand",
     "postaniClan": "Mitglied werden"
   },
+  "klubMenu": {
+    "oKlubuDesc": "Vereinsgeschichte seit 1995",
+    "upravaDesc": "Wer den Verein führt",
+    "momcadiDesc": "Aktive, Senioren und Junioren",
+    "postaniClanDesc": "Mach mit — auf dem Platz oder daneben",
+    "ctaTitle": "Werde Teil des Vereins",
+    "ctaText": "Über 250 Mitglieder und Fans — spiel mit, feuere an oder unterstütze den Verein."
+  },
   "header": {
     "join": "Mitglied werden",
     "openMenu": "Menü öffnen",
