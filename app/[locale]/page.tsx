@@ -216,7 +216,7 @@ export default async function HomePage({
                         image={photo}
                         alt=""
                         fill
-                        sizes="(max-width:768px) 100vw, (max-width:1200px) 33vw, 380px"
+                        sizes="(max-width:768px) 100vw, (max-width:1440px) 33vw, 450px"
                         className="object-cover"
                       />
                       {/* Bottom-up navy gradient: opaque behind the text, gone by

@@ -29,7 +29,7 @@ export async function Footer() {
 
       {/* Newsletter band */}
       <div className="border-b border-slateblue-900">
-        <div className="container-wide py-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div className="container-x py-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div>
             <div className="kicker text-xs mb-2">{t('newsletter.kicker')}</div>
             <h2 className="h-display text-white text-2xl md:text-3xl leading-none">
@@ -47,7 +47,7 @@ export async function Footer() {
       <div className="hidden md:block">
         {/* Momčadi links live inside the Klub column — the logo block is the
             footer's anchor and gets the widest track. */}
-        <div className="grid grid-cols-2 lg:grid-cols-[1.9fr_1fr_1.3fr] gap-10 lg:gap-14 px-10 lg:px-[72px] pt-[60px] pb-[52px]">
+        <div className="container-x grid grid-cols-2 lg:grid-cols-[1.9fr_1fr_1.3fr] gap-10 lg:gap-14 pt-[60px] pb-[52px]">
           {/* md: the logo block spans both rows on the left, Klub + Kontakt stack right. */}
           <div className="md:row-span-2 lg:row-span-1">
             <div className="flex items-center gap-4">
@@ -91,7 +91,8 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slateblue-900 px-10 lg:px-[72px] py-5 flex justify-between items-baseline font-sans font-medium text-xs text-slateblue-500">
+        <div className="border-t border-slateblue-900 py-5">
+        <div className="container-x flex justify-between items-baseline font-sans font-medium text-xs text-slateblue-500">
           <span className="flex flex-col gap-1">
             <span>© {year}, HNK Kroatien Schwyz. All rights reserved.</span>
             <span className="text-[11px] text-slateblue-600">
@@ -108,6 +109,7 @@ export async function Footer() {
             <span>·</span>
             <CookieSettingsLink />
           </span>
+        </div>
         </div>
       </div>
 

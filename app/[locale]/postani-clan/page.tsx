@@ -44,7 +44,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         image={headers?.headerPostaniClan}
         ghost="ČLAN"
       />
-      <div className="container-x max-w-3xl py-14">
+      <div className="prose-x py-14">
         {body && body.length > 0 && (
           <div className="mb-10">
             <PortableText value={body} />

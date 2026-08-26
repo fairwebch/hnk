@@ -9,7 +9,7 @@ import { urlFor } from '@/sanity/lib/image';
 const components: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
-      <p className="font-sans text-content-soft leading-relaxed my-4">{children}</p>
+      <p className="font-sans text-lg text-content-soft leading-relaxed my-4">{children}</p>
     ),
     h2: ({ children }) => (
       <h2 className="h-display text-content tracking-[.02em] text-2xl md:text-3xl mt-10 mb-3">
@@ -29,10 +29,10 @@ const components: PortableTextComponents = {
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc pl-6 my-4 space-y-1 text-content-soft marker:text-croatia">{children}</ul>
+      <ul className="list-disc pl-6 my-4 space-y-1 text-lg text-content-soft marker:text-croatia">{children}</ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal pl-6 my-4 space-y-1 text-content-soft marker:text-croatia">{children}</ol>
+      <ol className="list-decimal pl-6 my-4 space-y-1 text-lg text-content-soft marker:text-croatia">{children}</ol>
     ),
   },
   marks: {

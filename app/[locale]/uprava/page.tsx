@@ -47,7 +47,7 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
                     image={m.image}
                     alt={m.name}
                     fill
-                    sizes="(max-width:768px) 50vw, (max-width:1024px) 33vw, 270px"
+                    sizes="(max-width:768px) 50vw, (max-width:1024px) 33vw, 340px"
                     className="object-cover"
                   />
                 </div>

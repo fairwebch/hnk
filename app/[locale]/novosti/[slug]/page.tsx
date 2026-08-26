@@ -52,7 +52,7 @@ export default async function NovostPage({
 
   return (
     <article>
-      <div className="container-x max-w-3xl py-12">
+      <div className="prose-x py-12">
         <Link
           href="/novosti"
           className="inline-flex items-center gap-2 font-display font-bold uppercase text-xs tracking-wider2 text-content-muted hover:text-croatia transition-colors"
@@ -84,7 +84,7 @@ export default async function NovostPage({
         </div>
       )}
 
-      <div className="container-x max-w-3xl py-10">
+      <div className="prose-x py-10">
         {body && body.length > 0 ? (
           <PortableText value={body} />
         ) : (

@@ -42,7 +42,7 @@ export async function CmsPage({
         breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: title }]}
         ghost={ghost}
       />
-      <div className="container-x max-w-3xl py-14">
+      <div className="prose-x py-14">
         {body && body.length > 0 ? (
           <PortableText value={body} />
         ) : (

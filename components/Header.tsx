@@ -113,29 +113,33 @@ export function Header() {
       {/* Top bar — desktop only: socials left, language + join CTA right.
           Collapses away on scroll so the sticky header stays slim. */}
       <div
-        className={`hidden lg:flex bg-ink-900 items-center justify-between px-10 overflow-hidden transition-all duration-200 ease-out ${
+        className={`hidden lg:block bg-ink-900 overflow-hidden transition-all duration-200 ease-out ${
           scrolled ? 'h-0 opacity-0 invisible' : 'h-11 opacity-100'
         }`}
       >
-        <div className="flex items-center gap-1">
-          {socials.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={s.label}
-              className="inline-flex items-center justify-center w-8 h-8 text-slateblue-400 hover:text-white transition-colors"
-            >
-              <SocialIcon name={s.icon} size={15} />
-            </a>
-          ))}
-        </div>
-        <div className="flex items-center gap-4">
-          <LanguageSwitcher />
-          <Link href="/postani-clan" className="btn-cta px-4 py-[6px]">
-            <span className="text-[12px]">{t('header.join')}</span>
-          </Link>
+        {/* Background bleeds full width on the outer element; only the
+            content is capped to the shell. */}
+        <div className="container-x h-11 flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="inline-flex items-center justify-center w-8 h-8 text-slateblue-400 hover:text-white transition-colors"
+              >
+                <SocialIcon name={s.icon} size={15} />
+              </a>
+            ))}
+          </div>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <Link href="/postani-clan" className="btn-cta px-4 py-[6px]">
+              <span className="text-[12px]">{t('header.join')}</span>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -145,9 +149,13 @@ export function Header() {
       <div className="hidden lg:block bg-ink-700 relative">
         <nav
           aria-label="Glavna navigacija"
-          className="grid grid-cols-[1fr_auto_1fr] items-center h-[84px] px-10"
+          className="container-x grid grid-cols-[1fr_auto_1fr] items-center h-[84px]"
         >
-          <div className="flex justify-end h-[84px]">{leftItems.map(renderItem)}</div>
+          {/* Groups spread to the shell edges (FCZ pattern); the negative
+              margin cancels the first/last link's inner padding so the item
+              TEXT sits exactly on the container edge, aligned with the hero
+              and section headings below. */}
+          <div className="flex justify-start -ml-[13px] h-[84px]">{leftItems.map(renderItem)}</div>
           {/* Center track: the crest lives HERE in the DOM (between the two
               nav halves) so tab/reading order matches the visual order. The
               wrapper carries an explicit square size — without it the
@@ -168,7 +176,7 @@ export function Header() {
               <Logo variant="mark" fluid />
             </div>
           </div>
-          <div className="flex justify-start h-[84px]">{rightItems.map(renderItem)}</div>
+          <div className="flex justify-end -mr-[13px] h-[84px]">{rightItems.map(renderItem)}</div>
         </nav>
       </div>
 

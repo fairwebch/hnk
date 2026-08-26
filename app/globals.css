@@ -5,6 +5,22 @@
 @layer base {
   :root {
     color-scheme: light;
+    /* Width system — the ONE source of truth for page widths. */
+    --shell: 1440px; /* header, sections, footer, grids */
+    /* Calibrated for 65-75 chars/line: Barlow @ 18px on 600px = ~74 chars
+       (760px would give ~96 — the font runs narrow). */
+    --prose: 600px;
+    --gutter: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    :root {
+      --gutter: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --gutter: 2.5rem;
+    }
   }
 
   html {
@@ -120,11 +136,15 @@
 }
 
 @layer utilities {
+  /* Fluid containers driven by the :root width variables — change widths
+     there, nowhere else. (.container-wide was removed; use .container-x.) */
   .container-x {
-    @apply mx-auto w-full max-w-[1200px] px-5 sm:px-8;
+    width: min(100% - var(--gutter) * 2, var(--shell));
+    margin-inline: auto;
   }
-  .container-wide {
-    @apply mx-auto w-full max-w-[1440px] px-5 sm:px-10;
+  .prose-x {
+    width: min(100% - var(--gutter) * 2, var(--prose));
+    margin-inline: auto;
   }
   .scrollbar-hide {
     scrollbar-width: none;

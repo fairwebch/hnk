@@ -43,7 +43,7 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
       />
 
       {uvod && uvod.length > 0 && (
-        <div className="container-x max-w-3xl pt-14">
+        <div className="prose-x pt-14">
           <PortableText value={uvod} />
         </div>
       )}
@@ -67,7 +67,7 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
       )}
 
       {zavrsni && zavrsni.length > 0 && (
-        <div className="container-x max-w-3xl pb-14">
+        <div className="prose-x pb-14">
           <PortableText value={zavrsni} />
         </div>
       )}
