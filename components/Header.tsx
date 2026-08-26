@@ -155,16 +155,17 @@ export function Header() {
               logo. At the top it pokes 26px up into the top bar and 16px
               down into the hero; on scroll it shrinks into the bar. */}
           <div className="relative w-[160px] h-[84px]">
+            {/* The drop-shadow lives on THIS transitioned element so it
+                scales down together with the crest — a fixed 18px blur around
+                an 88px crest reads as a dark halo and blurs the edge. */}
             <div
               className={`absolute left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out ${
-                scrolled ? 'top-[10px] w-16 h-16' : 'top-[-26px] w-[126px] h-[126px]'
+                scrolled
+                  ? 'top-0 w-[88px] h-[88px] drop-shadow-[0_3px_8px_rgba(0,0,0,.35)]'
+                  : 'top-[-26px] w-[126px] h-[126px] drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]'
               }`}
             >
-              <Logo
-                variant="mark"
-                fluid
-                className="drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]"
-              />
+              <Logo variant="mark" fluid />
             </div>
           </div>
           <div className="flex justify-start h-[84px]">{rightItems.map(renderItem)}</div>
