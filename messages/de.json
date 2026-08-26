@@ -146,8 +146,15 @@
   },
   "board": {
     "title": "Vorstand",
-    "subtitle": "Die Menschen, die den Verein führen.",
-    "kicker": "Menschen hinter dem Verein"
+    "subtitle": "Der Vorstand zählt {count} Mitglieder. Sie führen den Verein ehrenamtlich — neben Beruf und Familie.",
+    "kicker": "Menschen hinter dem Verein",
+    "ghost": "VORSTAND",
+    "presidentText": "Unser Verein lebt von Menschen, die ihm ihre Freizeit schenken. Der Vorstand kümmert sich um Finanzen, Mannschaften und Anlässe — vom Turnier bis zum Ausflug. Die Tür steht allen offen, die mitmachen möchten.",
+    "leadershipHeading": "Vereinsführung",
+    "boardHeading": "Vorstandsmitglieder",
+    "band": "{count} Vorstandsmitglieder · alle ehrenamtlich · Verein seit 1995",
+    "ctaTitle": "Möchtest du dich im Verein engagieren?",
+    "ctaText": "Melde dich — gute Leute finden immer einen Platz, auf dem Feld und daneben."
   },
   "sponsors": {
     "title": "Sponsoring",

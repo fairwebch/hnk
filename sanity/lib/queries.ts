@@ -96,7 +96,7 @@ export const momcadBySlugQuery = groq`
 // Board
 export const upravaQuery = groq`
   *[_type == "clanUprave"] | order(order asc){
-    _id, name, role, phone, image, order
+    _id, name, role, zaduzenje, phone, image, order
   }
 `;
 

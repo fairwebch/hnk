@@ -21,6 +21,7 @@ export interface ClanUprave {
   _id: string;
   name: string;
   role: LocaleString;
+  zaduzenje?: LocaleString;
   phone?: string;
   image?: SanityImg;
   order: number;

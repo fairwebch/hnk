@@ -18,6 +18,12 @@ export const clanUprave = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'zaduzenje',
+      title: 'Zaduženje (jedan red)',
+      type: 'localeString',
+      description: 'Kratki opis zaduženja, npr. «Financije i članarine». Neobavezno.',
+    }),
+    defineField({
       name: 'phone',
       title: 'Telefon',
       type: 'string',

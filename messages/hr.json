@@ -146,8 +146,15 @@
   },
   "board": {
     "title": "Uprava",
-    "subtitle": "Ljudi koji vode klub.",
-    "kicker": "Ljudi koji vode klub"
+    "subtitle": "Upravni odbor broji {count} članova. Klub vode volonterski, uz posao i obitelj.",
+    "kicker": "Ljudi koji vode klub",
+    "ghost": "UPRAVA",
+    "presidentText": "Naš klub žive ljudi koji mu poklanjaju svoje slobodno vrijeme. Uprava vodi financije, momčadi i događaje — od turnira do izleta. Vrata su otvorena svakome tko se želi uključiti.",
+    "leadershipHeading": "Vodstvo kluba",
+    "boardHeading": "Upravni odbor",
+    "band": "{count} članova uprave · svi volonterski · klub od 1995.",
+    "ctaTitle": "Želiš se uključiti u rad kluba?",
+    "ctaText": "Javi se — uvijek ima mjesta za dobre ljude, na terenu i izvan njega."
   },
   "sponsors": {
     "title": "Sponzoring",
