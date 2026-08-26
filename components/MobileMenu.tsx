@@ -79,10 +79,10 @@ export function MobileMenu() {
   // Escape + focus trap; focus returns to the hamburger on close.
   useEffect(() => {
     if (!open) {
-      burgerRef.current?.focus();
+      burgerRef.current?.focus({ preventScroll: true });
       return;
     }
-    dialogRef.current?.focus();
+    dialogRef.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false);
       if (e.key === 'Tab') {

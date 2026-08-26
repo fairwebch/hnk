@@ -46,6 +46,22 @@
     background: #d8232f;
     color: #fff;
   }
+
+  /* Focus system: no ring for pointer/touch (incl. the programmatic focus
+     return from the mobile-menu trap), a clear club-red ring for keyboard.
+     Never bare outline:none — :focus-visible replaces it (WCAG 2.4.7). */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus {
+    outline: none;
+  }
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid #d8232f;
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @layer components {
