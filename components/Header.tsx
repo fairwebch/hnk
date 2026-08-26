@@ -10,9 +10,10 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileMenu } from './MobileMenu';
 import { SocialIcon } from './SocialIcon';
 
-/** Variant switch: true = SHOP as a regular nav item on the right (3-4),
- *  false = 3-3 symmetry around the crest, shop lives in footer + mobile bar. */
-const SHOP_IN_NAV = false;
+/* Muotathal 2024 group photo (the same asset as the /postani-clan page
+   header) — the Klub panel's join card. Served straight from the Sanity CDN. */
+const JOIN_CARD_PHOTO =
+  'https://cdn.sanity.io/images/jxoy4fyb/production/c8934db4bb127954e687281191ce38aba6df9ad7-1778x1200.webp';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
@@ -164,18 +165,24 @@ function KlubMenu({ linkCls }: { linkCls: string }) {
               ))}
             </div>
 
-            {/* CTA card */}
-            <div className="bg-ink-600 border border-slateblue-900 p-5 flex flex-col items-start">
-              <Image src="/assets/logo.svg" alt="" width={44} height={44} className="block" />
-              <div className="font-display font-extrabold italic uppercase text-white text-lg leading-tight mt-3">
-                {t('klubMenu.ctaTitle')}
+            {/* CTA card — a photo header instead of a tiny crest: the circular
+                lettering is unreadable below ~80px, and the full-size crest
+                already sits in the same bar a few pixels up. */}
+            <div className="bg-ink-600 border border-slateblue-900 flex flex-col overflow-hidden">
+              <div className="relative w-full aspect-[16/9]">
+                <Image src={JOIN_CARD_PHOTO} alt="" fill sizes="240px" className="object-cover" />
               </div>
-              <p className="font-sans text-xs text-slateblue-300 leading-relaxed mt-1.5">
-                {t('klubMenu.ctaText')}
-              </p>
-              <Link href="/postani-clan" className="btn-cta px-4 py-2 mt-4">
-                <span className="text-[12px]">{t('header.join')}</span>
-              </Link>
+              <div className="p-5 pt-4 flex flex-col items-start">
+                <div className="font-display font-extrabold italic uppercase text-white text-lg leading-tight">
+                  {t('klubMenu.ctaTitle')}
+                </div>
+                <p className="font-sans text-xs text-slateblue-300 leading-relaxed mt-1.5">
+                  {t('klubMenu.ctaText')}
+                </p>
+                <Link href="/postani-clan" className="btn-cta px-4 py-2 mt-4">
+                  <span className="text-[12px]">{t('header.join')}</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -219,9 +226,7 @@ export function Header() {
   ];
 
   const leftItems: { id: string; href: string }[] = [...navItems.slice(0, 3)];
-  const rightItems: { id: string; href: string }[] = SHOP_IN_NAV
-    ? [...navItems.slice(3, 5), { id: 'shop', href: '/shop' }, ...navItems.slice(5)]
-    : [...navItems.slice(3)];
+  const rightItems: { id: string; href: string }[] = [...navItems.slice(3)];
 
   function renderItem(item: { id: string; href: string }) {
     const active =
@@ -277,12 +282,7 @@ export function Header() {
               </a>
             ))}
           </div>
-          <div className="flex items-center gap-4">
-            <LanguageSwitcher />
-            <Link href="/postani-clan" className="btn-cta px-4 py-[6px]">
-              <span className="text-[12px]">{t('header.join')}</span>
-            </Link>
-          </div>
+          <LanguageSwitcher />
         </div>
       </div>
 
@@ -319,7 +319,27 @@ export function Header() {
               <Logo variant="mark" fluid />
             </div>
           </div>
-          <div className="flex justify-end -mr-[13px] h-[84px]">{rightItems.map(renderItem)}</div>
+          <div className="flex justify-end items-center -mr-[13px] h-[84px]">
+            {rightItems.map(renderItem)}
+            {/* SHOP reads as its own action, not a seventh nav item: hairline
+                divider + bag icon. Lives in the MAIN bar so it stays visible
+                when the top bar collapses on scroll. */}
+            <span className="h-5 w-px bg-slateblue-700 ml-3 mr-2 shrink-0" aria-hidden />
+            <Link
+              href="/shop"
+              className={`flex items-center gap-2 h-[84px] px-[13px] font-display font-bold text-[15px] tracking-[.08em] uppercase whitespace-nowrap border-t-[3px] border-t-transparent transition-colors ${
+                isActive(pathname, '/shop')
+                  ? 'text-white border-b-[3px] border-b-croatia'
+                  : 'text-slateblue-50 border-b-[3px] border-b-transparent hover:text-white'
+              }`}
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+                <path d="M6 8h12l-1 12H7L6 8z" />
+                <path d="M9 10V6a3 3 0 0 1 6 0v4" />
+              </svg>
+              {t('nav.shop')}
+            </Link>
+          </div>
         </nav>
       </div>
 
