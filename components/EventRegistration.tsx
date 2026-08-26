@@ -92,7 +92,7 @@ function formatRok(iso: string, locale: string) {
 
 function Wrapper({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
-    <div id="prijava" className="mt-10 scroll-mt-28 lg:scroll-mt-36">
+    <div id="prijava" className="mt-10">
       <h2 className="h-display text-content text-2xl tracking-[.02em] mb-1">{title}</h2>
       {subtitle && (
         <p className="font-display font-bold uppercase text-[11px] tracking-wider2 text-croatia mb-4">{subtitle}</p>

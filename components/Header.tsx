@@ -22,14 +22,28 @@ export function Header() {
   const t = useTranslations();
   const pathname = usePathname();
 
-  // Desktop shrink-on-scroll (FCZ behaviour): past 40px the top bar hides
-  // and the crest shrinks into the main bar. Mobile ignores this entirely.
+  // Desktop shrink-on-scroll (FCZ behaviour): scrolled hides the top bar and
+  // shrinks the crest. Hysteresis (collapse >120, expand <60) plus a fixed
+  // header + constant spacer (document height never changes) kill the
+  // scroll-anchoring feedback loop that made the bar flicker. State updates
+  // are rAF-throttled and only fire on an actual change.
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const y = window.scrollY;
+        setScrolled((cur) => (cur ? y >= 60 : y > 120));
+      });
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   const socials = [
@@ -89,7 +103,13 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-40">
+    <>
+    {/* Fixed (NOT sticky): a sticky header sits in document flow, so the
+        collapsing top bar changed the document height on every toggle and
+        scroll anchoring bounced scrollY back across the threshold — an
+        infinite flicker loop. Fixed + constant spacer keeps the height
+        stable no matter what the header does. */}
+    <header className="fixed inset-x-0 top-0 z-40">
       {/* Top bar — desktop only: socials left, language + join CTA right.
           Collapses away on scroll so the sticky header stays slim. */}
       <div
@@ -158,5 +178,9 @@ export function Header() {
         <MobileMenu />
       </div>
     </header>
+    {/* Constant-height spacer reserving the header's place in the flow —
+        does NOT react to the scrolled state (that's the whole point). */}
+    <div className="h-16 lg:h-[128px]" aria-hidden />
+    </>
   );
 }

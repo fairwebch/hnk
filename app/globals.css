@@ -10,10 +10,20 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* Anchor jumps must clear the fixed header (64px bar / 44+84px on lg). */
+    scroll-padding-top: 64px;
+  }
+  @media (min-width: 1024px) {
+    html {
+      scroll-padding-top: 128px;
+    }
   }
 
   body {
     @apply bg-paper text-content font-sans antialiased overflow-x-hidden;
+    /* The fixed header animates its height on scroll — scroll anchoring must
+       never "compensate" for it (it caused a scrollY feedback loop). */
+    overflow-anchor: none;
   }
 
   ::selection {
