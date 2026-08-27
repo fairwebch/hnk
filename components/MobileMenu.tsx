@@ -142,7 +142,7 @@ export function MobileMenu() {
           setOpen(false);
         }}
       >
-        <Logo variant="mark" fluid className="drop-shadow-[0_6px_14px_rgba(0,0,0,.4)]" />
+        <Logo variant="mark" fluid imgClassName="drop-shadow-[0_6px_14px_rgba(0,0,0,.4)]" />
       </div>
 
       <div className="flex items-center gap-3">

@@ -6,6 +6,7 @@ export function Logo({
   variant = 'full',
   fluid = false,
   className = '',
+  imgClassName = '',
 }: {
   size?: number;
   variant?: 'full' | 'mark';
@@ -13,6 +14,10 @@ export function Logo({
    *  resizing). The parent MUST be square — the mark is 1:1. */
   fluid?: boolean;
   className?: string;
+  /** Extra classes for the <img> itself. Shadows belong HERE — iOS Safari
+   *  rasterizes a wrapper-level drop-shadow as the square box, the img-level
+   *  filter follows the crest's circular alpha. */
+  imgClassName?: string;
 }) {
   return (
     <Link
@@ -26,7 +31,7 @@ export function Logo({
         width={size}
         height={size}
         priority
-        className="block"
+        className={`block ${imgClassName}`}
         style={fluid ? { width: '100%', height: '100%' } : { width: size, height: size }}
       />
       {variant === 'full' && (

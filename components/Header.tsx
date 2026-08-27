@@ -311,12 +311,18 @@ export function Header() {
                 an 88px crest reads as a dark halo and blurs the edge. */}
             <div
               className={`absolute left-1/2 -translate-x-1/2 z-30 transition-all duration-200 ease-out ${
-                scrolled
-                  ? 'top-0 w-[88px] h-[88px] drop-shadow-[0_3px_8px_rgba(0,0,0,.35)]'
-                  : 'top-[-26px] w-[126px] h-[126px] drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]'
+                scrolled ? 'top-0 w-[88px] h-[88px]' : 'top-[-26px] w-[126px] h-[126px]'
               }`}
             >
-              <Logo variant="mark" fluid />
+              <Logo
+                variant="mark"
+                fluid
+                imgClassName={`transition-[filter] duration-200 ease-out ${
+                  scrolled
+                    ? 'drop-shadow-[0_3px_8px_rgba(0,0,0,.35)]'
+                    : 'drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]'
+                }`}
+              />
             </div>
           </div>
           <div className="flex justify-end items-center -mr-[13px] h-[84px]">

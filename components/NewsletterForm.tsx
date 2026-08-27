@@ -53,7 +53,7 @@ export function NewsletterForm() {
           aria-label={t('placeholder')}
           className="flex-1 min-w-0 bg-ink-800 border border-slateblue-700 px-4 py-3 font-sans text-white placeholder:text-slateblue-500 focus:outline-none focus:border-croatia transition-colors disabled:opacity-60"
         />
-        <button type="submit" disabled={sending} className="btn-cta px-5 py-3 shrink-0 disabled:opacity-70">
+        <button type="submit" disabled={sending} className="btn-cta shadow-none px-5 py-3 shrink-0 disabled:opacity-70">
           <span>{sending ? t('sending') : t('button')}</span>
         </button>
       </div>
