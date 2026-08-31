@@ -179,7 +179,25 @@
     "kicker": "Javi nam se",
     "formSending": "Šaljem…",
     "formSuccess": "Poruka je poslana!",
-    "formError": "Greška pri slanju. Pokušajte ponovo ili nam pišite direktno."
+    "formError": "Greška pri slanju. Pokušajte ponovo ili nam pišite direktno.",
+    "formPhone": "Telefon",
+    "formOptional": "neobavezno",
+    "formTopic": "Tema",
+    "formTopicPlaceholder": "Odaberite temu…",
+    "topics": {
+      "clanstvo": "Članstvo",
+      "momcadi": "Treninzi i momčadi",
+      "dogadjaji": "Događaji i prijave",
+      "sponzorstvo": "Sponzorstvo i donacije",
+      "ostalo": "Ostalo"
+    },
+    "consentLabel": "Pročitao/la sam <link>izjavu o zaštiti podataka</link> i prihvaćam da se moji podaci koriste za obradu upita.",
+    "errName": "Upišite ime i prezime.",
+    "errEmail": "Upišite email adresu.",
+    "errEmailInvalid": "Upišite ispravnu email adresu.",
+    "errTopic": "Odaberite temu.",
+    "errMessage": "Upišite poruku.",
+    "errConsent": "Za slanje poruke potrebna je privola za obradu podataka."
   },
   "empty": {
     "news": "Novosti uskoro stižu",
@@ -244,7 +262,9 @@
     "error": "Greška pri prijavi. Pokušajte ponovo.",
     "confirmTitle": "Prijava potvrđena!",
     "confirmText": "Od sada ćete primati novosti, obavijesti o događajima i rezultatima kluba direktno u inbox.",
-    "backHome": "Natrag na početnu"
+    "backHome": "Natrag na početnu",
+    "errorRequired": "Upišite email adresu.",
+    "errorInvalid": "Upišite ispravnu email adresu."
   },
   "membership": {
     "subtitle": "Ispunite formu i postanite dio naše klupske obitelji.",

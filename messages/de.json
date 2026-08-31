@@ -179,7 +179,25 @@
     "kicker": "Kontaktiere uns",
     "formSending": "Senden…",
     "formSuccess": "Nachricht gesendet!",
-    "formError": "Fehler beim Senden. Bitte erneut versuchen oder direkt schreiben."
+    "formError": "Fehler beim Senden. Bitte erneut versuchen oder direkt schreiben.",
+    "formPhone": "Telefon",
+    "formOptional": "optional",
+    "formTopic": "Thema",
+    "formTopicPlaceholder": "Thema wählen…",
+    "topics": {
+      "clanstvo": "Mitgliedschaft",
+      "momcadi": "Training & Mannschaften",
+      "dogadjaji": "Events & Anmeldungen",
+      "sponzorstvo": "Sponsoring & Spenden",
+      "ostalo": "Sonstiges"
+    },
+    "consentLabel": "Ich habe die <link>Datenschutzerklärung</link> gelesen und bin einverstanden, dass meine Daten zur Bearbeitung der Anfrage verwendet werden.",
+    "errName": "Bitte Namen eingeben.",
+    "errEmail": "Bitte E-Mail-Adresse eingeben.",
+    "errEmailInvalid": "Bitte gültige E-Mail-Adresse eingeben.",
+    "errTopic": "Bitte Thema wählen.",
+    "errMessage": "Bitte Nachricht eingeben.",
+    "errConsent": "Zum Senden ist die Einwilligung zur Datenverarbeitung erforderlich."
   },
   "empty": {
     "news": "News folgen in Kürze",
@@ -244,7 +262,9 @@
     "error": "Fehler bei der Anmeldung. Bitte erneut versuchen.",
     "confirmTitle": "Anmeldung bestätigt!",
     "confirmText": "Ab jetzt erhältst du unsere News, Event-Infos und Vereinsnachrichten direkt in dein Postfach.",
-    "backHome": "Zurück zur Startseite"
+    "backHome": "Zurück zur Startseite",
+    "errorRequired": "Bitte E-Mail-Adresse eingeben.",
+    "errorInvalid": "Bitte gültige E-Mail-Adresse eingeben."
   },
   "membership": {
     "subtitle": "Füllen Sie das Formular aus und werden Sie Teil unserer Klubfamilie.",

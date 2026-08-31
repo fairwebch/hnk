@@ -12,6 +12,16 @@ const CONTACT_TO = process.env.CONTACT_TO || 'info@kroatien-schwyz.ch';
 const FROM = 'HNK Kroatien Schwyz <info@kroatien-schwyz.ch>';
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Allowed topics (dropdown values) → labels for the club inbox.
+const TOPIC_LABELS: Record<string, string> = {
+  clanstvo: 'Članstvo',
+  momcadi: 'Treninzi i momčadi',
+  dogadjaji: 'Događaji i prijave',
+  sponzorstvo: 'Sponzorstvo i donacije',
+  ostalo: 'Ostalo',
+};
+
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
 
@@ -28,11 +38,18 @@ export async function POST(req: Request) {
 
   const name = String(body?.name ?? '').trim();
   const email = String(body?.email ?? '').trim();
+  const phone = String(body?.phone ?? '').trim().slice(0, 60); // optional
+  const topic = String(body?.topic ?? '');
   const message = String(body?.message ?? '').trim();
+  const consent = body?.consent === true;
 
-  if (!name || !email || !message || !emailRe.test(email) || message.length < 3) {
+  if (
+    !name || !email || !message || !emailRe.test(email) || message.length < 3 ||
+    !TOPIC_LABELS[topic] || !consent
+  ) {
     return NextResponse.json({ error: 'validation' }, { status: 422 });
   }
+  const topicLabel = TOPIC_LABELS[topic];
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -46,11 +63,18 @@ export async function POST(req: Request) {
       from: FROM,
       to: [CONTACT_TO],
       replyTo: email,
-      subject: `Kontakt · ${name}`,
-      text: `Ime: ${name}\nEmail: ${email}\n\n${message}`,
+      subject: `Kontakt · ${topicLabel} · ${name}`,
+      text:
+        `Ime: ${name}\nEmail: ${email}\n` +
+        (phone ? `Telefon: ${phone}\n` : '') +
+        `Tema: ${topicLabel}\n` +
+        `Privola za obradu podataka: da (${new Date().toISOString()})\n\n${message}`,
       html: `<div style="font-family:Arial,sans-serif;font-size:15px;color:#111">
-        <p><strong>Ime:</strong> ${esc(name)}<br><strong>Email:</strong> ${esc(email)}</p>
+        <p><strong>Ime:</strong> ${esc(name)}<br><strong>Email:</strong> ${esc(email)}${
+          phone ? `<br><strong>Telefon:</strong> ${esc(phone)}` : ''
+        }<br><strong>Tema:</strong> ${esc(topicLabel)}</p>
         <p style="white-space:pre-wrap">${esc(message)}</p>
+        <p style="font-size:12px;color:#777">Privola za obradu podataka: da (${new Date().toISOString()})</p>
       </div>`,
     });
     if (error) {
