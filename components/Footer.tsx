@@ -51,7 +51,7 @@ export async function Footer() {
           {/* md: the logo block spans both rows on the left, Klub + Kontakt stack right. */}
           <div className="md:row-span-2 lg:row-span-1">
             <div className="flex items-center gap-4">
-              <Image src="/assets/logo-mark.svg" alt="" width={72} height={72} className="block" />
+              <Image src="/assets/logo.svg" alt="" width={96} height={96} className="block" />
               <div>
                 <div className="font-display font-extrabold italic text-white tracking-[.03em] text-[30px] leading-none">
                   HNK KROATIEN
@@ -116,7 +116,7 @@ export async function Footer() {
       {/* Mobile */}
       <div className="md:hidden px-6 pt-9">
         <div className="flex items-center gap-3">
-          <Image src="/assets/logo-mark.svg" alt="" width={56} height={56} className="block" />
+          <Image src="/assets/logo.svg" alt="" width={88} height={88} className="block" />
           <div>
             <div className="font-display font-extrabold italic text-white tracking-[.03em] text-[24px] leading-none">
               HNK KROATIEN
