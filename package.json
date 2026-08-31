@@ -1,0 +1,38 @@
+{
+  "name": "kroatien-schwyz-sajt",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "import:data": "sanity dataset import ./migration/import.ndjson production --replace",
+    "wp:migrate": "node --experimental-strip-types migration/build-ndjson.ts"
+  },
+  "dependencies": {
+    "@portabletext/react": "^3.2.4",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.68.3",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "next": "15.5.23",
+    "next-intl": "^3.26.3",
+    "next-sanity": "^9.8.28",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "resend": "^6.20.0",
+    "sanity": "^3.68.3",
+    "styled-components": "^6.1.14"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  }
+}

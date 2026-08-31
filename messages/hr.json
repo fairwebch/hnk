@@ -1,0 +1,405 @@
+{
+  "meta": {
+    "titleTemplate": "%s · HNK Kroatien Schwyz",
+    "defaultTitle": "HNK Kroatien Schwyz",
+    "description": "Hrvatski nogometni klub u kantonu Schwyz. Od 1995. spajamo sport, prijateljstvo i tradiciju."
+  },
+  "nav": {
+    "pocetna": "Početna",
+    "klub": "Klub",
+    "momcadi": "Momčadi",
+    "novosti": "Novosti",
+    "galerija": "Galerija",
+    "dogadjaji": "Događaji",
+    "sponzoring": "Sponzoring",
+    "kontakt": "Kontakt",
+    "shop": "Shop",
+    "oKlubu": "O klubu",
+    "uprava": "Uprava",
+    "postaniClan": "Postani član"
+  },
+  "klubMenu": {
+    "oKlubuDesc": "Povijest kluba od 1995. godine",
+    "upravaDesc": "Tko vodi klub",
+    "momcadiDesc": "Aktivni, seniori i juniori",
+    "postaniClanDesc": "Pridruži se — na terenu ili izvan njega",
+    "ctaTitle": "Postani dio kluba",
+    "ctaText": "Više od 250 članova i navijača — treniraj, navijaj ili podrži klub."
+  },
+  "header": {
+    "join": "Učlani se",
+    "openMenu": "Otvori izbornik",
+    "closeMenu": "Zatvori izbornik",
+    "languageHr": "HR",
+    "languageDe": "DE"
+  },
+  "common": {
+    "readMore": "Pročitaj više",
+    "viewAll": "Prikaži sve",
+    "back": "Natrag",
+    "backToList": "Natrag na popis",
+    "allCategories": "Sve kategorije",
+    "learnMore": "Saznaj više",
+    "date": "Datum",
+    "location": "Lokacija",
+    "category": "Kategorija"
+  },
+  "categories": {
+    "Eventi": "Eventi",
+    "Novosti": "Novosti",
+    "Skupština": "Skupština",
+    "Sport": "Sport"
+  },
+  "home": {
+    "heroKicker": "Nogometni klub · Kanton Schwyz · 1995",
+    "heroTitle1": "Čuvamo tradiciju.",
+    "heroTitle2": "Gradimo budućnost.",
+    "heroSubtitle": "Hrvatska zajednica u kantonu Schwyz od 1995. — okupljamo generacije, njegujemo tradiciju i otvaramo vrata mladima.",
+    "ctaTeam": "Prijavi ekipu",
+    "ctaJoin": "Učlani se",
+    "stats": {
+      "founded": "Godina osnutka",
+      "years": "Godina tradicije",
+      "teams": "Aktivnih momčadi",
+      "members": "Članova i navijača"
+    },
+    "newsHeading": "Najnovije novosti",
+    "newsKicker": "Iz kluba",
+    "galleryHeading": "Iz galerije",
+    "galleryKicker": "Trenuci",
+    "eventsHeading": "Nadolazeći događaji",
+    "eventsKicker": "Ne propusti",
+    "nextEvent": "Sljedeći događaj",
+    "teamsKicker": "Naše ekipe",
+    "teamsHeading": "Momčadi kluba",
+    "partnersKicker": "Podržavaju nas",
+    "partnersHeading": "Glavni partneri",
+    "ctaTitle": "Postani dio kluba",
+    "ctaText": "Želiš aktivno sudjelovati u razvoju i napredovanju kluba? Pridruži nam se — na terenu ili izvan njega.",
+    "eventRegister": "Prijavi se",
+    "noUpcoming": "Trenutno nema nadolazećih događaja"
+  },
+  "news": {
+    "title": "Novosti",
+    "subtitle": "Vijesti, najave i događanja iz kluba.",
+    "filterAll": "Sve",
+    "kicker": "Novosti i objave",
+    "count": "{count} objava"
+  },
+  "events": {
+    "title": "Događaji",
+    "subtitle": "Klub živi od evenata — pridruži nam se.",
+    "upcoming": "Nadolazeći",
+    "past": "Prošli",
+    "countdownTitle": "Do početka",
+    "days": "dana",
+    "hours": "sati",
+    "minutes": "min",
+    "seconds": "sek",
+    "live": "Događaj je u tijeku!",
+    "finished": "Događaj je završio",
+    "kicker": "Kalendar kluba",
+    "next": "Sljedeći događaj",
+    "featuredKicker": "Ne propusti",
+    "archive": "Prošli događaji",
+    "archiveKicker": "Arhiva",
+    "program": "Program dana",
+    "sponsor": "Sponzor događaja",
+    "register": "Prijavi se",
+    "kotizacija": "Kotizacija",
+    "kapacitet": "Kapacitet",
+    "start": "Početak",
+    "end": "Kraj",
+    "locationLabel": "Lokacija",
+    "infoTitle": "Informacije",
+    "viewGallery": "Pogledaj galeriju",
+    "viewArchive": "Arhiva događaja",
+    "allUpcoming": "Ostali nadolazeći termini"
+  },
+  "gallery": {
+    "title": "Galerija",
+    "subtitle": "Fotografije s utakmica, proslava i klupskih događanja.",
+    "photoCount": "{count, plural, one {# fotografija} few {# fotografije} other {# fotografija}}",
+    "kicker": "Trenuci kluba",
+    "filterAll": "Sve",
+    "catSport": "Sport i turniri",
+    "catFeste": "Zabave i feste",
+    "albumCount": "{count, plural, one {# album} few {# albuma} other {# albuma}}"
+  },
+  "teams": {
+    "title": "Momčadi",
+    "subtitle": "Od najmlađih do seniora — ponos kluba.",
+    "gallery": "Galerija momčadi",
+    "kicker": "Naše ekipe",
+    "trener": "Trener",
+    "liga": "Liga / natjecanje",
+    "termin": "Termin treninga",
+    "soon": "Uskoro",
+    "playerCount": "{count, plural, one {# igrač} few {# igrača} other {# igrača}}",
+    "pozicije": {
+      "golman": "Golmani",
+      "obrana": "Obrana",
+      "vezni": "Vezni red",
+      "napad": "Napad",
+      "ostali": "Igrači"
+    }
+  },
+  "board": {
+    "title": "Uprava",
+    "subtitle": "Upravni odbor broji {count} članova. Klub vode volonterski, uz posao i obitelj.",
+    "kicker": "Ljudi koji vode klub",
+    "ghost": "UPRAVA",
+    "presidentText": "Naš klub žive ljudi koji mu poklanjaju svoje slobodno vrijeme. Uprava vodi financije, momčadi i događaje — od turnira do izleta. Vrata su otvorena svakome tko se želi uključiti.",
+    "leadershipHeading": "Vodstvo kluba",
+    "boardHeading": "Upravni odbor",
+    "band": "{count} članova uprave · svi volonterski · klub od 1995.",
+    "ctaTitle": "Želiš se uključiti u rad kluba?",
+    "ctaText": "Javi se — uvijek ima mjesta za dobre ljude, na terenu i izvan njega."
+  },
+  "sponsors": {
+    "title": "Sponzoring",
+    "subtitle": "Naši partneri čine ovaj klub mogućim.",
+    "packagesHeading": "Sponzorski paketi",
+    "ourSponsors": "Naši sponzori i partneri",
+    "becomeSponsor": "Postani sponzor",
+    "visit": "Posjeti web",
+    "kicker": "Podrži klub",
+    "mostPopular": "Najpopularniji"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "subtitle": "Javite nam se — rado ćemo odgovoriti.",
+    "formName": "Ime i prezime",
+    "formEmail": "E-mail",
+    "formMessage": "Poruka",
+    "formSend": "Pošalji poruku",
+    "addressHeading": "Adresa",
+    "phoneHeading": "Telefon",
+    "emailHeading": "E-mail",
+    "kicker": "Javi nam se",
+    "formSending": "Šaljem…",
+    "formSuccess": "Poruka je poslana!",
+    "formError": "Greška pri slanju. Pokušajte ponovo ili nam pišite direktno.",
+    "formPhone": "Telefon",
+    "formOptional": "neobavezno",
+    "formTopic": "Tema",
+    "formTopicPlaceholder": "Odaberite temu…",
+    "topics": {
+      "clanstvo": "Članstvo",
+      "momcadi": "Treninzi i momčadi",
+      "dogadjaji": "Događaji i prijave",
+      "sponzorstvo": "Sponzorstvo i donacije",
+      "ostalo": "Ostalo"
+    },
+    "consentLabel": "Pročitao/la sam <link>izjavu o zaštiti podataka</link> i prihvaćam da se moji podaci koriste za obradu upita.",
+    "errName": "Upišite ime i prezime.",
+    "errEmail": "Upišite email adresu.",
+    "errEmailInvalid": "Upišite ispravnu email adresu.",
+    "errTopic": "Odaberite temu.",
+    "errMessage": "Upišite poruku.",
+    "errConsent": "Za slanje poruke potrebna je privola za obradu podataka."
+  },
+  "empty": {
+    "news": "Novosti uskoro stižu",
+    "newsSub": "Trenutno nema objavljenih novosti. Vratite se uskoro.",
+    "events": "Događaji uskoro stižu",
+    "eventsSub": "Trenutno nema najavljenih događaja. Vratite se uskoro.",
+    "gallery": "Galerija je u pripremi",
+    "gallerySub": "Fotografije stižu uskoro.",
+    "teams": "Momčadi uskoro",
+    "teamsSub": "Podaci o momčadima bit će objavljeni uskoro.",
+    "board": "Uprava uskoro",
+    "boardSub": "Podaci o upravi bit će objavljeni uskoro.",
+    "sponsors": "Sponzori uskoro",
+    "sponsorsSub": "Popis sponzora bit će objavljen uskoro.",
+    "page": "Sadržaj uskoro",
+    "pageSub": "Ova je stranica u pripremi."
+  },
+  "footer": {
+    "teamsHeading": "Momčadi",
+    "clubHeading": "Klub",
+    "contactHeading": "Kontakt",
+    "impressum": "Impressum",
+    "datenschutz": "Datenschutzerklärung",
+    "links": {
+      "aktivni": "Aktivni",
+      "seniori": "Seniori",
+      "uprava": "Uprava",
+      "sponzoring": "Sponzoring",
+      "postaniClan": "Postani član",
+      "juniori": "Juniori"
+    }
+  },
+  "notFound": {
+    "title": "Stranica nije pronađena",
+    "subtitle": "Tražena stranica ne postoji ili je premještena.",
+    "home": "Natrag na početnu"
+  },
+  "pages": {
+    "klubKicker": "Naša priča",
+    "postaniClanKicker": "Pridruži nam se"
+  },
+  "shop": {
+    "title": "Klupska trgovina",
+    "subtitle": "Službena klupska oprema — Nike, personalizirano za HNK Kroatien Schwyz.",
+    "buy": "Kupi",
+    "viewAll": "Pogledaj sve",
+    "pageTitle": "Trgovina",
+    "pageSubtitle": "Naruči službenu klupsku opremu putem 11teamsports.",
+    "kicker": "Naša oprema",
+    "checkMore": "Provjeri ostalo u trgovini",
+    "checkMoreSub": "Pogledaj cijelu klupsku ponudu na 11teamsports.",
+    "checkMoreBtn": "Otvori trgovinu"
+  },
+  "newsletter": {
+    "kicker": "Ostani u toku",
+    "title": "Prijavite se na naš newsletter",
+    "subtitle": "Novosti, događaji i obavijesti kluba — direktno u inbox.",
+    "placeholder": "Vaš email",
+    "button": "Prijavi se",
+    "sending": "Šaljem…",
+    "success": "Skoro gotovo! Provjerite email i potvrdite prijavu.",
+    "error": "Greška pri prijavi. Pokušajte ponovo.",
+    "confirmTitle": "Prijava potvrđena!",
+    "confirmText": "Od sada ćete primati novosti, obavijesti o događajima i rezultatima kluba direktno u inbox.",
+    "backHome": "Natrag na početnu",
+    "errorRequired": "Upišite email adresu.",
+    "errorInvalid": "Upišite ispravnu email adresu."
+  },
+  "membership": {
+    "subtitle": "Ispunite formu i postanite dio naše klupske obitelji.",
+    "gender": "Spol",
+    "male": "Muško",
+    "female": "Žensko",
+    "firstName": "Ime",
+    "lastName": "Prezime",
+    "street": "Ulica i broj",
+    "streetPlaceholder": "npr. Hauptstrasse 5",
+    "plz": "Poštanski broj",
+    "city": "Mjesto",
+    "phone": "Broj telefona",
+    "optional": "neobavezno",
+    "email": "E-mail",
+    "send": "Pošalji zahtjev",
+    "sending": "Šaljem…",
+    "success": "Hvala! Provjerite email — poslali smo vam potvrdu.",
+    "error": "Greška pri slanju. Pokušajte ponovo ili nam pišite na info@kroatien-schwyz.ch."
+  },
+  "klub": {
+    "subtitle": "Od 1995. godine — priča o klubu, zajednici i ljubavi prema nogometu.",
+    "empty": "Priča je u pripremi.",
+    "emptySub": "Timeline kluba uskoro stiže.",
+    "ctaUpravaTitle": "Upoznaj ljude koji vode klub",
+    "ctaUpravaBtn": "Uprava",
+    "ctaClanTitle": "Postani dio priče",
+    "ctaClanBtn": "Učlani se"
+  },
+  "consent": {
+    "bannerTitle": "Kolačići",
+    "bannerText": "Koristimo nužne kolačiće za rad stranice. Statistiku i vanjske sadržaje (npr. Google kartu) učitavamo samo uz vašu privolu, koju možete u svakom trenutku opozvati. Više informacija u našoj <link>izjavi o zaštiti podataka</link>.",
+    "acceptAll": "Prihvati sve",
+    "rejectAll": "Odbij sve",
+    "settings": "Postavke",
+    "settingsTitle": "Postavke kolačića",
+    "settingsIntro": "Ovdje možete odabrati koje kategorije kolačića i vanjskih usluga dopuštate. Svoj izbor možete u svakom trenutku promijeniti putem poveznice „Postavke kolačića“ u podnožju stranice.",
+    "save": "Spremi izbor",
+    "close": "Zatvori",
+    "alwaysOn": "Uvijek aktivno",
+    "footerLink": "Postavke kolačića",
+    "showServices": "Prikaži detalje usluga",
+    "hideServices": "Sakrij detalje",
+    "providerLabel": "Pružatelj",
+    "purposeLabel": "Svrha",
+    "durationLabel": "Trajanje pohrane",
+    "cat": {
+      "necessary": {
+        "name": "Nužni",
+        "desc": "Potrebni za osnovni rad stranice: jezik, sigurnost i pohrana vašeg odabira kolačića. Ne mogu se isključiti."
+      },
+      "statistics": {
+        "name": "Statistika",
+        "desc": "Anonimizirana statistika posjeta koja nam pomaže poboljšati stranicu. Učitava se samo uz vašu privolu."
+      },
+      "external": {
+        "name": "Vanjski sadržaj",
+        "desc": "Sadržaj trećih strana, npr. Google karta na stranici Kontakt. Bez privole se ne uspostavlja veza s vanjskim poslužiteljima."
+      }
+    },
+    "services": {
+      "consentStore": {
+        "name": "hnk-consent (localStorage)",
+        "provider": "HNK Kroatien Schwyz (ova stranica)",
+        "purpose": "Pohranjuje vaš odabir kolačića, uključujući verziju bannera i točno vrijeme privole.",
+        "duration": "12 mjeseci"
+      },
+      "locale": {
+        "name": "NEXT_LOCALE (kolačić)",
+        "provider": "HNK Kroatien Schwyz (ova stranica)",
+        "purpose": "Pamti odabrani jezik stranice (HR/DE).",
+        "duration": "Do kraja sesije preglednika"
+      },
+      "ga": {
+        "name": "Google Analytics 4 (_ga, _ga_*) — trenutno neaktivno",
+        "provider": "Google Ireland Limited, Dublin, Irska",
+        "purpose": "Anonimizirana statistika posjeta radi poboljšanja stranice. Učitava se tek nakon privole (Google Consent Mode v2).",
+        "duration": "Do 2 godine"
+      },
+      "clarity": {
+        "name": "Microsoft Clarity (_clck, _clsk, MUID)",
+        "provider": "Microsoft Ireland Operations Ltd., Dublin, Irska",
+        "purpose": "Analiza korištenja stranice (toplinske mape, anonimizirane snimke sesija) radi poboljšanja korisničkog iskustva. Učitava se tek nakon privole.",
+        "duration": "Do 13 mjeseci"
+      },
+      "maps": {
+        "name": "Google Maps",
+        "provider": "Google Ireland Limited, Dublin, Irska",
+        "purpose": "Prikaz interaktivne karte s lokacijom kluba na stranici Kontakt.",
+        "duration": "Do 6 mjeseci"
+      }
+    },
+    "map": {
+      "title": "Google karta",
+      "text": "Karta se učitava s Googleovih poslužitelja tek nakon vaše privole. Klikom na „Prikaži kartu“ pristajete na kategoriju „Vanjski sadržaj“ — vaš izbor bit će spremljen.",
+      "button": "Prikaži kartu",
+      "external": "Ili otvori kartu izravno na Google Maps"
+    }
+  },
+  "prijava": {
+    "title": "Prijava na događaj",
+    "provjera": "Provjera pristupa…",
+    "samoClanovi": "Prijave su otvorene samo za članove — link za prijavu dobit ćeš u newsletteru.",
+    "zatvorene": "Prijave za ovaj događaj trenutno su zatvorene.",
+    "rokIstekao": "Rok za prijavu je istekao.",
+    "rokDo": "Prijave su otvorene do {datum}",
+    "ime": "Ime",
+    "prezime": "Prezime",
+    "email": "E-mail",
+    "telefon": "Telefon",
+    "neobavezno": "neobavezno",
+    "brojOsoba": "Broj osoba",
+    "napomena": "Napomena",
+    "nazivEkipe": "Naziv ekipe",
+    "kontaktOsoba": "Kontakt osoba",
+    "kotizacijaInfo": "Kotizacija: {iznos}. Informacije o plaćanju dobit ćeš u e-mailu s potvrdom.",
+    "posalji": "Pošalji prijavu",
+    "saljem": "Šaljem…",
+    "greska": "Greška pri slanju. Pokušaj ponovo ili nam piši na info@kroatien-schwyz.ch.",
+    "privatnost": "Podatke koristimo isključivo za organizaciju ovog događaja. Prijavu možeš otkazati preko linka u e-mailu s potvrdom.",
+    "uspjehNaslov": "Prijava zaprimljena!",
+    "uspjehTekst": "Poslali smo ti e-mail s potvrdom i linkom za otkazivanje. Vidimo se!",
+    "otkaziTitle": "Otkazivanje prijave",
+    "otkaziSubtitle": "Otkaži svoju prijavu na događaj.",
+    "otkaziPotvrdaTekst": "Želiš li stvarno otkazati svoju prijavu? Ova radnja se ne može poništiti — za ponovnu prijavu ispuni formu na stranici događaja.",
+    "otkaziPotvrdi": "Da, otkaži prijavu",
+    "otkazujem": "Otkazujem…",
+    "otkaziUspjeh": "Prijava je otkazana",
+    "otkaziVec": "Prijava je već bila otkazana",
+    "otkaziUspjehTekst": "Tvoja prijava na događaj „{dogadjaj}“ je otkazana. Ako se predomisliš, možeš se ponovo prijaviti preko stranice događaja.",
+    "otkaziUspjehTekstBez": "Tvoja prijava je otkazana. Ako se predomisliš, možeš se ponovo prijaviti preko stranice događaja.",
+    "otkaziNemaTokena": "Nedostaje kod za otkazivanje",
+    "otkaziNemaTokenaTekst": "Otvori link za otkazivanje iz e-maila s potvrdom prijave.",
+    "otkaziNijePronadjena": "Prijava nije pronađena",
+    "otkaziNijePronadjenaTekst": "Link nije valjan. Provjeri jesi li otvorio/la cijeli link iz e-maila ili nam piši na info@kroatien-schwyz.ch.",
+    "natragNaDogadjaje": "Natrag na događaje"
+  }
+}

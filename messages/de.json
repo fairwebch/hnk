@@ -1,0 +1,405 @@
+{
+  "meta": {
+    "titleTemplate": "%s · HNK Kroatien Schwyz",
+    "defaultTitle": "HNK Kroatien Schwyz",
+    "description": "Kroatischer Fussballverein im Kanton Schwyz. Seit 1995 verbinden wir Sport, Freundschaft und Tradition."
+  },
+  "nav": {
+    "pocetna": "Startseite",
+    "klub": "Verein",
+    "momcadi": "Mannschaften",
+    "novosti": "News",
+    "galerija": "Galerie",
+    "dogadjaji": "Events",
+    "sponzoring": "Sponsoring",
+    "kontakt": "Kontakt",
+    "shop": "Shop",
+    "oKlubu": "Über den Verein",
+    "uprava": "Vorstand",
+    "postaniClan": "Mitglied werden"
+  },
+  "klubMenu": {
+    "oKlubuDesc": "Vereinsgeschichte seit 1995",
+    "upravaDesc": "Wer den Verein führt",
+    "momcadiDesc": "Aktive, Senioren und Junioren",
+    "postaniClanDesc": "Mach mit — auf dem Platz oder daneben",
+    "ctaTitle": "Werde Teil des Vereins",
+    "ctaText": "Über 250 Mitglieder und Fans — spiel mit, feuere an oder unterstütze den Verein."
+  },
+  "header": {
+    "join": "Mitglied werden",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schliessen",
+    "languageHr": "HR",
+    "languageDe": "DE"
+  },
+  "common": {
+    "readMore": "Mehr lesen",
+    "viewAll": "Alle anzeigen",
+    "back": "Zurück",
+    "backToList": "Zurück zur Übersicht",
+    "allCategories": "Alle Kategorien",
+    "learnMore": "Mehr erfahren",
+    "date": "Datum",
+    "location": "Ort",
+    "category": "Kategorie"
+  },
+  "categories": {
+    "Eventi": "Events",
+    "Novosti": "News",
+    "Skupština": "Versammlung",
+    "Sport": "Sport"
+  },
+  "home": {
+    "heroKicker": "Fussballverein · Kanton Schwyz · 1995",
+    "heroTitle1": "Wir bewahren Tradition.",
+    "heroTitle2": "Wir bauen Zukunft.",
+    "heroSubtitle": "Kroatische Gemeinschaft im Kanton Schwyz seit 1995 — wir bringen Generationen zusammen, pflegen unsere Tradition und öffnen jungen Menschen die Tür.",
+    "ctaTeam": "Team anmelden",
+    "ctaJoin": "Mitglied werden",
+    "stats": {
+      "founded": "Gründungsjahr",
+      "years": "Jahre Tradition",
+      "teams": "Aktive Mannschaften",
+      "members": "Mitglieder & Fans"
+    },
+    "newsHeading": "Neueste News",
+    "newsKicker": "Aus dem Verein",
+    "galleryHeading": "Aus der Galerie",
+    "galleryKicker": "Momente",
+    "eventsHeading": "Kommende Events",
+    "eventsKicker": "Nicht verpassen",
+    "nextEvent": "Nächstes Event",
+    "teamsKicker": "Unsere Teams",
+    "teamsHeading": "Mannschaften",
+    "partnersKicker": "Sie unterstützen uns",
+    "partnersHeading": "Hauptpartner",
+    "ctaTitle": "Werde Teil des Vereins",
+    "ctaText": "Möchtest du aktiv am Vereinsleben teilnehmen? Mach mit — auf dem Platz oder daneben.",
+    "eventRegister": "Anmelden",
+    "noUpcoming": "Zurzeit keine bevorstehenden Veranstaltungen"
+  },
+  "news": {
+    "title": "News",
+    "subtitle": "Neuigkeiten, Ankündigungen und Ereignisse aus dem Verein.",
+    "filterAll": "Alle",
+    "kicker": "News & Mitteilungen",
+    "count": "{count} Beiträge"
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Der Verein lebt von Events — sei dabei.",
+    "upcoming": "Kommende",
+    "past": "Vergangene",
+    "countdownTitle": "Bis zum Start",
+    "days": "Tage",
+    "hours": "Std",
+    "minutes": "Min",
+    "seconds": "Sek",
+    "live": "Event läuft gerade!",
+    "finished": "Event beendet",
+    "kicker": "Vereinskalender",
+    "next": "Nächste Veranstaltung",
+    "featuredKicker": "Nicht verpassen",
+    "archive": "Vergangene Veranstaltungen",
+    "archiveKicker": "Archiv",
+    "program": "Tagesprogramm",
+    "sponsor": "Event-Sponsor",
+    "register": "Anmelden",
+    "kotizacija": "Startgeld",
+    "kapacitet": "Kapazität",
+    "start": "Beginn",
+    "end": "Ende",
+    "locationLabel": "Ort",
+    "infoTitle": "Informationen",
+    "viewGallery": "Galerie ansehen",
+    "viewArchive": "Veranstaltungsarchiv",
+    "allUpcoming": "Weitere Termine"
+  },
+  "gallery": {
+    "title": "Galerie",
+    "subtitle": "Fotos von Spielen, Feiern und Vereinsanlässen.",
+    "photoCount": "{count, plural, one {# Foto} other {# Fotos}}",
+    "kicker": "Vereinsmomente",
+    "filterAll": "Alle",
+    "catSport": "Sport & Turniere",
+    "catFeste": "Feste & Anlässe",
+    "albumCount": "{count, plural, one {# Album} other {# Alben}}"
+  },
+  "teams": {
+    "title": "Mannschaften",
+    "subtitle": "Von den Jüngsten bis zu den Senioren — der Stolz des Vereins.",
+    "gallery": "Mannschaftsgalerie",
+    "kicker": "Unsere Teams",
+    "trener": "Trainer",
+    "liga": "Liga / Wettbewerb",
+    "termin": "Training",
+    "soon": "Demnächst",
+    "playerCount": "{count, plural, one {# Spieler} other {# Spieler}}",
+    "pozicije": {
+      "golman": "Torhüter",
+      "obrana": "Abwehr",
+      "vezni": "Mittelfeld",
+      "napad": "Angriff",
+      "ostali": "Spieler"
+    }
+  },
+  "board": {
+    "title": "Vorstand",
+    "subtitle": "Der Vorstand zählt {count} Mitglieder. Sie führen den Verein ehrenamtlich — neben Beruf und Familie.",
+    "kicker": "Menschen hinter dem Verein",
+    "ghost": "VORSTAND",
+    "presidentText": "Unser Verein lebt von Menschen, die ihm ihre Freizeit schenken. Der Vorstand kümmert sich um Finanzen, Mannschaften und Anlässe — vom Turnier bis zum Ausflug. Die Tür steht allen offen, die mitmachen möchten.",
+    "leadershipHeading": "Vereinsführung",
+    "boardHeading": "Vorstandsmitglieder",
+    "band": "{count} Vorstandsmitglieder · alle ehrenamtlich · Verein seit 1995",
+    "ctaTitle": "Möchtest du dich im Verein engagieren?",
+    "ctaText": "Melde dich — gute Leute finden immer einen Platz, auf dem Feld und daneben."
+  },
+  "sponsors": {
+    "title": "Sponsoring",
+    "subtitle": "Unsere Partner machen diesen Verein möglich.",
+    "packagesHeading": "Sponsoring-Pakete",
+    "ourSponsors": "Unsere Sponsoren & Partner",
+    "becomeSponsor": "Sponsor werden",
+    "visit": "Website besuchen",
+    "kicker": "Unterstütze den Verein",
+    "mostPopular": "Am beliebtesten"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "subtitle": "Melden Sie sich — wir antworten gerne.",
+    "formName": "Name",
+    "formEmail": "E-Mail",
+    "formMessage": "Nachricht",
+    "formSend": "Nachricht senden",
+    "addressHeading": "Adresse",
+    "phoneHeading": "Telefon",
+    "emailHeading": "E-Mail",
+    "kicker": "Kontaktiere uns",
+    "formSending": "Senden…",
+    "formSuccess": "Nachricht gesendet!",
+    "formError": "Fehler beim Senden. Bitte erneut versuchen oder direkt schreiben.",
+    "formPhone": "Telefon",
+    "formOptional": "optional",
+    "formTopic": "Thema",
+    "formTopicPlaceholder": "Thema wählen…",
+    "topics": {
+      "clanstvo": "Mitgliedschaft",
+      "momcadi": "Training & Mannschaften",
+      "dogadjaji": "Events & Anmeldungen",
+      "sponzorstvo": "Sponsoring & Spenden",
+      "ostalo": "Sonstiges"
+    },
+    "consentLabel": "Ich habe die <link>Datenschutzerklärung</link> gelesen und bin einverstanden, dass meine Daten zur Bearbeitung der Anfrage verwendet werden.",
+    "errName": "Bitte Namen eingeben.",
+    "errEmail": "Bitte E-Mail-Adresse eingeben.",
+    "errEmailInvalid": "Bitte gültige E-Mail-Adresse eingeben.",
+    "errTopic": "Bitte Thema wählen.",
+    "errMessage": "Bitte Nachricht eingeben.",
+    "errConsent": "Zum Senden ist die Einwilligung zur Datenverarbeitung erforderlich."
+  },
+  "empty": {
+    "news": "News folgen in Kürze",
+    "newsSub": "Momentan gibt es keine veröffentlichten News. Schauen Sie bald wieder vorbei.",
+    "events": "Events folgen in Kürze",
+    "eventsSub": "Momentan sind keine Events angekündigt. Schauen Sie bald wieder vorbei.",
+    "gallery": "Galerie in Vorbereitung",
+    "gallerySub": "Fotos folgen in Kürze.",
+    "teams": "Mannschaften folgen",
+    "teamsSub": "Angaben zu den Mannschaften folgen in Kürze.",
+    "board": "Vorstand folgt",
+    "boardSub": "Angaben zum Vorstand folgen in Kürze.",
+    "sponsors": "Sponsoren folgen",
+    "sponsorsSub": "Die Sponsorenliste folgt in Kürze.",
+    "page": "Inhalt folgt",
+    "pageSub": "Diese Seite ist in Vorbereitung."
+  },
+  "footer": {
+    "teamsHeading": "Mannschaften",
+    "clubHeading": "Verein",
+    "contactHeading": "Kontakt",
+    "impressum": "Impressum",
+    "datenschutz": "Datenschutzerklärung",
+    "links": {
+      "aktivni": "Aktive",
+      "seniori": "Senioren",
+      "uprava": "Vorstand",
+      "sponzoring": "Sponsoring",
+      "postaniClan": "Mitglied werden",
+      "juniori": "Junioren"
+    }
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "subtitle": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+    "home": "Zurück zur Startseite"
+  },
+  "pages": {
+    "klubKicker": "Unsere Geschichte",
+    "postaniClanKicker": "Mach mit"
+  },
+  "shop": {
+    "title": "Vereinsshop",
+    "subtitle": "Offizielle Vereinsausrüstung — Nike, personalisiert für HNK Kroatien Schwyz.",
+    "buy": "Kaufen",
+    "viewAll": "Alle ansehen",
+    "pageTitle": "Shop",
+    "pageSubtitle": "Bestelle die offizielle Vereinsausrüstung über 11teamsports.",
+    "kicker": "Unsere Ausrüstung",
+    "checkMore": "Mehr im Shop entdecken",
+    "checkMoreSub": "Sieh dir das ganze Vereinssortiment auf 11teamsports an.",
+    "checkMoreBtn": "Shop öffnen"
+  },
+  "newsletter": {
+    "kicker": "Bleib auf dem Laufenden",
+    "title": "Melde dich für unseren Newsletter an",
+    "subtitle": "News, Events und Vereinsinfos — direkt in dein Postfach.",
+    "placeholder": "Deine E-Mail",
+    "button": "Anmelden",
+    "sending": "Senden…",
+    "success": "Fast geschafft! Prüfe deine E-Mails und bestätige die Anmeldung.",
+    "error": "Fehler bei der Anmeldung. Bitte erneut versuchen.",
+    "confirmTitle": "Anmeldung bestätigt!",
+    "confirmText": "Ab jetzt erhältst du unsere News, Event-Infos und Vereinsnachrichten direkt in dein Postfach.",
+    "backHome": "Zurück zur Startseite",
+    "errorRequired": "Bitte E-Mail-Adresse eingeben.",
+    "errorInvalid": "Bitte gültige E-Mail-Adresse eingeben."
+  },
+  "membership": {
+    "subtitle": "Füllen Sie das Formular aus und werden Sie Teil unserer Klubfamilie.",
+    "gender": "Geschlecht",
+    "male": "Männlich",
+    "female": "Weiblich",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "street": "Strasse und Nr.",
+    "streetPlaceholder": "z. B. Hauptstrasse 5",
+    "plz": "PLZ",
+    "city": "Ort",
+    "phone": "Telefonnummer",
+    "optional": "optional",
+    "email": "E-Mail",
+    "send": "Antrag senden",
+    "sending": "Wird gesendet…",
+    "success": "Danke! Prüfen Sie Ihr E-Mail-Postfach — wir haben Ihnen eine Bestätigung gesendet.",
+    "error": "Fehler beim Senden. Bitte erneut versuchen oder schreiben Sie uns an info@kroatien-schwyz.ch."
+  },
+  "klub": {
+    "subtitle": "Seit 1995 — die Geschichte eines Vereins, einer Gemeinschaft und der Liebe zum Fussball.",
+    "empty": "Die Geschichte ist in Arbeit.",
+    "emptySub": "Die Vereins-Timeline folgt in Kürze.",
+    "ctaUpravaTitle": "Lerne die Menschen kennen, die den Verein führen",
+    "ctaUpravaBtn": "Vorstand",
+    "ctaClanTitle": "Werde Teil der Geschichte",
+    "ctaClanBtn": "Mitglied werden"
+  },
+  "consent": {
+    "bannerTitle": "Cookies",
+    "bannerText": "Wir verwenden notwendige Cookies für den Betrieb der Website. Statistik und externe Inhalte (z. B. Google Karte) laden wir nur mit Ihrer Einwilligung, die Sie jederzeit widerrufen können. Mehr Informationen in unserer <link>Datenschutzerklärung</link>.",
+    "acceptAll": "Alle akzeptieren",
+    "rejectAll": "Alle ablehnen",
+    "settings": "Einstellungen",
+    "settingsTitle": "Cookie-Einstellungen",
+    "settingsIntro": "Hier können Sie wählen, welche Cookie-Kategorien und externen Dienste Sie zulassen. Ihre Auswahl können Sie jederzeit über den Link «Cookie-Einstellungen» im Seitenfuss ändern.",
+    "save": "Auswahl speichern",
+    "close": "Schliessen",
+    "alwaysOn": "Immer aktiv",
+    "footerLink": "Cookie-Einstellungen",
+    "showServices": "Dienste anzeigen",
+    "hideServices": "Details ausblenden",
+    "providerLabel": "Anbieter",
+    "purposeLabel": "Zweck",
+    "durationLabel": "Speicherdauer",
+    "cat": {
+      "necessary": {
+        "name": "Notwendig",
+        "desc": "Erforderlich für den Grundbetrieb der Website: Sprache, Sicherheit und Speicherung Ihrer Cookie-Auswahl. Können nicht deaktiviert werden."
+      },
+      "statistics": {
+        "name": "Statistik",
+        "desc": "Anonymisierte Besucherstatistik, die uns hilft, die Website zu verbessern. Wird nur mit Ihrer Einwilligung geladen."
+      },
+      "external": {
+        "name": "Externe Inhalte",
+        "desc": "Inhalte von Drittanbietern, z. B. die Google Karte auf der Kontaktseite. Ohne Einwilligung wird keine Verbindung zu externen Servern aufgebaut."
+      }
+    },
+    "services": {
+      "consentStore": {
+        "name": "hnk-consent (localStorage)",
+        "provider": "HNK Kroatien Schwyz (diese Website)",
+        "purpose": "Speichert Ihre Cookie-Auswahl, einschliesslich Banner-Version und genauem Zeitpunkt der Einwilligung.",
+        "duration": "12 Monate"
+      },
+      "locale": {
+        "name": "NEXT_LOCALE (Cookie)",
+        "provider": "HNK Kroatien Schwyz (diese Website)",
+        "purpose": "Merkt sich die gewählte Sprache der Website (HR/DE).",
+        "duration": "Bis zum Ende der Browsersitzung"
+      },
+      "ga": {
+        "name": "Google Analytics 4 (_ga, _ga_*) — derzeit inaktiv",
+        "provider": "Google Ireland Limited, Dublin, Irland",
+        "purpose": "Anonymisierte Besucherstatistik zur Verbesserung der Website. Wird erst nach Einwilligung geladen (Google Consent Mode v2).",
+        "duration": "Bis zu 2 Jahre"
+      },
+      "clarity": {
+        "name": "Microsoft Clarity (_clck, _clsk, MUID)",
+        "provider": "Microsoft Ireland Operations Ltd., Dublin, Irland",
+        "purpose": "Analyse der Website-Nutzung (Heatmaps, anonymisierte Sitzungsaufzeichnungen) zur Verbesserung der Benutzererfahrung. Wird erst nach Einwilligung geladen.",
+        "duration": "Bis zu 13 Monate"
+      },
+      "maps": {
+        "name": "Google Maps",
+        "provider": "Google Ireland Limited, Dublin, Irland",
+        "purpose": "Anzeige einer interaktiven Karte mit dem Vereinsstandort auf der Kontaktseite.",
+        "duration": "Bis zu 6 Monate"
+      }
+    },
+    "map": {
+      "title": "Google Karte",
+      "text": "Die Karte wird erst nach Ihrer Einwilligung von Google-Servern geladen. Mit Klick auf «Karte anzeigen» willigen Sie in die Kategorie «Externe Inhalte» ein — Ihre Auswahl wird gespeichert.",
+      "button": "Karte anzeigen",
+      "external": "Oder Karte direkt auf Google Maps öffnen"
+    }
+  },
+  "prijava": {
+    "title": "Anmeldung zum Event",
+    "provjera": "Zugang wird geprüft…",
+    "samoClanovi": "Die Anmeldung ist nur für Mitglieder offen — den Anmeldelink erhältst du im Newsletter.",
+    "zatvorene": "Die Anmeldung für dieses Event ist zurzeit geschlossen.",
+    "rokIstekao": "Die Anmeldefrist ist abgelaufen.",
+    "rokDo": "Anmeldung offen bis {datum}",
+    "ime": "Vorname",
+    "prezime": "Nachname",
+    "email": "E-Mail",
+    "telefon": "Telefon",
+    "neobavezno": "optional",
+    "brojOsoba": "Anzahl Personen",
+    "napomena": "Bemerkung",
+    "nazivEkipe": "Teamname",
+    "kontaktOsoba": "Kontaktperson",
+    "kotizacijaInfo": "Startgeld: {iznos}. Angaben zur Zahlung erhältst du in der Bestätigungs-E-Mail.",
+    "posalji": "Anmeldung senden",
+    "saljem": "Wird gesendet…",
+    "greska": "Fehler beim Senden. Bitte erneut versuchen oder schreib uns an info@kroatien-schwyz.ch.",
+    "privatnost": "Wir verwenden die Daten ausschliesslich für die Organisation dieses Events. Die Anmeldung kannst du über den Link in der Bestätigungs-E-Mail stornieren.",
+    "uspjehNaslov": "Anmeldung eingegangen!",
+    "uspjehTekst": "Wir haben dir eine Bestätigungs-E-Mail mit einem Stornierungslink gesendet. Bis bald!",
+    "otkaziTitle": "Anmeldung stornieren",
+    "otkaziSubtitle": "Storniere deine Anmeldung zum Event.",
+    "otkaziPotvrdaTekst": "Möchtest du deine Anmeldung wirklich stornieren? Dieser Schritt kann nicht rückgängig gemacht werden — für eine erneute Anmeldung fülle das Formular auf der Eventseite aus.",
+    "otkaziPotvrdi": "Ja, Anmeldung stornieren",
+    "otkazujem": "Wird storniert…",
+    "otkaziUspjeh": "Anmeldung storniert",
+    "otkaziVec": "Anmeldung war bereits storniert",
+    "otkaziUspjehTekst": "Deine Anmeldung zum Event «{dogadjaj}» wurde storniert. Falls du es dir anders überlegst, kannst du dich über die Eventseite erneut anmelden.",
+    "otkaziUspjehTekstBez": "Deine Anmeldung wurde storniert. Falls du es dir anders überlegst, kannst du dich über die Eventseite erneut anmelden.",
+    "otkaziNemaTokena": "Stornierungscode fehlt",
+    "otkaziNemaTokenaTekst": "Öffne den Stornierungslink aus der Bestätigungs-E-Mail deiner Anmeldung.",
+    "otkaziNijePronadjena": "Anmeldung nicht gefunden",
+    "otkaziNijePronadjenaTekst": "Der Link ist ungültig. Prüfe, ob du den vollständigen Link aus der E-Mail geöffnet hast, oder schreib uns an info@kroatien-schwyz.ch.",
+    "natragNaDogadjaje": "Zurück zu den Events"
+  }
+}

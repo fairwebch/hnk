@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    /* Width system — the ONE source of truth for page widths. */
+    --shell: 1440px; /* header, sections, footer, grids */
+    /* Calibrated for 65-75 chars/line: Barlow @ 18px on 600px = ~74 chars
+       (760px would give ~96 — the font runs narrow). */
+    --prose: 600px;
+    --gutter: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    :root {
+      --gutter: 2rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --gutter: 2.5rem;
+    }
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Anchor jumps must clear the fixed header (64px bar / 44+84px on lg). */
+    scroll-padding-top: 64px;
+  }
+  @media (min-width: 1024px) {
+    html {
+      scroll-padding-top: 128px;
+    }
+  }
+
+  body {
+    @apply bg-paper text-content font-sans antialiased overflow-x-hidden;
+    /* The fixed header animates its height on scroll — scroll anchoring must
+       never "compensate" for it (it caused a scrollY feedback loop). */
+    overflow-anchor: none;
+  }
+
+  ::selection {
+    background: #d8232f;
+    color: #fff;
+  }
+
+  /* Focus system: no ring for pointer/touch (incl. the programmatic focus
+     return from the mobile-menu trap), a clear club-red ring for keyboard.
+     Never bare outline:none — :focus-visible replaces it (WCAG 2.4.7). */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus {
+    outline: none;
+  }
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid #d8232f;
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  /* Croatian checkerboard strip */
+  .sahovnica-strip {
+    height: 8px;
+    background: repeating-conic-gradient(#d8232f 0% 25%, #ffffff 0% 50%) 0 0 / 16px 16px;
+  }
+
+  /* Skewed red CTA button (matches design) */
+  .btn-cta {
+    @apply inline-flex items-center bg-croatia text-white shadow-cta transition-colors;
+    transform: skewX(-8deg);
+  }
+  .btn-cta:hover {
+    @apply bg-croatia-dark;
+  }
+  .btn-cta > span {
+    @apply font-display font-extrabold uppercase tracking-wider2 whitespace-nowrap;
+    transform: skewX(8deg);
+  }
+
+  /* Secondary skewed CTA (outline) — pairs with .btn-cta on navy */
+  .btn-cta-outline {
+    @apply inline-flex items-center border-2 border-slateblue-600 bg-transparent text-white transition-colors;
+    transform: skewX(-8deg);
+  }
+  .btn-cta-outline:hover {
+    @apply border-croatia;
+  }
+  .btn-cta-outline > span {
+    @apply font-display font-extrabold uppercase tracking-wider2 whitespace-nowrap;
+    transform: skewX(8deg);
+  }
+
+  /* Outlined ghost button — used on dark (navy) sections */
+  .btn-ghost {
+    @apply inline-flex items-center border-2 border-slateblue-700 text-white font-display font-bold uppercase tracking-wider2 transition-colors;
+  }
+  .btn-ghost:hover {
+    @apply border-croatia text-white;
+  }
+
+  /* Outlined ghost button — for light sections */
+  .btn-ghost-light {
+    @apply inline-flex items-center border-2 border-content/30 text-content font-display font-bold uppercase tracking-wider2 transition-colors;
+  }
+  .btn-ghost-light:hover {
+    @apply border-croatia text-croatia;
+  }
+
+  /* Section kicker label */
+  .kicker {
+    @apply font-display font-bold uppercase text-croatia tracking-widest2;
+  }
+
+  /* Display heading — Barlow Condensed italic 800 uppercase */
+  .h-display {
+    @apply font-display font-extrabold italic uppercase;
+  }
+
+  /* NOTE: card surfaces are drawn by components/ui/Card.tsx — the single
+     source of truth for card styling. Only the dashed empty-state surface
+     stays as a utility. */
+
+  /* Category chip (pink) */
+  .chip {
+    @apply inline-flex items-center bg-chip text-croatia font-display font-bold uppercase text-[11px] tracking-wider2 px-2.5 py-1;
+  }
+
+  /* Empty-state dashed card */
+  .card-dashed {
+    @apply border-2 border-dashed border-line bg-white/60;
+  }
+
+  /* White surface with the bottom-right corner cut off on the diagonal —
+     same 45° as the sahovnica strip. Size via --cut. */
+  .corner-cut {
+    --cut: 28px;
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - var(--cut)),
+      calc(100% - var(--cut)) 100%,
+      0 100%
+    );
+  }
+}
+
+@layer utilities {
+  /* Fluid containers driven by the :root width variables — change widths
+     there, nowhere else. (.container-wide was removed; use .container-x.) */
+  .container-x {
+    width: min(100% - var(--gutter) * 2, var(--shell));
+    margin-inline: auto;
+  }
+  .prose-x {
+    width: min(100% - var(--gutter) * 2, var(--prose));
+    margin-inline: auto;
+  }
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
