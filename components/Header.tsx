@@ -319,8 +319,8 @@ export function Header() {
                 fluid
                 imgClassName={`transition-[filter] duration-200 ease-out ${
                   scrolled
-                    ? 'drop-shadow-[0_3px_8px_rgba(0,0,0,.35)]'
-                    : 'drop-shadow-[0_8px_18px_rgba(0,0,0,.4)]'
+                    ? 'drop-shadow-[0_2px_5px_rgba(0,0,0,.25)]'
+                    : 'drop-shadow-[0_3px_8px_rgba(0,0,0,.28)]'
                 }`}
               />
             </div>
