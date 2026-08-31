@@ -10,7 +10,6 @@ import {
   galerijeTeaserQuery,
   homeCountsQuery,
   postavkeSajtaQuery,
-  openTeamEventSlugQuery,
 } from '@/sanity/lib/queries';
 import type { Novost, Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
 import { NewsHighlights } from '@/components/NewsHighlights';
@@ -43,7 +42,7 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [news, nextEvent, teams, sponsors, galleries, counts, postavke, teamEventSlug] =
+  const [news, nextEvent, teams, sponsors, galleries, counts, postavke] =
     await Promise.all([
       sanityFetch<Novost[]>(latestNovostiQuery, { limit: 5 }, []),
       sanityFetch<Dogadjaj | null>(nextDogadjajQuery, {}, null),
@@ -56,7 +55,6 @@ export default async function HomePage({
         { novosti: 0, momcadi: 0, galerije: 0 },
       ),
       sanityFetch<{ heroSlike?: any[] } | null>(postavkeSajtaQuery, {}, null),
-      sanityFetch<string | null>(openTeamEventSlugQuery, {}, null),
     ]);
 
   const heroSrcs = (postavke?.heroSlike ?? [])
@@ -92,7 +90,6 @@ export default async function HomePage({
         <div className="container-x relative z-10 py-20 md:py-28 pb-28 md:pb-36">
           <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-10 lg:gap-14 items-center">
             <div>
-              <div className="kicker text-[13px] mb-4">{t('home.heroKicker')}</div>
               <h1 className="h-display text-white tracking-[.01em] text-[2.6rem] sm:text-6xl md:text-7xl leading-[0.92] max-w-4xl break-words">
                 <span className="block">{t('home.heroTitle1')}</span>
                 <span className="block text-croatia">{t('home.heroTitle2')}</span>
@@ -103,12 +100,6 @@ export default async function HomePage({
               <div className="flex flex-wrap gap-4 mt-9">
                 <Link href="/postani-clan" className="btn-cta px-6 py-3.5">
                   <span>{t('home.ctaJoin')}</span>
-                </Link>
-                <Link
-                  href={teamEventSlug ? `/dogadjaji/${teamEventSlug}` : '/dogadjaji'}
-                  className="btn-ghost px-6 py-3.5 text-sm"
-                >
-                  {t('home.ctaTeam')} →
                 </Link>
               </div>
             </div>
