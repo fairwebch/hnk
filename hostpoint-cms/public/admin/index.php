@@ -29,6 +29,7 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/sponzor
 <nav class="admin-nav">
   <a href="/admin/index.php" class="is-active">Sponzori</a>
   <a href="/admin/uprava.php">Uprava</a>
+  <a href="/admin/stranice.php">Stranice</a>
 </nav>
 
 <main class="admin-main">

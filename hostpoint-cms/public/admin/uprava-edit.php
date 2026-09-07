@@ -130,6 +130,7 @@ $v = fn(string $key, $default = '') => htmlspecialchars((string) ($_POST[$key] ?
 <nav class="admin-nav">
   <a href="/admin/index.php">Sponzori</a>
   <a href="/admin/uprava.php" class="is-active">Uprava</a>
+  <a href="/admin/stranice.php">Stranice</a>
 </nav>
 
 <main class="admin-main admin-main--narrow">

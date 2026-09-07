@@ -109,3 +109,36 @@ CREATE TABLE IF NOT EXISTS clan_uprave (
   KEY idx_redoslijed (redoslijed),
   KEY idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
+-- stranice — odgovara Sanity tipu "stranica" (title, slug, intro, body).
+-- Fiksni, poznati skup stranica (isto kao u Sanity shemi): kontakt,
+-- postani-clan, impressum, datenschutzerklarung — nema dinamičke [slug] rute.
+-- title/intro su Sanity "localeString"/"localeText" pa postaju _hr/_de kolone
+-- (isti obrazac kao ranije). body je Sanity Portable Text (rich text) —
+-- ovdje pojednostavljeno na Markdown izvor (podskup: **bold**, *italic*,
+-- ## / ###, > citat, - lista, 1. lista, [link](url); bez slika u body-ju,
+-- stvarni sadržaj ih ne koristi). includes/markdown.php ga pretvara u HTML
+-- pri svakom čitanju (izvor ostaje markdown radi urednog daljnjeg uređivanja).
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS stranice (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  slug              VARCHAR(96) NOT NULL,
+
+  naslov_hr         VARCHAR(190) NOT NULL,
+  naslov_de         VARCHAR(190) NULL,
+  uvod_hr           TEXT NULL,
+  uvod_de           TEXT NULL,
+  sadrzaj_hr        MEDIUMTEXT NULL,   -- Markdown izvor
+  sadrzaj_de        MEDIUMTEXT NULL,   -- Markdown izvor
+
+  -- Entwurf/Veröffentlicht: javni API vraća samo 'veroeffentlicht'.
+  status            ENUM('entwurf','veroeffentlicht') NOT NULL DEFAULT 'veroeffentlicht',
+
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_slug (slug),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

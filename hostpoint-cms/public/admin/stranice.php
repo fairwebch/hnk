@@ -5,8 +5,7 @@ require __DIR__ . '/includes/auth.php';
 
 $user = hnkcms_require_login();
 
-$rows = hnkcms_db()->query('SELECT * FROM clan_uprave ORDER BY redoslijed ASC, id ASC')->fetchAll();
-$uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/clan-uprave';
+$rows = hnkcms_db()->query('SELECT * FROM stranice ORDER BY naslov_hr ASC')->fetchAll();
 ?>
 <!doctype html>
 <html lang="hr">
@@ -14,7 +13,7 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/clan-up
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>HNK CMS · Uprava</title>
+<title>HNK CMS · Stranice</title>
 <link rel="stylesheet" href="/admin/assets/admin.css">
 </head>
 <body class="admin-body">
@@ -28,14 +27,14 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/clan-up
 
 <nav class="admin-nav">
   <a href="/admin/index.php">Sponzori</a>
-  <a href="/admin/uprava.php" class="is-active">Uprava</a>
-  <a href="/admin/stranice.php">Stranice</a>
+  <a href="/admin/uprava.php">Uprava</a>
+  <a href="/admin/stranice.php" class="is-active">Stranice</a>
 </nav>
 
 <main class="admin-main">
   <div class="admin-toolbar">
-    <h2>Uprava</h2>
-    <a href="/admin/uprava-edit.php" class="btn btn-primary">+ Novi član</a>
+    <h2>Stranice</h2>
+    <a href="/admin/stranica-edit.php" class="btn btn-primary">+ Nova stranica</a>
   </div>
 
   <?php if (!empty($_GET['msg'])): ?>
@@ -45,38 +44,28 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/clan-up
   <table class="admin-table">
     <thead>
       <tr>
-        <th>Red.</th>
-        <th>Slika</th>
-        <th>Ime i prezime</th>
-        <th>Funkcija</th>
+        <th>Naslov</th>
+        <th>Slug</th>
         <th>Status</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <?php if (!$rows): ?>
-        <tr><td colspan="6" class="empty">Još nema unesenih članova uprave.</td></tr>
+        <tr><td colspan="4" class="empty">Još nema unesenih stranica.</td></tr>
       <?php endif; ?>
       <?php foreach ($rows as $row): ?>
         <tr>
-          <td><?= (int) $row['redoslijed'] ?></td>
-          <td>
-            <?php if ($row['slika_small']): ?>
-              <img class="thumb thumb-round" src="<?= htmlspecialchars($uploadsUrl . '/' . $row['slika_small'], ENT_QUOTES) ?>" alt="">
-            <?php else: ?>
-              <span class="thumb thumb-empty">—</span>
-            <?php endif; ?>
-          </td>
-          <td><?= htmlspecialchars($row['ime'], ENT_QUOTES) ?></td>
-          <td><?= htmlspecialchars($row['funkcija_hr'], ENT_QUOTES) ?></td>
+          <td><?= htmlspecialchars($row['naslov_hr'], ENT_QUOTES) ?></td>
+          <td><code><?= htmlspecialchars($row['slug'], ENT_QUOTES) ?></code></td>
           <td>
             <span class="pill <?= $row['status'] === 'veroeffentlicht' ? 'pill-live' : 'pill-draft' ?>">
               <?= $row['status'] === 'veroeffentlicht' ? 'Veröffentlicht' : 'Entwurf' ?>
             </span>
           </td>
           <td class="admin-row-actions">
-            <a href="/admin/uprava-edit.php?id=<?= (int) $row['id'] ?>">Uredi</a>
-            <form method="post" action="/admin/uprava-delete.php" onsubmit="return confirm('Obrisati člana &quot;<?= htmlspecialchars(addslashes($row['ime']), ENT_QUOTES) ?>&quot;? Ovo briše i sliku.');">
+            <a href="/admin/stranica-edit.php?id=<?= (int) $row['id'] ?>">Uredi</a>
+            <form method="post" action="/admin/stranica-delete.php" onsubmit="return confirm('Obrisati stranicu &quot;<?= htmlspecialchars(addslashes($row['naslov_hr']), ENT_QUOTES) ?>&quot;?');">
               <?= hnkcms_csrf_field() ?>
               <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
               <button type="submit" class="link-danger">Obriši</button>
