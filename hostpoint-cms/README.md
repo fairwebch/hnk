@@ -12,28 +12,13 @@ Vercel). Živi lokalno u ovom checkoutu samo zato što je tako zgodnije za
 review; kad odobriš deploy, kopira se na Hostpoint (rsync/SFTP), ne pusha se
 na GitHub.
 
-## ⚠️ Nisam mogao deployati — treba mi pristup
+## Deploy: ručno kroz File Manager + phpMyAdmin (nema SSH)
 
-Iz ovog (sandbox) okruženja nema izlaznog pristupa portovima 22 (SSH) ni
-3306 (MySQL) — samo HTTPS kroz proxy. Testirao sam eksplicitno prije nego
-sam počeo pisati kod (sirovi TCP na oba porta je blokiran, nema SSH ključeva
-ni ssh-agenta). Znači: **sve što slijedi je pripremljeno i lokalno
-provjereno, ali NIJE deployano na api-staging.kroatien-schwyz.ch.**
-
-Za deploy treba jedno od:
-- SSH/SFTP pristup Hostpoint nalogu (host, port, korisničko ime, ključ ili
-  lozinka) — rsync/scp foldera `public/` u
-  `/home/hidapifa/www/api-staging.kroatien-schwyz.ch/`, `config/` jedan nivo
-  iznad njega (izvan document-roota), i pokretanje `schema.sql` +
-  `bin/create-admin.php` preko SSH shella, ILI
-- Ako Hostpoint nalog nema SSH shell pristup (samo FTP) — File Manager ili
-  FTP klijent za upload fajlova, i phpMyAdmin (obično dostupan u Hostpoint
-  kontrolnoj ploči) za pokretanje `schema.sql` i ručno umetanje admin retka
-  (u tom slučaju mi javi pa ti dam gotov `INSERT` s ispravnim hash-om
-  lozinke, umjesto CLI skripte).
-
-Reci koje od ovoga imaš (ili riješi kroz Chrome extenziju kako si najavio) pa
-nastavljam s pravim deployem i provjerom na stvarnoj poddomeni.
+Potvrđeno: Hostpoint **Standard Webhosting** plan nema SSH pristup uopće —
+nije ograničenje sandboxa, nego karakteristika plana. Deploy ide ručno:
+File Manager (upload + raspakivanje ZIP-a) za fajlove, phpMyAdmin za bazu.
+Sve je pripremljeno i lokalno provjereno (vidi "Kako je testirano" na dnu),
+samo čeka ručni upload — vidi `deploy/` paket i redoslijed koraka ispod.
 
 ## Struktura
 
@@ -43,7 +28,10 @@ hostpoint-cms/
   config/
     config.example.php        # kopirati u config.php na serveru, popuniti
   bin/
-    create-admin.php          # CLI: kreira/resetira admin nalog (lozinka se ne šalje preko HTTP-a)
+    create-admin.php          # CLI: kreira/resetira admin nalog — treba shell, Standard Webhosting
+                               # nema SSH, pa se za PRVI deploy koristi deploy/admin-user-insert.sql
+                               # umjesto ovoga (isti password_hash() poziv, samo kao gotov SQL).
+                               # Ostaje u repou za slučaj buduće migracije na plan sa SSH-om.
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
@@ -61,35 +49,33 @@ hostpoint-cms/
         originals/               # netaknuti originali — NIJE javno (.htaccess)
 ```
 
-## Prvi deploy na Hostpoint (kad pristup bude riješen)
+## Prvi deploy na Hostpoint — redoslijed (File Manager + phpMyAdmin)
 
-1. Kreirati poddomenu `api-staging.kroatien-schwyz.ch` u Hostpoint panelu
-   (ako već nije), document root = `/home/hidapifa/www/api-staging.kroatien-schwyz.ch`.
-2. Rsync/upload: sadržaj `public/` → document root te poddomene.
-   `config/` folder ide JEDAN NIVO IZNAD document-roota (dakle u
-   `/home/hidapifa/www/api-staging.kroatien-schwyz.ch/../config/` odnosno
-   gdje god Hostpoint dopušta pristup izvan public_html-a te poddomene —
-   ako Hostpoint ne dozvoljava izlazak iznad document-roota za tu
-   poddomenu, alternativa je staviti `config/config.php` u sam document
-   root ali s `.htaccess` `Require all denied` na tu datoteku — javi mi
-   koja je stvarna struktura foldera pa prilagodim putanju u `db.php`.
-3. `cp config/config.example.php config/config.php` pa popuniti:
-   - `db.pass` → stvarna lozinka baze hidapifa_hnkcms (dogovorena izvan git-a — ne pišemo je ovdje)
-   - `db.host` → `hidapifa.mysql.db.internal` (isti hosting)
-4. Pokrenuti shemu: `mysql -h hidapifa.mysql.db.hostpoint.ch -u hidapifa_hnkcms -p hidapifa_hnkcms < schema.sql`
-   (eksterni host — s lokalnog računala/alata; sa samog servera koristiti
-   `hidapifa.mysql.db.internal`).
-5. Kreirati admin nalog: `php bin/create-admin.php <username>` (traži
-   lozinku interaktivno, min. 12 znakova).
-6. Provjeriti CHMOD na `public/uploads/sponzori/` (i `originals/`
-   podfolder) — web server mora smjeti pisati (obično 755 sa vlasnikom
-   Hostpoint korisnika je dovoljno, ne treba 777).
-7. Otvoriti `https://api-staging.kroatien-schwyz.ch/admin/login.php`,
-   prijaviti se, postaviti 2FA (ekran će tražiti ručni unos ključa u
-   autentikator app — nema QR koda, namjerno, da ne zavisimo o vanjskom
-   generatoru).
-8. Test: `https://api-staging.kroatien-schwyz.ch/api/sponzori.php` mora
-   vratiti `{"sponsors":[]}` (prazna lista dok se ništa ne unese).
+Detaljne upute s točnim putanjama su u chat odgovoru kad je ovo pripremljeno;
+sažetak radi budućih izmjena/re-deploya:
+
+1. **phpMyAdmin → `schema.sql`** (tablice `sponzori`, `admin_users`) — MORA
+   biti prvo, `admin-user-insert.sql` referencira `admin_users`.
+2. **phpMyAdmin → `deploy/admin-user-insert.sql`** — kreira admin nalog.
+   TOTP se namjerno NE postavlja ovdje (vidi komentar u toj datoteci) —
+   prva prijava kroz `/admin/login.php` sama provede kroz uparivanje 2FA.
+3. **File Manager → upload `deploy/api-staging-public.zip`** u document
+   root poddomene `api-staging.kroatien-schwyz.ch`, raspakirati IN-PLACE
+   (sadržaj zipa je direktno `public/*`, ne dodatni obavijajući folder).
+4. **File Manager → upload `deploy/config.php`** JEDAN NIVO IZNAD
+   document-roota te poddomene (ne u njega!) — kod Hostpointa to je
+   obično `www/config/config.php` (sibling folder pored
+   `www/api-staging.kroatien-schwyz.ch/`, `www/hidapifa.myhostpoint.ch/`,
+   `www/tvojdj.ch/`) — tako matcha relativnu putanju već ukodiranu u
+   `admin/includes/db.php` (`../../../config/config.php`), bez izmjene
+   koda. Ako File Manager ne dozvoljava tu lokaciju, javi pa mijenjam putanju.
+5. Provjeriti CHMOD na `uploads/sponzori/` (i `originals/` podfolder) —
+   web server mora smjeti pisati (755 s vlasništvom Hostpoint korisnika je
+   dovoljno, ne treba 777).
+6. Test: `https://api-staging.kroatien-schwyz.ch/api/sponzori.php` mora
+   vratiti `{"sponsors":[]}`.
+7. `https://api-staging.kroatien-schwyz.ch/admin/login.php` → prijava →
+   postavljanje 2FA (ručni unos ključa u autentikator app).
 
 ## Sigurnosne odluke (ukratko, za review)
 
