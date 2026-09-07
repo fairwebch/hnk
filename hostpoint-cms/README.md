@@ -1,51 +1,62 @@
 # HNK Kroatien Schwyz — PHP/MySQL CMS backend (staging)
 
-Zamjena za Sanity, modul po modul. **Modul 1: sponzori** je gotov i lokalno
-testiran (vidi "Kako je testirano" na dnu). Next.js frontend na Vercelu i
-dalje čita iz Sanityja za sve OSTALE tipove — mijenja se samo izvor podataka
-za sponzore, i to samo na testnoj grani (vidi `../hnk` repo, grana
-`staging/php-sponsors-api-test`).
+Zamjena za Sanity, modul po modul. **Modul 1: sponzori** i **Modul 2: clan_uprave**
+(uprava) su gotovi i live na stagingu. Next.js frontend na Vercelu i dalje čita
+iz Sanityja za sve OSTALE tipove — mijenja se samo izvor podataka za te module,
+i to samo na testnoj grani (vidi `../hnk` repo, grana `staging/php-sponsors-api-test`).
 
-Ovaj folder **NIJE dio hnk Next.js repozitorija/git historije** — to je
-zaseban PHP sistem koji ide na sasvim drugu infrastrukturu (Hostpoint, ne
-Vercel). Živi lokalno u ovom checkoutu samo zato što je tako zgodnije za
-review; kad odobriš deploy, kopira se na Hostpoint (rsync/SFTP), ne pusha se
-na GitHub.
+Ovaj folder JEST dio hnk Next.js repozitorija (isti git checkout, radi lakšeg
+review-a), ali je funkcionalno zaseban PHP sistem koji ide na sasvim drugu
+infrastrukturu (Hostpoint, ne Vercel) — deploy ide preko `deploy.sh` (rsync/SSH),
+ne preko Vercela.
 
-## Deploy: ručno kroz File Manager + phpMyAdmin (nema SSH)
+## Deploy: `./deploy.sh staging` (rsync preko SSH)
 
-Potvrđeno: Hostpoint **Standard Webhosting** plan nema SSH pristup uopće —
-nije ograničenje sandboxa, nego karakteristika plana. Deploy ide ručno:
-File Manager (upload + raspakivanje ZIP-a) za fajlove, phpMyAdmin za bazu.
-Sve je pripremljeno i lokalno provjereno (vidi "Kako je testirano" na dnu),
-samo čeka ručni upload — vidi `deploy/` paket i redoslijed koraka ispod.
+SSH pristup je potvrđen i radi (ključ u `authorized_keys`, bez lozinke) —
+`ssh hidapifa@sl60.web.hostpoint.ch`. Vidi [deploy.sh](deploy.sh) za pravila
+(git-clean provjera, nikad `--delete`, ograničeno na
+`www/api-staging.kroatien-schwyz.ch/`). Prvi deploy Modula 1 (sponzori) je
+napravljen ručno kroz File Manager + phpMyAdmin dok SSH pristup još nije bio
+riješen — taj redoslijed koraka je ostavljen ispod kao istorijski zapis. Od
+Modula 2 (clan_uprave) nadalje: `./deploy.sh staging --dry-run` pa
+`./deploy.sh staging` za kod; nova tablica/seed podaci idu preko SSH-a
+(`mysql` klijent + rsync generiranih WebP fajlova) — vidi
+`bin/seed-real-*.php` skripte i `schema.sql`.
 
 ## Struktura
 
 ```
 hostpoint-cms/
-  schema.sql                  # CREATE TABLE sponzori, admin_users
+  deploy.sh                   # rsync preko SSH -> www/api-staging.kroatien-schwyz.ch/ (vidi deploy.sh za pravila)
+  schema.sql                  # CREATE TABLE sponzori, clan_uprave, admin_users
   config/
     config.example.php        # kopirati u config.php na serveru, popuniti
   bin/
-    create-admin.php          # CLI: kreira/resetira admin nalog — treba shell, Standard Webhosting
-                               # nema SSH, pa se za PRVI deploy koristi deploy/admin-user-insert.sql
-                               # umjesto ovoga (isti password_hash() poziv, samo kao gotov SQL).
-                               # Ostaje u repou za slučaj buduće migracije na plan sa SSH-om.
+    create-admin.php          # CLI: kreira/resetira admin nalog (radi preko SSH-a)
+    seed-real-sponsors.php    # jednokratna migracija Modul 1 (Sanity -> WebP/SQL)
+    seed-real-clan-uprave.php # jednokratna migracija Modul 2 (Sanity -> WebP/SQL)
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
       sponzori.php            # GET javni JSON (lista / ?id=X), samo status=veroeffentlicht
+      clan-uprave.php          # GET javni JSON (lista / ?id=X), samo status=veroeffentlicht
     admin/
       login.php                # korak 1: lozinka
       setup-2fa.php            # prvi put: uparivanje TOTP-a (ručni unos ključa, bez QR-a)
       index.php                 # lista sponzora (uključujući Entwurf)
       sponzor-edit.php          # add/edit forma + upload loga
       sponzor-delete.php
-      includes/                 # db.php, auth.php, totp.php, webp.php (.htaccess brani direktan pristup)
+      uprava.php                 # lista članova uprave (uključujući Entwurf)
+      uprava-edit.php            # add/edit forma + upload slike (neobavezna)
+      uprava-delete.php
+      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php
+                                 # (webp.php dijeljen preko modula: process()/delete() prime
+                                 # $filePrefix/$columnPrefix; .htaccess brani direktan pristup)
       assets/admin.css
     uploads/
       sponzori/                 # generirani WebP (small/medium/large) — javno
+        originals/               # netaknuti originali — NIJE javno (.htaccess)
+      clan-uprave/               # generirani WebP (small/medium/large) — javno, slika neobavezna
         originals/               # netaknuti originali — NIJE javno (.htaccess)
 ```
 
@@ -76,6 +87,25 @@ sažetak radi budućih izmjena/re-deploya:
    vratiti `{"sponsors":[]}`.
 7. `https://api-staging.kroatien-schwyz.ch/admin/login.php` → prijava →
    postavljanje 2FA (ručni unos ključa u autentikator app).
+
+## Modul 2: clan_uprave (uprava) — deploy preko SSH-a
+
+Od ovog modula nadalje deploy ide preko SSH umjesto File Managera:
+
+1. `mysql --defaults-extra-file=... hidapifa_hnkcms < schema.sql` preko SSH-a
+   (idempotentno — sigurno se re-runa i za buduće module).
+2. `php bin/seed-real-clan-uprave.php <src> <out>` — pokrenuto DIREKTNO na
+   Hostpoint serveru preko SSH-a (PHP 8.3 + GD tamo, isti pipeline kao
+   `includes/webp.php`), ne lokalno — mrtvo jednostavnije nego prebacivati
+   generirane WebP fajlove naprijed-nazad.
+3. Generirani `<out>/uploads/*` premješteni u `uploads/clan-uprave/` na
+   serveru, `<out>/clan-uprave-insert.sql` pokrenut preko istog mysql klijenta.
+4. `./deploy.sh staging --dry-run` pa `./deploy.sh staging` za kod
+   (`api/clan-uprave.php`, `admin/uprava*.php`, `includes/cors.php`,
+   generalizovani `includes/webp.php`).
+
+Svi podaci su stvarni (13 članova uprave povučenih preko GROQ javnog read
+API-ja, 8 sa stvarnim fotografijama sa Sanity CDN-a) — ne test placeholderi.
 
 ## Sigurnosne odluke (ukratko, za review)
 

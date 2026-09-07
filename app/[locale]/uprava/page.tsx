@@ -1,13 +1,12 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { upravaQuery } from '@/sanity/lib/queries';
-import type { ClanUprave } from '@/sanity/lib/types';
+import { fetchClanUprave } from '@/lib/clanUpraveApi';
+import type { ClanUpraveFromApi } from '@/lib/clanUpraveApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Card } from '@/components/ui/Card';
-import { SanityImage } from '@/components/ui/SanityImage';
 import { pickLocale } from '@/lib/locale';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -36,9 +35,16 @@ function InitialsTile({ name }: { name: string }) {
   );
 }
 
-function Portrait({ member, sizes }: { member: ClanUprave; sizes: string }) {
-  return member.image?.asset ? (
-    <SanityImage image={member.image} alt={member.name} fill sizes={sizes} className="object-cover" />
+function Portrait({ member, sizes }: { member: ClanUpraveFromApi; sizes: string }) {
+  return member.image ? (
+    <Image
+      src={member.image.medium}
+      alt={member.name}
+      fill
+      sizes={sizes}
+      className="object-cover"
+      unoptimized={member.image.isVector}
+    />
   ) : (
     <InitialsTile name={member.name} />
   );
@@ -49,7 +55,7 @@ export default async function UpravaPage({ params }: { params: Promise<{ locale:
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const members = await sanityFetch<ClanUprave[]>(upravaQuery, {}, []);
+  const members = await fetchClanUprave();
 
   // Big -> medium -> small: [0] president band, [1..4] leadership row,
   // the rest the compact board grid (query is ordered by `order`).
