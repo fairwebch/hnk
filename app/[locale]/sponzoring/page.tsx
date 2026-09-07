@@ -3,14 +3,14 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { sanityFetch } from '@/sanity/lib/fetch';
-import { sponzoriQuery } from '@/sanity/lib/queries';
-import type { Sponzor } from '@/sanity/lib/types';
-import { PageHero } from '@/components/ui/PageHero';
 import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
+import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { urlFor } from '@/sanity/lib/image';
 import { Card } from '@/components/ui/Card';
 import { pickLocale } from '@/lib/locale';
+// TEST MIGRACIJA (staging/php-sponsors-api-test): sponzori dolaze sa
+// self-hosted PHP API-ja umjesto Sanityja — vidi hostpoint-cms/README.md.
+import { fetchSponsors } from '@/lib/sponsorsApi';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -26,7 +26,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
   const t = await getTranslations();
 
   const [sponsors, headers] = await Promise.all([
-    sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),
+    fetchSponsors(),
     sanityFetch<{ headerSponzoring?: any } | null>(pageHeaderSlikeQuery, {}, null),
   ]);
 
@@ -116,13 +116,14 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
                       {group.map((s) => {
                         const inner = (
                           <Card variant="plain" className="h-32 flex items-center justify-center p-6">
-                            {s.logo?.asset ? (
+                            {s.logo ? (
                               <Image
-                                src={urlFor(s.logo).height(140).fit('max').auto('format').url()}
+                                src={s.logo.medium}
                                 alt={s.name}
                                 width={220}
                                 height={110}
                                 className="max-h-20 w-auto object-contain"
+                                unoptimized={s.logo.isVector}
                               />
                             ) : (
                               <span className="font-display font-bold text-ink-700 text-lg">{s.name}</span>

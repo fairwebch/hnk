@@ -7,6 +7,11 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'cdn.sanity.io' },
+      // Sponsor logos, test migration off Sanity — see hostpoint-cms/README.md.
+      { protocol: 'https', hostname: 'api-staging.kroatien-schwyz.ch' },
+      ...(process.env.NODE_ENV !== 'production'
+        ? [{ protocol: 'http', hostname: '127.0.0.1', port: '8098' }]
+        : []),
     ],
   },
   async redirects() {
