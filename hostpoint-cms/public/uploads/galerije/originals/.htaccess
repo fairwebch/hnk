@@ -1,0 +1,4 @@
+# Originalni (neobrađeni) uploadi — čuvaju se radi audita/re-generiranja,
+# ali se NIKAD ne serviraju javno (za razliku od thumb/small/medium/large
+# WebP-a jedan nivo iznad, koji su namjerno javni).
+Require all denied

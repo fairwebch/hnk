@@ -15,3 +15,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 <FilesMatch "\.(sql|md|env)$">
   Require all denied
 </FilesMatch>
+# .user.ini (PHP per-dir postavke) nije za javnost.
+<Files ".user.ini">
+  Require all denied
+</Files>

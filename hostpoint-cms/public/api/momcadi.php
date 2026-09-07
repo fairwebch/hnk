@@ -17,6 +17,7 @@ declare(strict_types=1);
 require __DIR__ . '/../admin/includes/db.php';
 require __DIR__ . '/../admin/includes/cors.php';
 require __DIR__ . '/../admin/includes/markdown.php';
+require __DIR__ . '/../admin/includes/api-image.php';
 
 header('Content-Type: application/json; charset=utf-8');
 hnkcms_apply_public_cors();
@@ -32,34 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/momcadi';
-
-/** Slika iz kolona {prefix}_small/medium/large/is_vector/width/height (+ {prefix}_alt), ili null. */
-function hnkcms_image_json(array $row, string $prefix, string $uploadsUrl, bool $withAlt = false): ?array
-{
-    if (empty($row["{$prefix}_small"])) {
-        return null;
-    }
-    $img = [
-        'small' => $uploadsUrl . '/' . $row["{$prefix}_small"],
-        'medium' => $uploadsUrl . '/' . $row["{$prefix}_medium"],
-        'large' => $uploadsUrl . '/' . $row["{$prefix}_large"],
-        'isVector' => (bool) $row["{$prefix}_is_vector"],
-        'width' => $row["{$prefix}_width"] !== null ? (int) $row["{$prefix}_width"] : null,
-        'height' => $row["{$prefix}_height"] !== null ? (int) $row["{$prefix}_height"] : null,
-    ];
-    if ($withAlt) {
-        $img['alt'] = $row["{$prefix}_alt"] ?: null;
-    }
-    return $img;
-}
-
-/** {hr, de} iz kolona {prefix}_hr/{prefix}_de, ili null ako su obje prazne. */
-function hnkcms_locale_json(array $row, string $prefix): ?array
-{
-    $hr = $row["{$prefix}_hr"] ?: null;
-    $de = $row["{$prefix}_de"] ?: null;
-    return ($hr || $de) ? ['hr' => $hr, 'de' => $de] : null;
-}
 
 function hnkcms_popis_json(PDO $db, int $momcadId): array
 {
@@ -83,8 +56,8 @@ function hnkcms_momcad_summary_json(PDO $db, array $row, string $uploadsUrl): ar
         'name' => ['hr' => $row['naziv_hr'], 'de' => $row['naziv_de'] ?: null],
         'order' => (int) $row['redoslijed'],
         'liga' => hnkcms_locale_json($row, 'liga'),
-        'coverImage' => hnkcms_image_json($row, 'cover', $uploadsUrl, true),
-        'grupnaFotografija' => hnkcms_image_json($row, 'grupna', $uploadsUrl, true),
+        'coverImage' => hnkcms_image_json($row, 'cover', $uploadsUrl, 'cover_alt'),
+        'grupnaFotografija' => hnkcms_image_json($row, 'grupna', $uploadsUrl, 'grupna_alt'),
         'popisImena' => hnkcms_popis_json($db, (int) $row['id']),
         'brojIgraca' => (int) $cnt->fetchColumn(),
     ];

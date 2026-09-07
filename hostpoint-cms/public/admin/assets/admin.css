@@ -54,6 +54,11 @@ body { margin: 0; font-family: system-ui, -apple-system, sans-serif; color: var(
 .thumb { width: 48px; height: 32px; object-fit: contain; background: var(--paper); }
 .thumb-round { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
 .thumb-wide { width: 64px; height: 36px; object-fit: cover; }
+.thumb-square { width: 44px; height: 44px; object-fit: cover; }
+.pill-sport { background: #E3E9F7; color: var(--navy); }
+.pill-feste { background: #FBEAEC; color: var(--red-dark); }
+.admin-gallery--square { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); margin-top: 1.25rem; }
+.admin-gallery--square img { aspect-ratio: 1 / 1; }
 .thumb-portrait { width: 32px; height: 40px; object-fit: cover; }
 
 /* Sastav momčadi: više sekcija na jednoj stranici */

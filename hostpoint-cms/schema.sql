@@ -1,5 +1,6 @@
 -- HNK Kroatien Schwyz — PHP+MySQL CMS backend
--- Modul 1: sponzori, Modul 2: clan_uprave, Modul 3: stranice, Modul 4: momcadi
+-- Modul 1: sponzori, Modul 2: clan_uprave, Modul 3: stranice, Modul 4: momcadi,
+-- Modul 5: galerije
 -- Target: MariaDB 10.11 (Hostpoint hidapifa_hnkcms)
 --
 -- Pokrenuti jednom, na praznoj bazi:
@@ -280,4 +281,59 @@ CREATE TABLE IF NOT EXISTS momcad_galerija (
   PRIMARY KEY (id),
   KEY idx_momcad_redoslijed (momcad_id, redoslijed),
   CONSTRAINT fk_galerija_momcad FOREIGN KEY (momcad_id) REFERENCES momcadi (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
+-- galerije — odgovara Sanity tipu "galerija" (name, slug, kategorija, godina,
+-- date, description, images[]). Grupisanje po kategoriji/godini su obična
+-- polja (nema taksonomije), grupisanje po godini radi frontend. Cover = prva
+-- slika po redoslijedu (kao Sanity images[0]) — nema posebne kolone.
+-- Najveći modul po slikama (30 galerija / 1814 slika): child tablica dobija
+-- i `slika_thumb` (600x600 centralni crop) da grid ostane iste težine kao
+-- Sanity 600x600 crop thumbovi na produkciji.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS galerije (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  slug              VARCHAR(96) NOT NULL,
+  naziv_hr          VARCHAR(190) NOT NULL,
+  naziv_de          VARCHAR(190) NULL,
+  kategorija        ENUM('sport','feste') NOT NULL,
+  godina            SMALLINT UNSIGNED NOT NULL,
+  datum             DATE NULL,
+  opis_hr           TEXT NULL,
+  opis_de           TEXT NULL,
+
+  -- Entwurf/Veröffentlicht: javni API vraća samo 'veroeffentlicht'.
+  status            ENUM('entwurf','veroeffentlicht') NOT NULL DEFAULT 'veroeffentlicht',
+
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_slug (slug),
+  KEY idx_godina_datum (godina, datum),
+  KEY idx_kategorija (kategorija),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS galerija_slike (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  galerija_id       INT UNSIGNED NOT NULL,
+
+  slika_original    VARCHAR(255) NULL,
+  slika_thumb       VARCHAR(255) NULL,   -- 600x600 centralni crop (grid)
+  slika_small       VARCHAR(255) NULL,   -- 480px (WIDTHS_WIDE)
+  slika_medium      VARCHAR(255) NULL,   -- 1200px
+  slika_large       VARCHAR(255) NULL,   -- 1920px (lightbox)
+  slika_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  slika_width       SMALLINT UNSIGNED NULL,
+  slika_height      SMALLINT UNSIGNED NULL,
+  alt               VARCHAR(255) NULL,
+
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_galerija_redoslijed (galerija_id, redoslijed),
+  CONSTRAINT fk_slika_galerija FOREIGN KEY (galerija_id) REFERENCES galerije (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

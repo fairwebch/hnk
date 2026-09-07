@@ -19,6 +19,8 @@ final class WebpPipeline
     private const WIDTHS = ['small' => 240, 'medium' => 480, 'large' => 800];
     /** Za fotografije pune širine (hero pozadina 100vw, grupna fotografija 1200px, galerija/lightbox). */
     public const WIDTHS_WIDE = ['small' => 480, 'medium' => 1200, 'large' => 1920];
+    /** Kvadratni thumb za grid galerija (isto kao Sanity 600x600 fit=crop na produkciji). */
+    public const THUMB_SIZE = 600;
     private const QUALITY = 82;
     private const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB
 
@@ -30,9 +32,10 @@ final class WebpPipeline
      *   radi čitljivosti na disku, nema utjecaja na jedinstvenost (svaki modul ima svoj uploadsDir)
      * @param array|null $widths ciljne širine po ključu small/medium/large; null = self::WIDTHS
      *   (logotipi/portreti), self::WIDTHS_WIDE za fotografije pune širine
-     * @return array{is_vector:bool, original:string, small:string, medium:string, large:string, width:?int, height:?int}
+     * @param int|null $thumbSize ako je zadan, generira i kvadratni centralni crop `thumb` te veličine
+     * @return array{is_vector:bool, original:string, small:string, medium:string, large:string, thumb?:string, width:?int, height:?int}
      */
-    public static function process(array $file, string $uploadsDir, int $entityId, string $filePrefix = 'sponzor', ?array $widths = null): array
+    public static function process(array $file, string $uploadsDir, int $entityId, string $filePrefix = 'sponzor', ?array $widths = null, ?int $thumbSize = null): array
     {
         if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
             throw new LogoUploadError('Upload nije uspio (error code ' . ($file['error'] ?? 'n/a') . ').');
@@ -53,7 +56,7 @@ final class WebpPipeline
             return self::processSvg($file, $uploadsDir, $originalsDir, $entityId, $filePrefix);
         }
 
-        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $entityId, $filePrefix, $widths ?? self::WIDTHS);
+        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $entityId, $filePrefix, $widths ?? self::WIDTHS, $thumbSize);
     }
 
     private static function processSvg(array $file, string $uploadsDir, string $originalsDir, int $id, string $filePrefix): array
@@ -78,6 +81,7 @@ final class WebpPipeline
         return [
             'is_vector' => true,
             'original' => 'originals/' . $filename,
+            'thumb' => $filename,
             'small' => $filename,
             'medium' => $filename,
             'large' => $filename,
@@ -105,7 +109,7 @@ final class WebpPipeline
         return [null, null];
     }
 
-    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id, string $filePrefix, array $widths): array
+    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id, string $filePrefix, array $widths, ?int $thumbSize): array
     {
         $allowed = ['image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp', 'image/gif' => 'imagecreatefromgif'];
         if (!isset($allowed[$mime])) {
@@ -135,28 +139,61 @@ final class WebpPipeline
             'original' => "originals/{$base}.{$ext}",
             'width' => $srcW,
             'height' => $srcH,
-        ];
-
-        foreach ($widths as $key => $targetW) {
-            // Slika se ne uvećava preko izvorne veličine.
-            $w = min($targetW, $srcW);
-            $h = (int) round($srcH * ($w / $srcW));
-
-            $canvas = imagecreatetruecolor($w, $h);
-            imagesavealpha($canvas, true);
-            imagealphablending($canvas, false);
-            imagefill($canvas, 0, 0, imagecolorallocatealpha($canvas, 0, 0, 0, 127));
-            imagecopyresampled($canvas, $src, 0, 0, 0, 0, $w, $h, $srcW, $srcH);
-
-            $filename = "{$base}-{$key}.webp";
-            imagewebp($canvas, $uploadsDir . '/' . $filename, self::QUALITY);
-            imagedestroy($canvas);
-
-            $result[$key] = $filename;
-        }
+        ] + self::renderVariants($src, $uploadsDir, $base, $widths, $thumbSize);
         imagedestroy($src);
 
         return $result;
+    }
+
+    /**
+     * Generira WebP varijante iz već učitanog GD resursa: proporcionalne širine
+     * ($widths) i opcioni kvadratni centralni crop ($thumbSize). Javno da ga
+     * mogu koristiti i jednokratne migracijske skripte (bin/seed-real-*.php)
+     * umjesto da kopiraju petlju — process() ga ne može poslužiti jer zahtijeva
+     * pravi HTTP upload. Ne uvećava preko izvorne veličine.
+     * @return array<string,string> ključ (small/medium/large/thumb) => ime datoteke
+     */
+    public static function renderVariants(\GdImage $src, string $uploadsDir, string $base, array $widths, ?int $thumbSize = null): array
+    {
+        $srcW = imagesx($src);
+        $srcH = imagesy($src);
+        $out = [];
+
+        foreach ($widths as $key => $targetW) {
+            $w = min($targetW, $srcW);
+            $h = (int) round($srcH * ($w / $srcW));
+            $canvas = self::canvas($w, $h);
+            imagecopyresampled($canvas, $src, 0, 0, 0, 0, $w, $h, $srcW, $srcH);
+            $out[$key] = self::saveWebp($canvas, $uploadsDir, "{$base}-{$key}.webp");
+        }
+
+        if ($thumbSize !== null) {
+            $side = min($thumbSize, $srcW, $srcH);
+            $cropSide = min($srcW, $srcH);
+            $cropX = (int) floor(($srcW - $cropSide) / 2);
+            $cropY = (int) floor(($srcH - $cropSide) / 2);
+            $canvas = self::canvas($side, $side);
+            imagecopyresampled($canvas, $src, 0, 0, $cropX, $cropY, $side, $side, $cropSide, $cropSide);
+            $out['thumb'] = self::saveWebp($canvas, $uploadsDir, "{$base}-thumb.webp");
+        }
+
+        return $out;
+    }
+
+    private static function canvas(int $w, int $h): \GdImage
+    {
+        $canvas = imagecreatetruecolor($w, $h);
+        imagesavealpha($canvas, true);
+        imagealphablending($canvas, false);
+        imagefill($canvas, 0, 0, imagecolorallocatealpha($canvas, 0, 0, 0, 127));
+        return $canvas;
+    }
+
+    private static function saveWebp(\GdImage $canvas, string $uploadsDir, string $filename): string
+    {
+        imagewebp($canvas, $uploadsDir . '/' . $filename, self::QUALITY);
+        imagedestroy($canvas);
+        return $filename;
     }
 
     /**
@@ -165,7 +202,7 @@ final class WebpPipeline
      */
     public static function delete(string $uploadsDir, array $row, string $columnPrefix = 'logo'): void
     {
-        foreach (['small', 'medium', 'large'] as $size) {
+        foreach (['thumb', 'small', 'medium', 'large'] as $size) {
             $col = "{$columnPrefix}_{$size}";
             if (!empty($row[$col])) {
                 @unlink($uploadsDir . '/' . $row[$col]);
