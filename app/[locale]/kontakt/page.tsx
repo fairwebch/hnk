@@ -1,14 +1,12 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { stranicaBySlugQuery } from '@/sanity/lib/queries';
-import type { Stranica } from '@/sanity/lib/types';
+import { fetchStranica } from '@/lib/stranicaApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { ContactForm } from '@/components/ContactForm';
 import { Card } from '@/components/ui/Card';
 import { MapEmbed } from '@/components/MapEmbed';
-import { PortableText } from '@/components/ui/PortableText';
-import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
+import { HtmlContent } from '@/components/ui/HtmlContent';
+import { pickLocale } from '@/lib/locale';
 import { site } from '@/lib/site';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -22,9 +20,9 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const page = await sanityFetch<Stranica | null>(stranicaBySlugQuery, { slug: 'kontakt' }, null);
+  const page = await fetchStranica('kontakt');
   const intro = page ? pickLocale(page.intro, locale) : '';
-  const body = page ? pickLocaleBlocks(page.body, locale) : undefined;
+  const body = page ? pickLocale(page.bodyHtml, locale) : '';
 
   return (
     <>
@@ -43,9 +41,9 @@ export default async function KontaktPage({ params }: { params: Promise<{ locale
             <InfoRow heading={t('contact.phoneHeading')} value={site.phone} href={site.phoneHref} />
             <InfoRow heading={t('contact.emailHeading')} value={site.email} href={`mailto:${site.email}`} />
           </div>
-          {body && body.length > 0 && (
+          {body && (
             <div className="mt-8">
-              <PortableText value={body} />
+              <HtmlContent html={body} />
             </div>
           )}
           <div className="mt-8">

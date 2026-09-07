@@ -1,11 +1,9 @@
 import { getTranslations } from 'next-intl/server';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { stranicaBySlugQuery } from '@/sanity/lib/queries';
-import type { Stranica } from '@/sanity/lib/types';
+import { fetchStranica } from '@/lib/stranicaApi';
 import { PageHero } from '@/components/ui/PageHero';
-import { PortableText } from '@/components/ui/PortableText';
+import { HtmlContent } from '@/components/ui/HtmlContent';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
+import { pickLocale } from '@/lib/locale';
 
 /**
  * Renders a CMS-driven static page (stranica) by slug. Falls back to a
@@ -27,11 +25,11 @@ export async function CmsPage({
   ghost?: string;
 }) {
   const t = await getTranslations();
-  const page = await sanityFetch<Stranica | null>(stranicaBySlugQuery, { slug }, null);
+  const page = await fetchStranica(slug);
 
   const title = page ? pickLocale(page.title, locale) || fallbackTitle : fallbackTitle;
   const intro = page ? pickLocale(page.intro, locale) : '';
-  const body = page ? pickLocaleBlocks(page.body, locale) : undefined;
+  const body = page ? pickLocale(page.bodyHtml, locale) : '';
 
   return (
     <>
@@ -43,8 +41,8 @@ export async function CmsPage({
         ghost={ghost}
       />
       <div className="prose-x py-14">
-        {body && body.length > 0 ? (
-          <PortableText value={body} />
+        {body ? (
+          <HtmlContent html={body} />
         ) : (
           <EmptyState title={t('empty.page')} subtitle={t('empty.pageSub')} icon="ball" />
         )}
@@ -58,6 +56,6 @@ export async function stranicaMetadata(
   locale: string,
   fallbackTitle: string,
 ) {
-  const page = await sanityFetch<Stranica | null>(stranicaBySlugQuery, { slug }, null);
+  const page = await fetchStranica(slug);
   return { title: page ? pickLocale(page.title, locale) || fallbackTitle : fallbackTitle };
 }

@@ -1,14 +1,13 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { sanityFetch } from '@/sanity/lib/fetch';
-import { stranicaBySlugQuery } from '@/sanity/lib/queries';
-import type { Stranica } from '@/sanity/lib/types';
+import { fetchStranica } from '@/lib/stranicaApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
-import { PortableText } from '@/components/ui/PortableText';
+import { HtmlContent } from '@/components/ui/HtmlContent';
 import { MembershipForm } from '@/components/MembershipForm';
 import { Card } from '@/components/ui/Card';
-import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
+import { pickLocale } from '@/lib/locale';
 import { stranicaMetadata } from '@/components/CmsPage';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -23,12 +22,12 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const t = await getTranslations();
 
   const [page, headers] = await Promise.all([
-    sanityFetch<Stranica | null>(stranicaBySlugQuery, { slug: 'postani-clan' }, null),
+    fetchStranica('postani-clan'),
     sanityFetch<{ headerPostaniClan?: any } | null>(pageHeaderSlikeQuery, {}, null),
   ]);
   const title = (page && pickLocale(page.title, locale)) || t('footer.links.postaniClan');
   const intro = page ? pickLocale(page.intro, locale) : '';
-  const body = page ? pickLocaleBlocks(page.body, locale) : undefined;
+  const body = page ? pickLocale(page.bodyHtml, locale) : '';
 
   return (
     <>
@@ -45,9 +44,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         ghost="ČLAN"
       />
       <div className="prose-x py-14">
-        {body && body.length > 0 && (
+        {body && (
           <div className="mb-10">
-            <PortableText value={body} />
+            <HtmlContent html={body} />
           </div>
         )}
         <Card className="p-6 md:p-8">

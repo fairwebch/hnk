@@ -149,6 +149,35 @@
       0 100%
     );
   }
+
+  /* Renders pre-rendered HTML from the "stranica" PHP API (Markdown ->
+     HTML server-side, see hostpoint-cms/includes/markdown.php) with the
+     same typography as components/ui/PortableText.tsx, so a CMS-driven
+     page looks identical whether its body came from Sanity or the PHP CMS. */
+  .cms-html p {
+    @apply font-sans text-lg text-content-soft leading-relaxed my-4;
+  }
+  .cms-html h2 {
+    @apply h-display text-content tracking-[.02em] text-2xl md:text-3xl mt-10 mb-3;
+  }
+  .cms-html h3 {
+    @apply h-display text-content tracking-[.02em] text-xl mt-8 mb-2;
+  }
+  .cms-html blockquote {
+    @apply border-l-4 border-croatia pl-5 my-6 italic text-content;
+  }
+  .cms-html ul {
+    @apply list-disc pl-6 my-4 space-y-1 text-lg text-content-soft marker:text-croatia;
+  }
+  .cms-html ol {
+    @apply list-decimal pl-6 my-4 space-y-1 text-lg text-content-soft marker:text-croatia;
+  }
+  .cms-html strong {
+    @apply font-semibold text-content;
+  }
+  .cms-html a {
+    @apply text-croatia underline underline-offset-2 hover:text-croatia-dark transition-colors;
+  }
 }
 
 @layer utilities {
