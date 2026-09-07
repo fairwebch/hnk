@@ -125,7 +125,9 @@ if (isset($_GET['slug']) || isset($_GET['id'])) {
 
 if (isset($_GET['limit'])) {
     $limit = ctype_digit((string) $_GET['limit']) ? max(1, min(50, (int) $_GET['limit'])) : 4;
-    $teaser = hnkcms_galerije_list_json($db, $uploadsUrl, 'g.datum DESC, g.godina DESC, g.id DESC', $limit);
+    // id ASC za izjednačene datume (import postavlja datum = GGGG-01-01): to je
+    // redoslijed dokumenata u Sanityju, pa teaser na početnoj ostaje isti.
+    $teaser = hnkcms_galerije_list_json($db, $uploadsUrl, 'g.datum DESC, g.godina DESC, g.id ASC', $limit);
     echo json_encode(['galleries' => $teaser], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
