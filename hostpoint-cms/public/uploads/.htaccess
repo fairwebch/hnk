@@ -1,0 +1,6 @@
+# Defense-in-depth: uploads folder nikad ne smije izvršavati PHP, čak ni ako
+# validacija uploada nekad zakaže (npr. .php maskiran kao slika).
+<FilesMatch "\.php$">
+  Require all denied
+</FilesMatch>
+Options -Indexes

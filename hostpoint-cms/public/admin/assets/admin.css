@@ -1,0 +1,65 @@
+:root {
+  --navy: #0D1B33;
+  --navy-dark: #070E1D;
+  --red: #D8232F;
+  --red-dark: #B4121E;
+  --paper: #F5F6FA;
+  --line: #E4E8F0;
+  --text: #33405C;
+  --text-soft: #55617A;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, sans-serif; color: var(--text); background: var(--paper); }
+
+/* Auth pages */
+.auth-body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--navy-dark); padding: 1.5rem; }
+.auth-card { background: #fff; padding: 2.25rem 2rem; width: 100%; max-width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+.auth-card--wide { max-width: 460px; }
+.auth-card h1 { font-size: 1.05rem; margin: 0 0 .25rem; color: var(--navy); }
+.auth-sub { margin: 0 0 1.5rem; color: var(--text-soft); font-size: .9rem; }
+.auth-error { background: #FBEAEC; color: var(--red-dark); padding: .6rem .8rem; font-size: .85rem; margin-bottom: 1rem; }
+.auth-form label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 1rem; }
+.auth-form input { display: block; width: 100%; margin-top: .35rem; padding: .6rem .7rem; border: 1px solid var(--line); font-size: .95rem; }
+.auth-form button, .btn-primary { background: var(--red); color: #fff; border: none; padding: .65rem 1.2rem; font-weight: 700; cursor: pointer; }
+.auth-form button:hover, .btn-primary:hover { background: var(--red-dark); }
+.setup-steps { font-size: .85rem; padding-left: 1.2rem; }
+.setup-steps li { margin-bottom: .8rem; }
+.secret-box { font-family: ui-monospace, monospace; font-size: 1.1rem; letter-spacing: .05em; background: var(--paper); border: 1px dashed var(--line); padding: .6rem .8rem; margin-top: .4rem; }
+.hint { color: var(--text-soft); font-size: .78rem; margin: .3rem 0 0; }
+
+/* Admin shell */
+.admin-header { display: flex; align-items: center; justify-content: space-between; background: var(--navy); color: #fff; padding: .9rem 1.5rem; }
+.admin-header h1 { font-size: 1rem; margin: 0; }
+.admin-header-right { display: flex; align-items: center; gap: 1rem; font-size: .85rem; }
+.btn { display: inline-block; padding: .4rem .8rem; text-decoration: none; font-size: .82rem; font-weight: 600; }
+.btn-ghost { color: #fff; border: 1px solid rgba(255,255,255,.35); }
+.btn-ghost:hover { border-color: #fff; }
+.admin-main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+.admin-main--narrow { max-width: 640px; }
+.admin-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.admin-toolbar h2 { margin: 0; }
+.btn-primary { text-decoration: none; }
+
+.flash { padding: .7rem 1rem; margin-bottom: 1rem; font-size: .88rem; }
+.flash-ok { background: #E6F4EA; color: #1E7B34; }
+.flash-error { background: #FBEAEC; color: var(--red-dark); }
+
+.admin-table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.admin-table th, .admin-table td { padding: .65rem .8rem; border-bottom: 1px solid var(--line); font-size: .88rem; text-align: left; vertical-align: middle; }
+.admin-table .empty { text-align: center; color: var(--text-soft); padding: 2rem; }
+.thumb { width: 48px; height: 32px; object-fit: contain; background: var(--paper); }
+.thumb-empty { display: inline-flex; align-items: center; justify-content: center; color: var(--text-soft); }
+.pill { display: inline-block; padding: .15rem .55rem; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.pill-basic { background: #EEF1F7; color: var(--text-soft); }
+.pill-standard { background: #E3E9F7; color: var(--navy); }
+.pill-premium { background: #FBEAEC; color: var(--red-dark); }
+.pill-live { background: #E6F4EA; color: #1E7B34; }
+.pill-draft { background: #FFF4E0; color: #A9660B; }
+.admin-row-actions { display: flex; gap: .7rem; align-items: center; }
+.admin-row-actions form { margin: 0; }
+.link-danger { background: none; border: none; color: var(--red); cursor: pointer; font-size: .85rem; padding: 0; text-decoration: underline; }
+
+.admin-form label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: 1.1rem; }
+.admin-form input, .admin-form select, .admin-form textarea { display: block; width: 100%; margin-top: .35rem; padding: .55rem .65rem; border: 1px solid var(--line); font-size: .92rem; font-family: inherit; }
+.current-logo { display: flex; align-items: center; gap: .7rem; margin: -.6rem 0 1.1rem; }
+.current-logo img { width: 80px; height: 48px; object-fit: contain; background: var(--paper); border: 1px solid var(--line); }

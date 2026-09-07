@@ -1,0 +1,17 @@
+# Document root za api-staging.kroatien-schwyz.ch
+# NAPOMENA: ovaj .htaccess pokriva SAMO ovaj folder (poddomena ima svoj
+# odvojeni document-root) — ne dira WordPress ni tvojdj.ch .htaccess fajlove
+# jer su u potpuno drugim folderima na nalogu.
+
+Options -Indexes
+ServerSignature Off
+
+# Forsiraj HTTPS (Hostpoint SSL je terminiran ispred, ali za svaki slučaj).
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Nikad ne servirati .sql/.md/.env ako bi slučajno završili u public/.
+<FilesMatch "\.(sql|md|env)$">
+  Require all denied
+</FilesMatch>

@@ -1,0 +1,6 @@
+config/config.php
+public/uploads/sponzori/*
+!public/uploads/sponzori/originals/
+public/uploads/sponzori/originals/*
+!public/uploads/sponzori/originals/.htaccess
+!public/uploads/.htaccess
