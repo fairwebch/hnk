@@ -2,28 +2,20 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { client } from '@/sanity/lib/client';
-import { sanityConfigured } from '@/sanity/env';
-import { momcadBySlugQuery, momcadSlugsQuery } from '@/sanity/lib/queries';
-import type { Momcad, Igrac, Pozicija } from '@/sanity/lib/types';
-import { SanityImage } from '@/components/ui/SanityImage';
+import { fetchMomcad, fetchMomcadi, type IgracFromApi } from '@/lib/momcadiApi';
+import type { Pozicija } from '@/sanity/lib/types';
+import { CmsImage } from '@/components/ui/CmsImage';
 import { Card } from '@/components/ui/Card';
-import { PortableText } from '@/components/ui/PortableText';
+import { HtmlContent } from '@/components/ui/HtmlContent';
 import { GalleryGrid } from '@/components/Lightbox';
-import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
-import { toLightbox } from '@/lib/gallery';
+import { pickLocale } from '@/lib/locale';
+import { toLightboxCms } from '@/lib/gallery';
 
 const POZICIJE_ORDER: Pozicija[] = ['golman', 'obrana', 'vezni', 'napad'];
 
 export async function generateStaticParams() {
-  if (!sanityConfigured) return [];
-  try {
-    const slugs = await client.fetch<string[]>(momcadSlugsQuery);
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  const teams = await fetchMomcadi();
+  return teams.map((t) => ({ slug: t.slug }));
 }
 
 export async function generateMetadata({
@@ -32,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const team = await sanityFetch<Momcad | null>(momcadBySlugQuery, { slug }, null);
+  const team = await fetchMomcad(slug);
   return { title: team ? pickLocale(team.name, locale) : undefined };
 }
 
@@ -45,13 +37,13 @@ export default async function MomcadPage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const team = await sanityFetch<Momcad | null>(momcadBySlugQuery, { slug }, null);
+  const team = await fetchMomcad(slug);
   if (!team) notFound();
 
   const name = pickLocale(team.name, locale);
-  const desc = pickLocaleBlocks(team.description, locale);
-  const gallery = toLightbox(team.gallery, name);
-  const heroImg = team.coverImage?.asset ? team.coverImage : team.grupnaFotografija;
+  const desc = pickLocale(team.descriptionHtml, locale);
+  const gallery = toLightboxCms(team.gallery, name);
+  const heroImg = team.coverImage ?? team.grupnaFotografija;
   const igraci = team.igraci ?? [];
   const rosterMode = igraci.length > 0;
   const liga = pickLocale(team.liga, locale);
@@ -61,9 +53,9 @@ export default async function MomcadPage({
     <article>
       {/* Hero */}
       <section className="relative bg-ink-700 border-b border-slateblue-900">
-        {heroImg?.asset && (
+        {heroImg && (
           <div className="absolute inset-0">
-            <SanityImage image={heroImg} alt="" fill sizes="100vw" className="object-cover opacity-25" />
+            <CmsImage image={heroImg} alt="" fill sizes="100vw" className="object-cover opacity-25" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink-700 via-ink-700/70 to-transparent" />
           </div>
         )}
@@ -85,10 +77,10 @@ export default async function MomcadPage({
       </section>
 
       {/* Group photo — the hero element of both modes */}
-      {team.grupnaFotografija?.asset && (
+      {team.grupnaFotografija && (
         <div className="container-x pt-12">
           <div className="relative aspect-[16/9] overflow-hidden border border-line bg-paper">
-            <SanityImage
+            <CmsImage
               image={team.grupnaFotografija}
               alt={name}
               fill
@@ -133,9 +125,9 @@ export default async function MomcadPage({
       {team.trener?.ime && (
         <div className="container-x pt-10">
           <div className="inline-flex items-center gap-5 bg-ink-800 p-5 pr-8">
-            {team.trener.slika?.asset ? (
+            {team.trener.slika ? (
               <div className="relative w-16 h-16 overflow-hidden">
-                <SanityImage image={team.trener.slika} alt={team.trener.ime} fill sizes="64px" className="object-cover" />
+                <CmsImage image={team.trener.slika} alt={team.trener.ime} fill sizes="64px" className="object-cover" />
               </div>
             ) : (
               <Initials name={team.trener.ime} dark />
@@ -151,9 +143,9 @@ export default async function MomcadPage({
       )}
 
       {/* Description */}
-      {desc && desc.length > 0 && (
+      {desc && (
         <div className="container-x max-w-3xl py-12">
-          <PortableText value={desc} />
+          <HtmlContent html={desc} />
         </div>
       )}
 
@@ -164,7 +156,7 @@ export default async function MomcadPage({
         </div>
       )}
 
-      {(!desc || desc.length === 0) && gallery.length === 0 && <div className="pb-16" />}
+      {!desc && gallery.length === 0 && <div className="pb-16" />}
     </article>
   );
 }
@@ -198,8 +190,8 @@ function Initials({ name, dark = false }: { name: string; dark?: boolean }) {
   );
 }
 
-function Roster({ igraci, t }: { igraci: Igrac[]; t: any }) {
-  const groups: { key: string; label: string; players: Igrac[] }[] = [];
+function Roster({ igraci, t }: { igraci: IgracFromApi[]; t: any }) {
+  const groups: { key: string; label: string; players: IgracFromApi[] }[] = [];
   const withPos = igraci.some((p) => p.pozicija);
   if (withPos) {
     for (const pos of POZICIJE_ORDER) {
@@ -224,8 +216,8 @@ function Roster({ igraci, t }: { igraci: Igrac[]; t: any }) {
             {g.players.map((p, i) => (
               <Card key={p._key ?? i} className="overflow-hidden">
                 <div className="relative aspect-[4/5] bg-paper">
-                  {p.slika?.asset ? (
-                    <SanityImage image={p.slika} alt={`${p.ime} ${p.prezime ?? ''}`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover" />
+                  {p.slika ? (
+                    <CmsImage image={p.slika} alt={`${p.ime} ${p.prezime ?? ''}`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover" />
                   ) : (
                     <PlayerSilhouette />
                   )}

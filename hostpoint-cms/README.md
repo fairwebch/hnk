@@ -1,8 +1,9 @@
 # HNK Kroatien Schwyz — PHP/MySQL CMS backend (staging)
 
 Zamjena za Sanity, modul po modul. **Modul 1: sponzori**, **Modul 2: clan_uprave**
-(uprava) i **Modul 3: stranice** (kontakt, postani-clan, impressum,
-datenschutzerklarung) su gotovi i live na stagingu. Next.js frontend na
+(uprava), **Modul 3: stranice** (kontakt, postani-clan, impressum,
+datenschutzerklarung) i **Modul 4: momcadi** (Aktivni, Seniori, Juniori — s
+rosterom, popisom imena i galerijom) su gotovi i live na stagingu. Next.js frontend na
 Vercelu i dalje čita iz Sanityja za sve OSTALE tipove — mijenja se samo
 izvor podataka za te module, i to samo na testnoj grani (vidi `../hnk`
 repo, grana `staging/php-sponsors-api-test`).
@@ -30,7 +31,7 @@ Modula 2 (clan_uprave) nadalje: `./deploy.sh staging --dry-run` pa
 ```
 hostpoint-cms/
   deploy.sh                   # rsync preko SSH -> www/api-staging.kroatien-schwyz.ch/ (vidi deploy.sh za pravila)
-  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, admin_users
+  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, momcadi (+3 child), admin_users
   config/
     config.example.php        # kopirati u config.php na serveru, popuniti
   bin/
@@ -38,12 +39,14 @@ hostpoint-cms/
     seed-real-sponsors.php    # jednokratna migracija Modul 1 (Sanity -> WebP/SQL)
     seed-real-clan-uprave.php # jednokratna migracija Modul 2 (Sanity -> WebP/SQL)
     seed-real-stranice.php    # jednokratna migracija Modul 3 (Sanity PT -> Markdown/SQL)
+    seed-real-momcadi.php     # jednokratna migracija Modul 4 (Sanity -> WebP wide/SQL)
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
       sponzori.php            # GET javni JSON (lista / ?id=X), samo status=veroeffentlicht
       clan-uprave.php          # GET javni JSON (lista / ?id=X), samo status=veroeffentlicht
       stranica.php              # GET javni JSON (lista / ?slug=X / ?id=X), body već HTML (iz Markdowna)
+      momcadi.php               # GET lista (lagani oblik + brojIgraca) / ?slug=X (puni: igraci, trener, gallery)
     admin/
       login.php                # korak 1: lozinka
       setup-2fa.php            # prvi put: uparivanje TOTP-a (ručni unos ključa, bez QR-a)
@@ -56,15 +59,25 @@ hostpoint-cms/
       stranice.php               # lista stranica (uključujući Entwurf)
       stranica-edit.php          # add/edit forma, textarea + Markdown cheat-sheet
       stranica-delete.php
-      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php
+      momcadi.php                # lista momčadi s brojevima igrača/redova/slika
+      momcad-edit.php            # tim: naziv, liga, termin, opis (Markdown), cover/grupna/trener slike
+      momcad-delete.php          # briše i sve child datoteke (FK cascade briše retke)
+      momcad-sastav.php          # hub po timu: roster + popis imena + galerija (višestruki upload)
+      momcad-igrac-edit.php / -delete.php
+      momcad-popis-edit.php / -delete.php
+      momcad-galerija-upload.php / -edit.php / -delete.php
+      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php
                                  # (webp.php dijeljen preko modula: process()/delete() prime
-                                 # $filePrefix/$columnPrefix; markdown.php je Portable Text
-                                 # zamjena za stranice modul; .htaccess brani direktan pristup)
+                                 # $filePrefix/$columnPrefix/$widths; markdown.php je Portable Text
+                                 # zamjena; layout.php = header + nav tabovi (HNKCMS_NAV) za sve
+                                 # admin stranice; .htaccess brani direktan pristup)
       assets/admin.css
     uploads/
       sponzori/                 # generirani WebP (small/medium/large) — javno
         originals/               # netaknuti originali — NIJE javno (.htaccess)
       clan-uprave/               # generirani WebP (small/medium/large) — javno, slika neobavezna
+        originals/               # netaknuti originali — NIJE javno (.htaccess)
+      momcadi/                   # cover-/grupna-/trener-/igrac-/galerija-<id>-* WebP — javno
         originals/               # netaknuti originali — NIJE javno (.htaccess)
 ```
 
@@ -141,6 +154,35 @@ klijenta, nema slika pa nema WebP koraka), `./deploy.sh staging` za kod.
 4 stvarne stranice — kontakt, postani-clan, impressum, datenschutzerklarung
 — povučene preko GROQ javnog read API-ja (Portable Text ručno prepisan u
 Markdown, nema automatskog konvertera, jednokratan posao).
+
+## Modul 4: momcadi — prvi parent/child modul
+
+Sanity `momcad` ima tri inline niza (igraci[], popisImena[], gallery[]) i
+inline objekt trener — u MySQL-u to su child tablice `momcad_igraci`,
+`momcad_popis_imena`, `momcad_galerija` (FK `ON DELETE CASCADE`; datoteke
+child redaka `momcad-delete.php` briše eksplicitno prije retka) i
+`trener_*` kolone na `momcadi`. Nema tipa "kategorija": svaki nivo je redak.
+
+**Roster, dva načina (isto kao Sanity/frontend):** strukturirani
+`momcad_igraci` (ime, prezime, broj, pozicija enum golman/obrana/vezni/napad,
+slika, redoslijed — Sanity ga nema, relaciona tablica ga treba) i legacy
+`momcad_popis_imena` (oznaka reda _hr/_de + zarezom odvojena imena).
+Frontend zadržava `rosterMode = igraci.length > 0`. Provjereno: nema hibrida
+ni eksternog izvora igrača; sve 3 stvarne momčadi danas koriste SAMO popis
+imena, pa seed prenosi točno to (igraci/trener/liga/termin/cover/gallery/
+description su prazni i ovdje i u Sanityju). `pozicija` se vraća sirova —
+HR/DE labele ostaju u Next.js `messages/*.json` (`teams.pozicije.*`), kao i danas.
+
+**Slike:** `WebpPipeline::process()` sada prima opcione širine.
+`WIDTHS_WIDE` (480/1200/1920) za cover, grupnu i galeriju (hero 100vw,
+grupna 1200px, lightbox); portreti igrača/trenera ostaju na 240/480/800.
+Grupne fotografije u Sanityju su 2000×1125 JPEG (CDN URL kaže .webp, bajtovi
+su JPEG — seed detektira MIME). Upload galerije prima više datoteka odjednom.
+
+**Admin:** `momcadi.php` → `momcad-edit.php` (tim) → `momcad-sastav.php`
+(igrači / popis imena / galerija na jednoj stranici po timu). Header + nav
+tabovi su izdvojeni u `includes/layout.php` (`HNKCMS_NAV`) — postojeće
+stranice prebačene bez promjene izgleda.
 
 ## Sigurnosne odluke (ukratko, za review)
 

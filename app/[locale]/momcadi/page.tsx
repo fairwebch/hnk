@@ -1,12 +1,10 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { allMomcadiQuery } from '@/sanity/lib/queries';
-import type { Momcad } from '@/sanity/lib/types';
+import { fetchMomcadi } from '@/lib/momcadiApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { SanityImage } from '@/components/ui/SanityImage';
+import { CmsImage } from '@/components/ui/CmsImage';
 import { Card, cardTitle } from '@/components/ui/Card';
 import { pickLocale } from '@/lib/locale';
 
@@ -21,7 +19,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const teams = await sanityFetch<Momcad[]>(allMomcadiQuery, {}, []);
+  const teams = await fetchMomcadi();
 
   return (
     <>
@@ -43,7 +41,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {teams.map((team) => {
               const name = pickLocale(team.name, locale);
-              const photo = team.grupnaFotografija?.asset ? team.grupnaFotografija : team.coverImage;
+              const photo = team.grupnaFotografija ?? team.coverImage;
               // Real head count: roster if filled, otherwise the pictured
               // names from the old site (the "*" placeholder doesn't count).
               const namesCount = (team.popisImena ?? [])
@@ -51,7 +49,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                 .map((n) => n.trim())
                 .filter((n) => n && n !== '*').length;
               const count = team.brojIgraca || namesCount;
-              const empty = !photo?.asset && !count;
+              const empty = !photo && !count;
 
               if (empty) {
                 return (
@@ -73,7 +71,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                   variant="content"
                   /* darkPlain: the dark tone's 1px border shows as a light seam
                      around the full-bleed photo (same fix as the home cards). */
-                  tone={photo?.asset ? 'darkPlain' : 'dark'}
+                  tone={photo ? 'darkPlain' : 'dark'}
                   href={`/momcadi/${team.slug}`}
                   className="block overflow-hidden"
                 >
@@ -85,7 +83,7 @@ export default async function MomcadiPage({ params }: { params: Promise<{ locale
                       className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]"
                     >
                       {/* Decorative: the team name is in the card heading below. */}
-                      <SanityImage
+                      <CmsImage
                         image={photo}
                         alt=""
                         fill
