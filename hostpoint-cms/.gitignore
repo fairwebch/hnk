@@ -15,4 +15,8 @@ public/uploads/galerije/*
 !public/uploads/galerije/originals/
 public/uploads/galerije/originals/*
 !public/uploads/galerije/originals/.htaccess
+public/uploads/novosti/*
+!public/uploads/novosti/originals/
+public/uploads/novosti/originals/*
+!public/uploads/novosti/originals/.htaccess
 !public/uploads/.htaccess

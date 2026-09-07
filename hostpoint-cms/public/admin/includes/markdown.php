@@ -1,11 +1,13 @@
 <?php
 /**
- * Minimalni Markdown -> HTML konverter za "stranice" modul — svjesno
- * pojednostavljena zamjena za Sanity Portable Text (rich text). Podržava
- * TAČNO onaj podskup koji stvarni sadržaj koristi (vidi Sanity
- * "blockContent" shemu): paragraf, ## / ### naslovi, > citat, - / 1. liste,
- * **bold**, *italic*, [link](url) (samo http(s)/mailto/tel). Bez slika u
- * body-ju — nema ih u stvarnom sadržaju, pa nema smisla dodavati podršku.
+ * Minimalni Markdown -> HTML konverter (stranice, momčadi.opis, novosti) —
+ * svjesno pojednostavljena zamjena za Sanity Portable Text (rich text).
+ * Podržava podskup Sanity "blockContent" sheme: paragraf, ## / ### naslovi,
+ * > citat, - / 1. liste, **bold**, *italic*, [link](url) (samo
+ * http(s)/mailto/tel) i sliku u zasebnom redu `![alt](url)` -> <figure>
+ * (isti izlaz kao PortableText `image` član; url samo http(s) ili /uploads/).
+ * Backslash escape-uje marker na početku reda (`1\.` ostaje običan pasus,
+ * ne numerirana lista — stvarni sadržaj novosti ima pasuse "1. NK ...").
  *
  * Nema Composer zavisnosti (isti princip kao TOTP u includes/totp.php) —
  * ulazni tekst je uvijek admin-only (iza login/2FA), ali ipak prolazi kroz
@@ -50,6 +52,14 @@ function hnkcms_markdown_to_html(?string $md): string
 
         if (trim($line) === '') {
             $flushParagraph();
+            $i++;
+            continue;
+        }
+
+        // Slika u zasebnom redu: ![alt](url) -> <figure> (kao Sanity image blok).
+        if (preg_match('/^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/', $line, $m)) {
+            $flushParagraph();
+            $html .= hnkcms_md_figure($m[1], $m[2]);
             $i++;
             continue;
         }
@@ -133,9 +143,33 @@ function hnkcms_md_collect_list(array $lines, int $i, string $pattern): array
     return [$items, $i];
 }
 
-/** Inline formatiranje unutar jednog reda: escape prvo, pa **bold**, *italic*, [link](url). */
+/** <figure> za sliku u tekstu; url mora biti http(s) ili relativan /uploads/… — inače literalni tekst. */
+function hnkcms_md_figure(string $alt, string $url): string
+{
+    if (!preg_match('#^(https?://|/uploads/)#i', $url)) {
+        return '<p>' . hnkcms_md_inline("![{$alt}]({$url})") . '</p>';
+    }
+    $altEsc = htmlspecialchars($alt, ENT_QUOTES, 'UTF-8');
+    $html = '<figure><img src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" alt="' . $altEsc . '" loading="lazy">';
+    if ($alt !== '') {
+        $html .= '<figcaption>' . $altEsc . '</figcaption>';
+    }
+    return $html . '</figure>';
+}
+
+/**
+ * Inline formatiranje unutar jednog reda: escape prvo, pa **bold**, *italic*,
+ * [link](url). Backslash ispred . * [ ] # > - ! čuva znak literalno (placeholder
+ * dok traju regexi, da npr. `\*` ne završi kao kurziv).
+ */
 function hnkcms_md_inline(string $text): string
 {
+    $literals = [];
+    $text = preg_replace_callback('/\\\\([.*\[\]#>\-!])/', function (array $m) use (&$literals): string {
+        $literals[] = $m[1];
+        return "\x00" . (count($literals) - 1) . "\x00";
+    }, $text) ?? $text;
+
     $escaped = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 
     // [tekst](url) — samo http(s)/mailto/tel, inače ostaje kao literalni tekst.
@@ -149,6 +183,10 @@ function hnkcms_md_inline(string $text): string
 
     $escaped = preg_replace('/\*\*(.+?)\*\*/', '<strong>$1</strong>', $escaped) ?? $escaped;
     $escaped = preg_replace('/\*(.+?)\*/', '<em>$1</em>', $escaped) ?? $escaped;
+
+    if ($literals) {
+        $escaped = preg_replace_callback('/\x00(\d+)\x00/', fn(array $m) => htmlspecialchars($literals[(int) $m[1]], ENT_QUOTES, 'UTF-8'), $escaped) ?? $escaped;
+    }
 
     return $escaped;
 }

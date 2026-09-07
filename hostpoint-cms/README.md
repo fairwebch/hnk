@@ -3,8 +3,9 @@
 Zamjena za Sanity, modul po modul. **Modul 1: sponzori**, **Modul 2: clan_uprave**
 (uprava), **Modul 3: stranice** (kontakt, postani-clan, impressum,
 datenschutzerklarung), **Modul 4: momcadi** (Aktivni, Seniori, Juniori — s
-rosterom, popisom imena i galerijom) i **Modul 5: galerije** (30 albuma /
-1814 slika) su gotovi i live na stagingu. Next.js frontend na
+rosterom, popisom imena i galerijom), **Modul 5: galerije** (30 albuma /
+1814 slika) i **Modul 6: novosti** (34 novosti, slike u tekstu) su gotovi i
+live na stagingu. Next.js frontend na
 Vercelu i dalje čita iz Sanityja za sve OSTALE tipove — mijenja se samo
 izvor podataka za te module, i to samo na testnoj grani (vidi `../hnk`
 repo, grana `staging/php-sponsors-api-test`).
@@ -32,7 +33,7 @@ Modula 2 (clan_uprave) nadalje: `./deploy.sh staging --dry-run` pa
 ```
 hostpoint-cms/
   deploy.sh                   # rsync preko SSH -> www/api-staging.kroatien-schwyz.ch/ (vidi deploy.sh za pravila)
-  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, momcadi (+3 child), galerije (+1 child), admin_users
+  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, momcadi (+3 child), galerije (+1), novosti (+1), admin_users
   config/
     config.example.php        # kopirati u config.php na serveru, popuniti
   bin/
@@ -42,6 +43,7 @@ hostpoint-cms/
     seed-real-stranice.php    # jednokratna migracija Modul 3 (Sanity PT -> Markdown/SQL)
     seed-real-momcadi.php     # jednokratna migracija Modul 4 (Sanity -> WebP wide/SQL)
     seed-real-galerije.php    # jednokratna migracija Modul 5 — radi NA serveru (CDN download + WebP), resumable
+    seed-real-novosti.php     # jednokratna migracija Modul 6 — radi NA serveru; body iz manifesta (PT -> Markdown, escape `1\.`)
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
@@ -50,6 +52,7 @@ hostpoint-cms/
       stranica.php              # GET javni JSON (lista / ?slug=X / ?id=X), body već HTML (iz Markdowna)
       momcadi.php               # GET lista (lagani oblik + brojIgraca) / ?slug=X (puni: igraci, trener, gallery)
       galerije.php              # GET lista (cover+count) / ?limit=N teaser / ?slug=X (sve slike, thumb 600x600)
+      novosti.php               # GET lista BEZ body-ja / ?limit=N / ?slug=X (body kao HTML + slike u tekstu)
     admin/
       login.php                # korak 1: lozinka
       setup-2fa.php            # prvi put: uparivanje TOTP-a (ručni unos ključa, bez QR-a)
@@ -74,7 +77,10 @@ hostpoint-cms/
       galerija-delete.php        # briše i sve datoteke slika (FK cascade briše retke)
       galerija-slike.php         # grid slika jedne galerije + višestruki upload (do 100, .user.ini)
       galerija-slike-upload.php / galerija-slika-edit.php / galerija-slika-delete.php
-      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php, api-image.php
+      novosti.php                # lista novosti (cover, datum, kategorija, broj slika u tekstu)
+      novost-edit.php            # naslov/slug/datum/kategorija/cover/sažetak/Markdown + sekcija "Slike u tekstu" (snippet)
+      novost-delete.php / novost-slika-upload.php / novost-slika-edit.php / novost-slika-delete.php
+      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php, api-image.php, api-novost.php
                                  # (webp.php dijeljen preko modula: process()/delete() prime
                                  # $filePrefix/$columnPrefix/$widths/$thumbSize, renderVariants() javan za seedove;
                                  # markdown.php je Portable Text zamjena; layout.php = header + nav tabovi
@@ -90,6 +96,8 @@ hostpoint-cms/
       momcadi/                   # cover-/grupna-/trener-/igrac-/galerija-<id>-* WebP — javno
         originals/               # netaknuti originali — NIJE javno (.htaccess)
       galerije/                  # galerija-<n>-<hex>-{thumb,small,medium,large}.webp — javno (~7.300 datoteka)
+        originals/               # netaknuti originali — NIJE javno (.htaccess)
+      novosti/                   # cover-<n>-* (naslovne) i slika-<id>-* (u tekstu) WebP — javno
         originals/               # netaknuti originali — NIJE javno (.htaccess)
 ```
 
@@ -222,6 +230,35 @@ Slugovi 1:1 (stari `redirect-map.json` ih koristi).
 **Admin:** `galerije.php` → `galerija-edit.php` → `galerija-slike.php`
 (grid + višestruki upload). `public/.user.ini` diže `max_file_uploads` na 100
 samo za ovu poddomenu (PHP per-dir), `.htaccess` ga ne servira.
+
+## Modul 6: novosti — Markdown sa slikama u tekstu, klijentska paginacija
+
+Sanity `novost` = title/slug/date(datetime)/category (radio: Eventi, Novosti,
+Skupština, Sport)/coverImage+alt/excerpt/body. Stvarno stanje (34 novosti):
+sve imaju cover + alt, sažetak i body samo HR (DE prazan na svih 34 — ostaje
+prazan, HR fallback), **0 slika u tekstu** iako ih shema dopušta.
+
+**Paginacija:** produkcija je ima samo klijentski (`components/NewsList.tsx`,
+9 po stranici, filter po kategoriji, ništa u URL-u) — zadržana netaknuta.
+API lista zato vraća sve objavljene **bez body-ja** (Sanity ga je slao
+nepotrebno), detalj vraća body kao HTML.
+
+**Slike u tekstu (shema prati Sanity):** `markdown.php` renderuje
+`![alt](url)` u zasebnom redu kao `<figure>` (isti izlaz kao PortableText
+`image`; url samo http(s) ili /uploads/). Upload ide u child tablicu
+`novost_slike` (sekcija na `novost-edit.php`), admin kopira gotov snippet u
+Markdown. `.cms-html figure/img/figcaption` CSS dodan u `app/globals.css`.
+
+**Zamka vodećih brojeva:** 9 običnih pasusa u stvarnom sadržaju počinje s
+„1. “/„2. “ (rang-liste turnira) — u Markdownu bi postali numerirana lista.
+Konverter ih escape-uje (`1\.`), `hnkcms_md_inline()` čuva escape-ovane
+znakove (`\. \* \[ \] \# \> \- \!`) literalno preko placeholdera. Cheat-sheet
+u adminu to spominje.
+
+**Migracija:** `bin/seed-real-novosti.php` na serveru (34 covera sa Sanity
+CDN-a, WIDTHS_WIDE), body iz GROQ manifesta. `kategorija` je ENUM s tačnim
+Sanity vrijednostima (uklj. „Skupština“) — frontend labele su u
+`messages/*.json` pod `categories.<vrijednost>`.
 
 ## Sigurnosne odluke (ukratko, za review)
 

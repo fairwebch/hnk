@@ -1,6 +1,6 @@
 -- HNK Kroatien Schwyz — PHP+MySQL CMS backend
 -- Modul 1: sponzori, Modul 2: clan_uprave, Modul 3: stranice, Modul 4: momcadi,
--- Modul 5: galerije
+-- Modul 5: galerije, Modul 6: novosti
 -- Target: MariaDB 10.11 (Hostpoint hidapifa_hnkcms)
 --
 -- Pokrenuti jednom, na praznoj bazi:
@@ -336,4 +336,75 @@ CREATE TABLE IF NOT EXISTS galerija_slike (
   PRIMARY KEY (id),
   KEY idx_galerija_redoslijed (galerija_id, redoslijed),
   CONSTRAINT fk_slika_galerija FOREIGN KEY (galerija_id) REFERENCES galerije (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
+-- novosti — odgovara Sanity tipu "novost" (title, slug, date(datetime),
+-- category, coverImage+alt, excerpt, body). kategorija je ENUM s TAČNO
+-- Sanity vrijednostima (HR/DE labele su u Next.js messages/*.json pod
+-- `categories.<vrijednost>`, ključ je sirova vrijednost uklj. "Skupština").
+-- body je Markdown (isti konverter kao stranice), s podrškom za slike u
+-- tekstu: `![alt](url)` u zasebnom redu -> <figure>. Slike se uploaduju u
+-- child tablicu novost_slike (admin daje gotov Markdown snippet). Stvarni
+-- sadržaj danas nema slika u tekstu — shema prati Sanity blockContent.
+-- Paginacija liste ostaje klijentska (NewsList, 9 po stranici) — API vraća
+-- sve objavljene BEZ body-ja.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS novosti (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  slug              VARCHAR(96) NOT NULL,
+  naslov_hr         VARCHAR(190) NOT NULL,
+  naslov_de         VARCHAR(190) NULL,
+  datum             DATETIME NOT NULL,                     -- UTC, kao Sanity datetime
+  kategorija        ENUM('Eventi','Novosti','Skupština','Sport') NOT NULL DEFAULT 'Novosti',
+
+  cover_original    VARCHAR(255) NULL,
+  cover_small       VARCHAR(255) NULL,
+  cover_medium      VARCHAR(255) NULL,
+  cover_large       VARCHAR(255) NULL,
+  cover_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  cover_width       SMALLINT UNSIGNED NULL,
+  cover_height      SMALLINT UNSIGNED NULL,
+  cover_alt         VARCHAR(255) NULL,
+
+  sazetak_hr        TEXT NULL,
+  sazetak_de        TEXT NULL,
+  sadrzaj_hr        MEDIUMTEXT NULL,   -- Markdown izvor
+  sadrzaj_de        MEDIUMTEXT NULL,   -- Markdown izvor
+
+  -- Entwurf/Veröffentlicht: javni API vraća samo 'veroeffentlicht'.
+  status            ENUM('entwurf','veroeffentlicht') NOT NULL DEFAULT 'veroeffentlicht',
+
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_slug (slug),
+  KEY idx_datum (datum),
+  KEY idx_kategorija (kategorija),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Slike unutar teksta novosti (Sanity blockContent `image` član). Uploadaju
+-- se odvojeno, admin kopira `![alt](url)` snippet u Markdown. Brisanje
+-- novosti briše i retke (cascade); datoteke briše novost-delete.php.
+CREATE TABLE IF NOT EXISTS novost_slike (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  novost_id         INT UNSIGNED NOT NULL,
+
+  slika_original    VARCHAR(255) NULL,
+  slika_small       VARCHAR(255) NULL,
+  slika_medium      VARCHAR(255) NULL,   -- 1200px = širina koju PortableText traži za slike u tekstu
+  slika_large       VARCHAR(255) NULL,
+  slika_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  slika_width       SMALLINT UNSIGNED NULL,
+  slika_height      SMALLINT UNSIGNED NULL,
+  alt               VARCHAR(255) NULL,
+
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_novost_redoslijed (novost_id, redoslijed),
+  CONSTRAINT fk_slika_novost FOREIGN KEY (novost_id) REFERENCES novosti (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
