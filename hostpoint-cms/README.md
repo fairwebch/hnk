@@ -2,8 +2,9 @@
 
 Zamjena za Sanity, modul po modul. **Modul 1: sponzori**, **Modul 2: clan_uprave**
 (uprava), **Modul 3: stranice** (kontakt, postani-clan, impressum,
-datenschutzerklarung) i **Modul 4: momcadi** (Aktivni, Seniori, Juniori — s
-rosterom, popisom imena i galerijom) su gotovi i live na stagingu. Next.js frontend na
+datenschutzerklarung), **Modul 4: momcadi** (Aktivni, Seniori, Juniori — s
+rosterom, popisom imena i galerijom) i **Modul 5: galerije** (30 albuma /
+1814 slika) su gotovi i live na stagingu. Next.js frontend na
 Vercelu i dalje čita iz Sanityja za sve OSTALE tipove — mijenja se samo
 izvor podataka za te module, i to samo na testnoj grani (vidi `../hnk`
 repo, grana `staging/php-sponsors-api-test`).
@@ -31,7 +32,7 @@ Modula 2 (clan_uprave) nadalje: `./deploy.sh staging --dry-run` pa
 ```
 hostpoint-cms/
   deploy.sh                   # rsync preko SSH -> www/api-staging.kroatien-schwyz.ch/ (vidi deploy.sh za pravila)
-  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, momcadi (+3 child), admin_users
+  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, momcadi (+3 child), galerije (+1 child), admin_users
   config/
     config.example.php        # kopirati u config.php na serveru, popuniti
   bin/
@@ -40,6 +41,7 @@ hostpoint-cms/
     seed-real-clan-uprave.php # jednokratna migracija Modul 2 (Sanity -> WebP/SQL)
     seed-real-stranice.php    # jednokratna migracija Modul 3 (Sanity PT -> Markdown/SQL)
     seed-real-momcadi.php     # jednokratna migracija Modul 4 (Sanity -> WebP wide/SQL)
+    seed-real-galerije.php    # jednokratna migracija Modul 5 — radi NA serveru (CDN download + WebP), resumable
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
@@ -47,6 +49,7 @@ hostpoint-cms/
       clan-uprave.php          # GET javni JSON (lista / ?id=X), samo status=veroeffentlicht
       stranica.php              # GET javni JSON (lista / ?slug=X / ?id=X), body već HTML (iz Markdowna)
       momcadi.php               # GET lista (lagani oblik + brojIgraca) / ?slug=X (puni: igraci, trener, gallery)
+      galerije.php              # GET lista (cover+count) / ?limit=N teaser / ?slug=X (sve slike, thumb 600x600)
     admin/
       login.php                # korak 1: lozinka
       setup-2fa.php            # prvi put: uparivanje TOTP-a (ručni unos ključa, bez QR-a)
@@ -66,11 +69,18 @@ hostpoint-cms/
       momcad-igrac-edit.php / -delete.php
       momcad-popis-edit.php / -delete.php
       momcad-galerija-upload.php / -edit.php / -delete.php
-      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php
+      galerije.php               # lista galerija (cover thumb, godina, kategorija, broj slika)
+      galerija-edit.php          # naziv/slug/kategorija/godina/datum/opis
+      galerija-delete.php        # briše i sve datoteke slika (FK cascade briše retke)
+      galerija-slike.php         # grid slika jedne galerije + višestruki upload (do 100, .user.ini)
+      galerija-slike-upload.php / galerija-slika-edit.php / galerija-slika-delete.php
+      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php, api-image.php
                                  # (webp.php dijeljen preko modula: process()/delete() prime
-                                 # $filePrefix/$columnPrefix/$widths; markdown.php je Portable Text
-                                 # zamjena; layout.php = header + nav tabovi (HNKCMS_NAV) za sve
-                                 # admin stranice; .htaccess brani direktan pristup)
+                                 # $filePrefix/$columnPrefix/$widths/$thumbSize, renderVariants() javan za seedove;
+                                 # markdown.php je Portable Text zamjena; layout.php = header + nav tabovi
+                                 # (HNKCMS_NAV); api-image.php = JSON serializatori slike/locale za api/*.php;
+                                 # .htaccess brani direktan pristup)
+    .user.ini                   # max_file_uploads=100 — samo ova poddomena (PHP per-dir), .htaccess ga ne servira
       assets/admin.css
     uploads/
       sponzori/                 # generirani WebP (small/medium/large) — javno
@@ -78,6 +88,8 @@ hostpoint-cms/
       clan-uprave/               # generirani WebP (small/medium/large) — javno, slika neobavezna
         originals/               # netaknuti originali — NIJE javno (.htaccess)
       momcadi/                   # cover-/grupna-/trener-/igrac-/galerija-<id>-* WebP — javno
+        originals/               # netaknuti originali — NIJE javno (.htaccess)
+      galerije/                  # galerija-<n>-<hex>-{thumb,small,medium,large}.webp — javno (~7.300 datoteka)
         originals/               # netaknuti originali — NIJE javno (.htaccess)
 ```
 
@@ -183,6 +195,33 @@ su JPEG — seed detektira MIME). Upload galerije prima više datoteka odjednom.
 (igrači / popis imena / galerija na jednoj stranici po timu). Header + nav
 tabovi su izdvojeni u `includes/layout.php` (`HNKCMS_NAV`) — postojeće
 stranice prebačene bez promjene izgleda.
+
+## Modul 5: galerije — najveći po slikama (30 albuma / 1814 slika, 157 MB izvora)
+
+Sanity `galerija` = name/slug/kategorija (sport|feste)/godina/date/description
++ images[] (image + plain alt). Nema taksonomije ni referenci na evente
+(obrnuto: `dogadjaj.galerija` referencira galeriju — visi dok se ne uradi
+modul događaja). Grupisanje po godini i filter po kategoriji ostaju na
+frontendu (`GalleryBrowser` netaknut), **bez paginacije** — vjerna replika
+produkcije koja isto renderuje sve slike odjednom (najveći album 408).
+
+**Performanse:** produkcija je thumbove dobivala kao Sanity 600×600 fit=crop.
+Da grid ostane iste težine, `galerija_slike` ima i `slika_thumb` — WebpPipeline
+sada generira kvadratni centralni crop (`THUMB_SIZE = 600`) uz WIDTHS_WIDE.
+Frontend `toLightboxCms` koristi `thumb ?? medium`. Cover = prva slika po
+redoslijedu; lista radi u 2 upita (galerije s COUNT/cover-id subselectima +
+cover retci), ne učitava nizove slika.
+
+**Migracija:** `bin/seed-real-galerije.php` se pokreće NA Hostpointu
+(`nohup`, ~1 slika/s ≈ 30 min): iz GROQ manifesta skida svaku sliku sa Sanity
+CDN-a, generira 4 varijante, `state.json` čini prekid bezopasnim, na kraju
+piše INSERT SQL (FK preko slug subselecta). Alt je prazan na svih 1814 —
+Sanity import sa starog WP-a ga nikad nije upisao, frontend pada na "Naziv N".
+Slugovi 1:1 (stari `redirect-map.json` ih koristi).
+
+**Admin:** `galerije.php` → `galerija-edit.php` → `galerija-slike.php`
+(grid + višestruki upload). `public/.user.ini` diže `max_file_uploads` na 100
+samo za ovu poddomenu (PHP per-dir), `.htaccess` ga ne servira.
 
 ## Sigurnosne odluke (ukratko, za review)
 

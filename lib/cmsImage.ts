@@ -6,6 +6,8 @@
  * an alt subfield (team cover/group photo, gallery).
  */
 export interface CmsImg {
+  /** 600x600 centre crop for grids — only on gallery images (galerije module). */
+  thumb?: string;
   small: string;
   medium: string;
   large: string;

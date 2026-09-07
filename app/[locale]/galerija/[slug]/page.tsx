@@ -2,23 +2,14 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { client } from '@/sanity/lib/client';
-import { sanityConfigured } from '@/sanity/env';
-import { galerijaBySlugQuery, galerijaSlugsQuery } from '@/sanity/lib/queries';
-import type { Galerija } from '@/sanity/lib/types';
+import { fetchGalerija, fetchGalerije } from '@/lib/galerijeApi';
 import { GalleryGrid } from '@/components/Lightbox';
 import { pickLocale, formatDate } from '@/lib/locale';
-import { toLightbox } from '@/lib/gallery';
+import { toLightboxCms } from '@/lib/gallery';
 
 export async function generateStaticParams() {
-  if (!sanityConfigured) return [];
-  try {
-    const slugs = await client.fetch<string[]>(galerijaSlugsQuery);
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  const galleries = await fetchGalerije();
+  return galleries.map((g) => ({ slug: g.slug }));
 }
 
 export async function generateMetadata({
@@ -27,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const g = await sanityFetch<Galerija | null>(galerijaBySlugQuery, { slug }, null);
+  const g = await fetchGalerija(slug);
   return { title: g ? pickLocale(g.name, locale) : undefined };
 }
 
@@ -40,12 +31,12 @@ export default async function GalerijaDetailPage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const g = await sanityFetch<Galerija | null>(galerijaBySlugQuery, { slug }, null);
+  const g = await fetchGalerija(slug);
   if (!g) notFound();
 
   const name = pickLocale(g.name, locale);
   const description = pickLocale(g.description, locale);
-  const images = toLightbox(g.images, name);
+  const images = toLightboxCms(g.images, name);
 
   return (
     <article>

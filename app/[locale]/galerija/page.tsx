@@ -1,8 +1,6 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { allGalerijeQuery } from '@/sanity/lib/queries';
-import type { GalerijaTeaser } from '@/sanity/lib/types';
+import { fetchGalerije } from '@/lib/galerijeApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { GalleryBrowser } from '@/components/GalleryBrowser';
@@ -18,7 +16,7 @@ export default async function GalerijaPage({ params }: { params: Promise<{ local
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const galleries = await sanityFetch<GalerijaTeaser[]>(allGalerijeQuery, {}, []);
+  const galleries = await fetchGalerije();
 
   return (
     <>

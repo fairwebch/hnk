@@ -3,8 +3,8 @@
 import { useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Card, cardImage, cardTitle } from '@/components/ui/Card';
-import { SanityImage } from '@/components/ui/SanityImage';
-import type { GalerijaTeaser } from '@/sanity/lib/types';
+import { CmsImage } from '@/components/ui/CmsImage';
+import type { GalerijaTeaserFromApi as GalerijaTeaser } from '@/lib/galerijeApi';
 import { pickLocale } from '@/lib/locale';
 
 type Cat = 'all' | 'sport' | 'feste';
@@ -82,7 +82,7 @@ export function GalleryBrowser({ galleries }: { galleries: GalerijaTeaser[] }) {
                 className="overflow-hidden"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <SanityImage
+                  <CmsImage
                     image={g.cover}
                     alt={pickLocale(g.name, locale)}
                     fill

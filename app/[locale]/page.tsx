@@ -7,11 +7,12 @@ import {
   nextDogadjajQuery,
   allMomcadiQuery,
   sponzoriQuery,
-  galerijeTeaserQuery,
   homeCountsQuery,
   postavkeSajtaQuery,
 } from '@/sanity/lib/queries';
 import type { Novost, Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
+import { fetchGalerijeTeaser } from '@/lib/galerijeApi';
+import { CmsImage } from '@/components/ui/CmsImage';
 import { NewsHighlights } from '@/components/NewsHighlights';
 import { Card, cardImage } from '@/components/ui/Card';
 import { EventCountdown } from '@/components/EventCountdown';
@@ -24,14 +25,6 @@ import { shopProducts } from '@/lib/shop';
 import { urlFor } from '@/sanity/lib/image';
 import { pickLocale, formatDate } from '@/lib/locale';
 import { site } from '@/lib/site';
-
-type GalleryTeaser = {
-  _id: string;
-  name: { hr?: string; de?: string };
-  slug: string;
-  cover?: any;
-  count?: number;
-};
 
 export default async function HomePage({
   params,
@@ -48,7 +41,7 @@ export default async function HomePage({
       sanityFetch<Dogadjaj | null>(nextDogadjajQuery, {}, null),
       sanityFetch<Momcad[]>(allMomcadiQuery, {}, []),
       sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),
-      sanityFetch<GalleryTeaser[]>(galerijeTeaserQuery, { limit: 4 }, []),
+      fetchGalerijeTeaser(4),
       sanityFetch<{ novosti: number; momcadi: number; galerije: number }>(
         homeCountsQuery,
         {},
@@ -251,7 +244,7 @@ export default async function HomePage({
                   href={`/galerija/${g.slug}`}
                   className="aspect-square overflow-hidden"
                 >
-                  <SanityImage
+                  <CmsImage
                     image={g.cover}
                     alt={pickLocale(g.name, locale)}
                     fill

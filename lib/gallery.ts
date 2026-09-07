@@ -5,13 +5,14 @@ import type { CmsImg } from '@/lib/cmsImage';
 
 /** PHP-CMS counterpart of toLightbox: the API already serves three WebP
  *  widths (WIDTHS_WIDE = 480/1200/1920, capped at the source width), so the
- *  srcset is just those three files. */
+ *  srcset is just those three files. Grid thumb prefers the dedicated 600x600
+ *  crop (same as Sanity's 600x600 fit=crop) when the module provides one. */
 export function toLightboxCms(images: CmsImg[] | undefined, altBase = ''): LightboxImage[] {
   if (!images) return [];
   return images.map((img, i) => {
     const cap = (w: number) => (img.width ? Math.min(w, img.width) : w);
     return {
-      thumb: img.medium,
+      thumb: img.thumb ?? img.medium,
       full: img.large,
       srcSet: img.isVector
         ? undefined
