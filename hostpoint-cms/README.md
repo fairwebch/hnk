@@ -1,9 +1,11 @@
 # HNK Kroatien Schwyz — PHP/MySQL CMS backend (staging)
 
-Zamjena za Sanity, modul po modul. **Modul 1: sponzori** i **Modul 2: clan_uprave**
-(uprava) su gotovi i live na stagingu. Next.js frontend na Vercelu i dalje čita
-iz Sanityja za sve OSTALE tipove — mijenja se samo izvor podataka za te module,
-i to samo na testnoj grani (vidi `../hnk` repo, grana `staging/php-sponsors-api-test`).
+Zamjena za Sanity, modul po modul. **Modul 1: sponzori**, **Modul 2: clan_uprave**
+(uprava) i **Modul 3: stranice** (kontakt, postani-clan, impressum,
+datenschutzerklarung) su gotovi i live na stagingu. Next.js frontend na
+Vercelu i dalje čita iz Sanityja za sve OSTALE tipove — mijenja se samo
+izvor podataka za te module, i to samo na testnoj grani (vidi `../hnk`
+repo, grana `staging/php-sponsors-api-test`).
 
 Ovaj folder JEST dio hnk Next.js repozitorija (isti git checkout, radi lakšeg
 review-a), ali je funkcionalno zaseban PHP sistem koji ide na sasvim drugu
@@ -28,18 +30,20 @@ Modula 2 (clan_uprave) nadalje: `./deploy.sh staging --dry-run` pa
 ```
 hostpoint-cms/
   deploy.sh                   # rsync preko SSH -> www/api-staging.kroatien-schwyz.ch/ (vidi deploy.sh za pravila)
-  schema.sql                  # CREATE TABLE sponzori, clan_uprave, admin_users
+  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, admin_users
   config/
     config.example.php        # kopirati u config.php na serveru, popuniti
   bin/
     create-admin.php          # CLI: kreira/resetira admin nalog (radi preko SSH-a)
     seed-real-sponsors.php    # jednokratna migracija Modul 1 (Sanity -> WebP/SQL)
     seed-real-clan-uprave.php # jednokratna migracija Modul 2 (Sanity -> WebP/SQL)
+    seed-real-stranice.php    # jednokratna migracija Modul 3 (Sanity PT -> Markdown/SQL)
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
       sponzori.php            # GET javni JSON (lista / ?id=X), samo status=veroeffentlicht
       clan-uprave.php          # GET javni JSON (lista / ?id=X), samo status=veroeffentlicht
+      stranica.php              # GET javni JSON (lista / ?slug=X / ?id=X), body već HTML (iz Markdowna)
     admin/
       login.php                # korak 1: lozinka
       setup-2fa.php            # prvi put: uparivanje TOTP-a (ručni unos ključa, bez QR-a)
@@ -49,9 +53,13 @@ hostpoint-cms/
       uprava.php                 # lista članova uprave (uključujući Entwurf)
       uprava-edit.php            # add/edit forma + upload slike (neobavezna)
       uprava-delete.php
-      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php
+      stranice.php               # lista stranica (uključujući Entwurf)
+      stranica-edit.php          # add/edit forma, textarea + Markdown cheat-sheet
+      stranica-delete.php
+      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php
                                  # (webp.php dijeljen preko modula: process()/delete() prime
-                                 # $filePrefix/$columnPrefix; .htaccess brani direktan pristup)
+                                 # $filePrefix/$columnPrefix; markdown.php je Portable Text
+                                 # zamjena za stranice modul; .htaccess brani direktan pristup)
       assets/admin.css
     uploads/
       sponzori/                 # generirani WebP (small/medium/large) — javno
@@ -106,6 +114,33 @@ Od ovog modula nadalje deploy ide preko SSH umjesto File Managera:
 
 Svi podaci su stvarni (13 članova uprave povučenih preko GROQ javnog read
 API-ja, 8 sa stvarnim fotografijama sa Sanity CDN-a) — ne test placeholderi.
+
+## Modul 3: stranice (CMS stranice) — Portable Text -> Markdown
+
+Sanity `stranica.body` je Portable Text (rich text: naslovi, liste, bold/
+italic, linkovi). Umjesto punog rich-text editora u adminu, body se čuva
+kao **Markdown izvor** (`sadrzaj_hr`/`sadrzaj_de` kolone) i konvertuje u
+HTML pri svakom čitanju (`includes/markdown.php`, bez Composer zavisnosti
+— isti princip kao TOTP). Podržan podskup odgovara TAČNO onome što stvarni
+sadržaj koristi: paragraf (prazan red = novi pasus, Enter unutar pasusa =
+`<br>`), `##`/`###` naslovi, `> citat`, `- `/`1. ` liste (tolerantno na
+prazne redove između stavki), `**bold**`, `*italic*`, `[link](url)`
+(http(s)/mailto/tel). Bez slika u body-ju — stvarni sadržaj ih ne koristi.
+XSS-sigurno po konstrukciji: tekst prolazi kroz `htmlspecialchars()` PRIJE
+umetanja bilo kojeg taga, pa admin ne može ubaciti proizvoljan HTML.
+
+Frontend (`lib/stranicaApi.ts`, `components/ui/HtmlContent.tsx`) prikazuje
+gotov HTML iz API-ja preko `dangerouslySetInnerHTML` — nema Portable Text
+parsiranja na Next.js strani za ovaj modul. Nove `.cms-html` CSS klase u
+`app/globals.css` repliciraju istu tipografiju kao
+`components/ui/PortableText.tsx` (isti Tailwind klase po elementu), pa
+vizuelni rezultat ostaje identičan.
+
+Deploy: isti SSH obrazac kao Modul 2 (schema.sql pa insert SQL preko mysql
+klijenta, nema slika pa nema WebP koraka), `./deploy.sh staging` za kod.
+4 stvarne stranice — kontakt, postani-clan, impressum, datenschutzerklarung
+— povučene preko GROQ javnog read API-ja (Portable Text ručno prepisan u
+Markdown, nema automatskog konvertera, jednokratan posao).
 
 ## Sigurnosne odluke (ukratko, za review)
 
