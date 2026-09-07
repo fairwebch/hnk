@@ -53,6 +53,11 @@ function download(string $url, string $dest): void
     throw new RuntimeException("download failed: {$url} ({$err})");
 }
 
+/**
+ * SQL string literal. Backslash se MORA duplirati: MySQL u literalu tretira
+ * `\` kao escape i tiho ga odbacuje — Markdown escape `1\.` (vodeći broj koji
+ * nije lista) bi inače u bazu ušao kao `1.` i renderirao se kao <ol>.
+ */
 function sqlVal($v): string
 {
     if ($v === null || $v === '') {
@@ -61,7 +66,7 @@ function sqlVal($v): string
     if (is_int($v)) {
         return (string) $v;
     }
-    return "'" . str_replace("'", "''", (string) $v) . "'";
+    return "'" . str_replace(['\\', "'"], ['\\\\', "''"], (string) $v) . "'";
 }
 
 $rows = [];
