@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { Card, cardImage, cardTitle } from '@/components/ui/Card';
-import { SanityImage } from '@/components/ui/SanityImage';
+import { CmsImage } from '@/components/ui/CmsImage';
 import { pickLocale, formatDate } from '@/lib/locale';
-import type { Novost } from '@/sanity/lib/types';
+import type { NovostFromApi as Novost } from '@/lib/novostiApi';
 
 /**
  * Home "latest news" in the compact reference layout: on desktop the featured
@@ -85,7 +85,7 @@ function FeaturedCard({
     >
       {/* Height comes from the grid row (≈ a teaser card); the image just covers. */}
       <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[280px] md:h-full overflow-hidden">
-        <SanityImage
+        <CmsImage
           image={novost.coverImage}
           alt={title}
           fill
@@ -130,7 +130,7 @@ function TeaserCard({
       className={`flex flex-col ${className}`}
     >
       <div className="relative aspect-[16/9] overflow-hidden">
-        <SanityImage
+        <CmsImage
           image={novost.coverImage}
           alt={title}
           fill

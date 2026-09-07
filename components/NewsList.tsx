@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { NewsCard } from '@/components/cards/NewsCard';
 import { EmptyState } from '@/components/ui/EmptyState';
-import type { Novost } from '@/sanity/lib/types';
+import type { NovostFromApi as Novost } from '@/lib/novostiApi';
 
 const CATEGORIES = ['Eventi', 'Novosti', 'Skupština', 'Sport'] as const;
 const PAGE_SIZE = 9;

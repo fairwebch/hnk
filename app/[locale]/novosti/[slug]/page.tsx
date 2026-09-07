@@ -2,23 +2,14 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { client } from '@/sanity/lib/client';
-import { sanityConfigured } from '@/sanity/env';
-import { novostBySlugQuery, novostSlugsQuery } from '@/sanity/lib/queries';
-import type { Novost } from '@/sanity/lib/types';
-import { SanityImage } from '@/components/ui/SanityImage';
-import { PortableText } from '@/components/ui/PortableText';
-import { pickLocale, pickLocaleBlocks, formatDate } from '@/lib/locale';
+import { fetchNovost, fetchNovosti } from '@/lib/novostiApi';
+import { CmsImage } from '@/components/ui/CmsImage';
+import { HtmlContent } from '@/components/ui/HtmlContent';
+import { pickLocale, formatDate } from '@/lib/locale';
 
 export async function generateStaticParams() {
-  if (!sanityConfigured) return [];
-  try {
-    const slugs = await client.fetch<string[]>(novostSlugsQuery);
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  const news = await fetchNovosti();
+  return news.map((n) => ({ slug: n.slug }));
 }
 
 export async function generateMetadata({
@@ -27,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const n = await sanityFetch<Novost | null>(novostBySlugQuery, { slug }, null);
+  const n = await fetchNovost(slug);
   if (!n) return {};
   return {
     title: pickLocale(n.title, locale),
@@ -44,11 +35,11 @@ export default async function NovostPage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const n = await sanityFetch<Novost | null>(novostBySlugQuery, { slug }, null);
+  const n = await fetchNovost(slug);
   if (!n) notFound();
 
   const title = pickLocale(n.title, locale);
-  const body = pickLocaleBlocks(n.body, locale);
+  const body = pickLocale(n.bodyHtml, locale);
 
   return (
     <article>
@@ -76,17 +67,17 @@ export default async function NovostPage({
         </h1>
       </div>
 
-      {n.coverImage?.asset && (
+      {n.coverImage && (
         <div className="container-x max-w-4xl">
           <div className="relative aspect-[16/9] overflow-hidden border border-line">
-            <SanityImage image={n.coverImage} alt={title} fill sizes="100vw" className="object-cover" priority />
+            <CmsImage image={n.coverImage} alt={title} fill sizes="100vw" className="object-cover" priority />
           </div>
         </div>
       )}
 
       <div className="prose-x py-10">
-        {body && body.length > 0 ? (
-          <PortableText value={body} />
+        {body ? (
+          <HtmlContent html={body} />
         ) : (
           pickLocale(n.excerpt, locale) && (
             <p className="font-sans text-lg text-content-soft leading-relaxed">

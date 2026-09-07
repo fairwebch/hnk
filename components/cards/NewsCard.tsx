@@ -1,7 +1,7 @@
 import { Card, cardImage, cardTitle } from '@/components/ui/Card';
-import { SanityImage } from '@/components/ui/SanityImage';
+import { CmsImage } from '@/components/ui/CmsImage';
 import { pickLocale, formatDate } from '@/lib/locale';
-import type { Novost } from '@/sanity/lib/types';
+import type { NovostFromApi as Novost } from '@/lib/novostiApi';
 
 export function NewsCard({
   novost,
@@ -18,7 +18,7 @@ export function NewsCard({
   return (
     <Card variant="content" href={`/novosti/${novost.slug}`} className="flex flex-col">
       <div className="relative aspect-[16/10] overflow-hidden">
-        <SanityImage
+        <CmsImage
           image={novost.coverImage}
           alt={title}
           fill

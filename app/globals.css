@@ -178,6 +178,17 @@
   .cms-html a {
     @apply text-croatia underline underline-offset-2 hover:text-croatia-dark transition-colors;
   }
+  /* Inline image block (Markdown `![alt](url)` on its own line) — mirrors the
+     PortableText `image` type: figure my-8, full-width bordered img, caption. */
+  .cms-html figure {
+    @apply my-8;
+  }
+  .cms-html figure img {
+    @apply w-full h-auto border border-line;
+  }
+  .cms-html figcaption {
+    @apply text-sm text-content-muted mt-2;
+  }
 }
 
 @layer utilities {

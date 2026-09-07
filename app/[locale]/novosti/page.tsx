@@ -1,8 +1,6 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { allNovostiQuery } from '@/sanity/lib/queries';
-import type { Novost } from '@/sanity/lib/types';
+import { fetchNovosti } from '@/lib/novostiApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { NewsList } from '@/components/NewsList';
 
@@ -25,7 +23,7 @@ export default async function NovostiPage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const news = await sanityFetch<Novost[]>(allNovostiQuery, {}, []);
+  const news = await fetchNovosti();
 
   return (
     <>

@@ -3,15 +3,15 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { sanityFetch } from '@/sanity/lib/fetch';
 import {
-  latestNovostiQuery,
   nextDogadjajQuery,
   allMomcadiQuery,
   sponzoriQuery,
   homeCountsQuery,
   postavkeSajtaQuery,
 } from '@/sanity/lib/queries';
-import type { Novost, Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
+import type { Dogadjaj, Momcad, Sponzor } from '@/sanity/lib/types';
 import { fetchGalerijeTeaser } from '@/lib/galerijeApi';
+import { fetchLatestNovosti } from '@/lib/novostiApi';
 import { CmsImage } from '@/components/ui/CmsImage';
 import { NewsHighlights } from '@/components/NewsHighlights';
 import { Card, cardImage } from '@/components/ui/Card';
@@ -37,7 +37,7 @@ export default async function HomePage({
 
   const [news, nextEvent, teams, sponsors, galleries, counts, postavke] =
     await Promise.all([
-      sanityFetch<Novost[]>(latestNovostiQuery, { limit: 5 }, []),
+      fetchLatestNovosti(5),
       sanityFetch<Dogadjaj | null>(nextDogadjajQuery, {}, null),
       sanityFetch<Momcad[]>(allMomcadiQuery, {}, []),
       sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),
