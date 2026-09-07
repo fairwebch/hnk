@@ -3,6 +3,7 @@ declare(strict_types=1);
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/webp.php';
+require __DIR__ . '/includes/layout.php';
 
 $user = hnkcms_require_login();
 $db = hnkcms_db();
@@ -118,26 +119,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/sponzori';
 $isEdit = $row !== null;
 $v = fn(string $key, $default = '') => htmlspecialchars((string) ($_POST[$key] ?? $row[$key] ?? $default), ENT_QUOTES);
-?>
-<!doctype html>
-<html lang="hr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>HNK CMS · <?= $isEdit ? 'Uredi sponzora' : 'Novi sponzor' ?></title>
-<link rel="stylesheet" href="/admin/assets/admin.css">
-</head>
-<body class="admin-body">
-<header class="admin-header">
-  <h1>HNK Kroatien Schwyz · CMS</h1>
-  <div class="admin-header-right">
-    <span>Prijavljen: <?= htmlspecialchars($user['username'], ENT_QUOTES) ?></span>
-    <a href="/admin/logout.php" class="btn btn-ghost">Odjava</a>
-  </div>
-</header>
 
-<main class="admin-main admin-main--narrow">
+hnkcms_admin_page_start($isEdit ? 'Uredi sponzora' : 'Novi sponzor', 'sponzori', $user, true);
+?>
   <p><a href="/admin/index.php">&larr; Natrag na listu</a></p>
   <h2><?= $isEdit ? 'Uredi sponzora' : 'Novi sponzor' ?></h2>
 
@@ -194,6 +178,4 @@ $v = fn(string $key, $default = '') => htmlspecialchars((string) ($_POST[$key] ?
 
     <button type="submit" class="btn btn-primary"><?= $isEdit ? 'Spremi izmjene' : 'Kreiraj sponzora' ?></button>
   </form>
-</main>
-</body>
-</html>
+<?php hnkcms_admin_page_end(); ?>

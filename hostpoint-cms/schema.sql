@@ -1,5 +1,5 @@
 -- HNK Kroatien Schwyz — PHP+MySQL CMS backend
--- Modul 1: sponzori, Modul 2: clan_uprave
+-- Modul 1: sponzori, Modul 2: clan_uprave, Modul 3: stranice, Modul 4: momcadi
 -- Target: MariaDB 10.11 (Hostpoint hidapifa_hnkcms)
 --
 -- Pokrenuti jednom, na praznoj bazi:
@@ -141,4 +141,143 @@ CREATE TABLE IF NOT EXISTS stranice (
   PRIMARY KEY (id),
   UNIQUE KEY uniq_slug (slug),
   KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
+-- momcadi — odgovara Sanity tipu "momcad" (name, slug, order, coverImage,
+-- description, grupnaFotografija, popisImena[], igraci[], trener{},
+-- liga, terminTreninga, gallery[]). Prvi modul s parent/child tablicama:
+-- Sanity inline nizovi (igraci, popisImena, gallery) postaju child tablice
+-- s FK ON DELETE CASCADE. Nema posebne "kategorije" — svaki nivo (Aktivni,
+-- Seniori, Juniori) je zaseban redak, kao i u Sanityju.
+-- Tri slike na nivou tima (cover, grupna, trener) koriste isti *_original/
+-- small/medium/large/is_vector/width/height obrazac, samo s različitim
+-- prefiksom kolona. description je Markdown (isti obrazac kao stranice).
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS momcadi (
+  id                      INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  slug                    VARCHAR(96) NOT NULL,
+  naziv_hr                VARCHAR(190) NOT NULL,
+  naziv_de                VARCHAR(190) NULL,
+  redoslijed              SMALLINT NOT NULL DEFAULT 100,
+
+  liga_hr                 VARCHAR(190) NULL,
+  liga_de                 VARCHAR(190) NULL,
+  termin_treninga_hr      VARCHAR(255) NULL,
+  termin_treninga_de      VARCHAR(255) NULL,
+  opis_hr                 MEDIUMTEXT NULL,   -- Markdown izvor
+  opis_de                 MEDIUMTEXT NULL,   -- Markdown izvor
+
+  -- Naslovna slika (hero pozadina; ako je nema, frontend koristi grupnu).
+  cover_original          VARCHAR(255) NULL,
+  cover_small             VARCHAR(255) NULL,
+  cover_medium            VARCHAR(255) NULL,
+  cover_large             VARCHAR(255) NULL,
+  cover_is_vector         TINYINT(1) NOT NULL DEFAULT 0,
+  cover_width             SMALLINT UNSIGNED NULL,
+  cover_height            SMALLINT UNSIGNED NULL,
+  cover_alt               VARCHAR(255) NULL,
+
+  -- Grupna fotografija (glavni element stranice u oba načina prikaza).
+  grupna_original         VARCHAR(255) NULL,
+  grupna_small            VARCHAR(255) NULL,
+  grupna_medium           VARCHAR(255) NULL,
+  grupna_large            VARCHAR(255) NULL,
+  grupna_is_vector        TINYINT(1) NOT NULL DEFAULT 0,
+  grupna_width            SMALLINT UNSIGNED NULL,
+  grupna_height           SMALLINT UNSIGNED NULL,
+  grupna_alt              VARCHAR(255) NULL,
+
+  -- Trener: Sanity inline objekt {ime, funkcija(localeString), slika} — jedan po timu.
+  trener_ime              VARCHAR(190) NULL,
+  trener_funkcija_hr      VARCHAR(190) NULL,
+  trener_funkcija_de      VARCHAR(190) NULL,
+  trener_slika_original   VARCHAR(255) NULL,
+  trener_slika_small      VARCHAR(255) NULL,
+  trener_slika_medium     VARCHAR(255) NULL,
+  trener_slika_large      VARCHAR(255) NULL,
+  trener_slika_is_vector  TINYINT(1) NOT NULL DEFAULT 0,
+  trener_slika_width      SMALLINT UNSIGNED NULL,
+  trener_slika_height     SMALLINT UNSIGNED NULL,
+
+  -- Entwurf/Veröffentlicht: javni API vraća samo 'veroeffentlicht'.
+  status                  ENUM('entwurf','veroeffentlicht') NOT NULL DEFAULT 'veroeffentlicht',
+
+  created_at              DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at              DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_slug (slug),
+  KEY idx_redoslijed (redoslijed),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Strukturirani roster (Sanity momcad.igraci[]). Kad tim ima barem jedan
+-- redak ovdje, frontend prikazuje roster; inače pada na momcad_popis_imena
+-- (ista rosterMode = igraci.length > 0 logika kao danas). `redoslijed` je
+-- novo polje — Sanity čuva redoslijed kao poziciju u nizu, relaciona
+-- tablica treba eksplicitnu kolonu. pozicija je NULL-abilna (opciona i u Sanityju).
+CREATE TABLE IF NOT EXISTS momcad_igraci (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  momcad_id         INT UNSIGNED NOT NULL,
+  ime               VARCHAR(120) NOT NULL,
+  prezime           VARCHAR(120) NULL,
+  broj              SMALLINT UNSIGNED NULL,
+  pozicija          ENUM('golman','obrana','vezni','napad') NULL,
+
+  slika_original    VARCHAR(255) NULL,
+  slika_small       VARCHAR(255) NULL,
+  slika_medium      VARCHAR(255) NULL,
+  slika_large       VARCHAR(255) NULL,
+  slika_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  slika_width       SMALLINT UNSIGNED NULL,
+  slika_height      SMALLINT UNSIGNED NULL,
+
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_momcad_redoslijed (momcad_id, redoslijed),
+  CONSTRAINT fk_igrac_momcad FOREIGN KEY (momcad_id) REFERENCES momcadi (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Legacy popis imena (Sanity momcad.popisImena[] — redovi "Gornji red s
+-- lijeva na desno: Darijo, Andre, ..."). Zadržano 1:1 jer sve 3 stvarne
+-- momčadi danas koriste SAMO ovaj prikaz; imena su zarezom odvojen string,
+-- namjerno ne normalizovana (to je posao strukturiranog rostera iznad).
+CREATE TABLE IF NOT EXISTS momcad_popis_imena (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  momcad_id         INT UNSIGNED NOT NULL,
+  oznaka_hr         VARCHAR(190) NULL,
+  oznaka_de         VARCHAR(190) NULL,
+  imena             TEXT NOT NULL,
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+
+  PRIMARY KEY (id),
+  KEY idx_momcad_redoslijed (momcad_id, redoslijed),
+  CONSTRAINT fk_popis_momcad FOREIGN KEY (momcad_id) REFERENCES momcadi (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Galerija (Sanity momcad.gallery[]). Trenutno prazna na sve 3 momčadi —
+-- shema prati Sanity strukturu, ne samo trenutni sadržaj.
+CREATE TABLE IF NOT EXISTS momcad_galerija (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  momcad_id         INT UNSIGNED NOT NULL,
+
+  slika_original    VARCHAR(255) NULL,
+  slika_small       VARCHAR(255) NULL,
+  slika_medium      VARCHAR(255) NULL,
+  slika_large       VARCHAR(255) NULL,
+  slika_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  slika_width       SMALLINT UNSIGNED NULL,
+  slika_height      SMALLINT UNSIGNED NULL,
+  alt               VARCHAR(255) NULL,
+
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_momcad_redoslijed (momcad_id, redoslijed),
+  CONSTRAINT fk_galerija_momcad FOREIGN KEY (momcad_id) REFERENCES momcadi (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

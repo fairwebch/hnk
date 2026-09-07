@@ -15,8 +15,10 @@ final class LogoUploadError extends RuntimeException {}
 
 final class WebpPipeline
 {
-    /** Širine generiranih WebP verzija, u px (srcset 1x/2x/~3.3x). */
+    /** Širine generiranih WebP verzija, u px (srcset 1x/2x/~3.3x) — za logotipe i portrete (kartice ≤ ~400px). */
     private const WIDTHS = ['small' => 240, 'medium' => 480, 'large' => 800];
+    /** Za fotografije pune širine (hero pozadina 100vw, grupna fotografija 1200px, galerija/lightbox). */
+    public const WIDTHS_WIDE = ['small' => 480, 'medium' => 1200, 'large' => 1920];
     private const QUALITY = 82;
     private const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB
 
@@ -26,9 +28,11 @@ final class WebpPipeline
      * @param int $entityId koristi se u imenima datoteka
      * @param string $filePrefix prefiks imena datoteke (npr. "sponzor", "clan") — samo
      *   radi čitljivosti na disku, nema utjecaja na jedinstvenost (svaki modul ima svoj uploadsDir)
+     * @param array|null $widths ciljne širine po ključu small/medium/large; null = self::WIDTHS
+     *   (logotipi/portreti), self::WIDTHS_WIDE za fotografije pune širine
      * @return array{is_vector:bool, original:string, small:string, medium:string, large:string, width:?int, height:?int}
      */
-    public static function process(array $file, string $uploadsDir, int $entityId, string $filePrefix = 'sponzor'): array
+    public static function process(array $file, string $uploadsDir, int $entityId, string $filePrefix = 'sponzor', ?array $widths = null): array
     {
         if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
             throw new LogoUploadError('Upload nije uspio (error code ' . ($file['error'] ?? 'n/a') . ').');
@@ -49,7 +53,7 @@ final class WebpPipeline
             return self::processSvg($file, $uploadsDir, $originalsDir, $entityId, $filePrefix);
         }
 
-        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $entityId, $filePrefix);
+        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $entityId, $filePrefix, $widths ?? self::WIDTHS);
     }
 
     private static function processSvg(array $file, string $uploadsDir, string $originalsDir, int $id, string $filePrefix): array
@@ -101,7 +105,7 @@ final class WebpPipeline
         return [null, null];
     }
 
-    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id, string $filePrefix): array
+    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id, string $filePrefix, array $widths): array
     {
         $allowed = ['image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp', 'image/gif' => 'imagecreatefromgif'];
         if (!isset($allowed[$mime])) {
@@ -133,8 +137,8 @@ final class WebpPipeline
             'height' => $srcH,
         ];
 
-        foreach (self::WIDTHS as $key => $targetW) {
-            // Logo se ne uvećava preko izvorne veličine.
+        foreach ($widths as $key => $targetW) {
+            // Slika se ne uvećava preko izvorne veličine.
             $w = min($targetW, $srcW);
             $h = (int) round($srcH * ($w / $srcW));
 

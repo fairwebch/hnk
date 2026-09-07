@@ -7,4 +7,8 @@ public/uploads/clan-uprave/*
 !public/uploads/clan-uprave/originals/
 public/uploads/clan-uprave/originals/*
 !public/uploads/clan-uprave/originals/.htaccess
+public/uploads/momcadi/*
+!public/uploads/momcadi/originals/
+public/uploads/momcadi/originals/*
+!public/uploads/momcadi/originals/.htaccess
 !public/uploads/.htaccess

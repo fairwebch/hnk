@@ -2,37 +2,15 @@
 declare(strict_types=1);
 require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/auth.php';
+require __DIR__ . '/includes/layout.php';
 
 $user = hnkcms_require_login();
 
 $rows = hnkcms_db()->query('SELECT * FROM clan_uprave ORDER BY redoslijed ASC, id ASC')->fetchAll();
 $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/clan-uprave';
+
+hnkcms_admin_page_start('Uprava', 'uprava', $user);
 ?>
-<!doctype html>
-<html lang="hr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>HNK CMS · Uprava</title>
-<link rel="stylesheet" href="/admin/assets/admin.css">
-</head>
-<body class="admin-body">
-<header class="admin-header">
-  <h1>HNK Kroatien Schwyz · CMS</h1>
-  <div class="admin-header-right">
-    <span>Prijavljen: <?= htmlspecialchars($user['username'], ENT_QUOTES) ?></span>
-    <a href="/admin/logout.php" class="btn btn-ghost">Odjava</a>
-  </div>
-</header>
-
-<nav class="admin-nav">
-  <a href="/admin/index.php">Sponzori</a>
-  <a href="/admin/uprava.php" class="is-active">Uprava</a>
-  <a href="/admin/stranice.php">Stranice</a>
-</nav>
-
-<main class="admin-main">
   <div class="admin-toolbar">
     <h2>Uprava</h2>
     <a href="/admin/uprava-edit.php" class="btn btn-primary">+ Novi član</a>
@@ -86,6 +64,4 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/clan-up
       <?php endforeach; ?>
     </tbody>
   </table>
-</main>
-</body>
-</html>
+<?php hnkcms_admin_page_end(); ?>
