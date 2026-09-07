@@ -5,8 +5,8 @@ require __DIR__ . '/includes/auth.php';
 
 $user = hnkcms_require_login();
 
-$rows = hnkcms_db()->query('SELECT * FROM sponzori ORDER BY redoslijed ASC, id ASC')->fetchAll();
-$uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/sponzori';
+$rows = hnkcms_db()->query('SELECT * FROM clan_uprave ORDER BY redoslijed ASC, id ASC')->fetchAll();
+$uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/clan-uprave';
 ?>
 <!doctype html>
 <html lang="hr">
@@ -14,7 +14,7 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/sponzor
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>HNK CMS · Sponzori</title>
+<title>HNK CMS · Uprava</title>
 <link rel="stylesheet" href="/admin/assets/admin.css">
 </head>
 <body class="admin-body">
@@ -27,14 +27,14 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/sponzor
 </header>
 
 <nav class="admin-nav">
-  <a href="/admin/index.php" class="is-active">Sponzori</a>
-  <a href="/admin/uprava.php">Uprava</a>
+  <a href="/admin/index.php">Sponzori</a>
+  <a href="/admin/uprava.php" class="is-active">Uprava</a>
 </nav>
 
 <main class="admin-main">
   <div class="admin-toolbar">
-    <h2>Sponzori</h2>
-    <a href="/admin/sponzor-edit.php" class="btn btn-primary">+ Novi sponzor</a>
+    <h2>Uprava</h2>
+    <a href="/admin/uprava-edit.php" class="btn btn-primary">+ Novi član</a>
   </div>
 
   <?php if (!empty($_GET['msg'])): ?>
@@ -45,39 +45,37 @@ $uploadsUrl = rtrim(hnkcms_config()['public_base_url'], '/') . '/uploads/sponzor
     <thead>
       <tr>
         <th>Red.</th>
-        <th>Logo</th>
-        <th>Naziv</th>
-        <th>Paket</th>
+        <th>Slika</th>
+        <th>Ime i prezime</th>
+        <th>Funkcija</th>
         <th>Status</th>
-        <th>Web</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <?php if (!$rows): ?>
-        <tr><td colspan="7" class="empty">Još nema unesenih sponzora.</td></tr>
+        <tr><td colspan="6" class="empty">Još nema unesenih članova uprave.</td></tr>
       <?php endif; ?>
       <?php foreach ($rows as $row): ?>
         <tr>
           <td><?= (int) $row['redoslijed'] ?></td>
           <td>
-            <?php if ($row['logo_small']): ?>
-              <img class="thumb" src="<?= htmlspecialchars($uploadsUrl . '/' . $row['logo_small'], ENT_QUOTES) ?>" alt="">
+            <?php if ($row['slika_small']): ?>
+              <img class="thumb thumb-round" src="<?= htmlspecialchars($uploadsUrl . '/' . $row['slika_small'], ENT_QUOTES) ?>" alt="">
             <?php else: ?>
               <span class="thumb thumb-empty">—</span>
             <?php endif; ?>
           </td>
-          <td><?= htmlspecialchars($row['naziv'], ENT_QUOTES) ?></td>
-          <td><span class="pill pill-<?= strtolower($row['paket']) ?>"><?= htmlspecialchars($row['paket'], ENT_QUOTES) ?></span></td>
+          <td><?= htmlspecialchars($row['ime'], ENT_QUOTES) ?></td>
+          <td><?= htmlspecialchars($row['funkcija_hr'], ENT_QUOTES) ?></td>
           <td>
             <span class="pill <?= $row['status'] === 'veroeffentlicht' ? 'pill-live' : 'pill-draft' ?>">
               <?= $row['status'] === 'veroeffentlicht' ? 'Veröffentlicht' : 'Entwurf' ?>
             </span>
           </td>
-          <td><?php if ($row['link']): ?><a href="<?= htmlspecialchars($row['link'], ENT_QUOTES) ?>" target="_blank" rel="noopener">↗</a><?php endif; ?></td>
           <td class="admin-row-actions">
-            <a href="/admin/sponzor-edit.php?id=<?= (int) $row['id'] ?>">Uredi</a>
-            <form method="post" action="/admin/sponzor-delete.php" onsubmit="return confirm('Obrisati sponzora &quot;<?= htmlspecialchars(addslashes($row['naziv']), ENT_QUOTES) ?>&quot;? Ovo briše i logo datoteke.');">
+            <a href="/admin/uprava-edit.php?id=<?= (int) $row['id'] ?>">Uredi</a>
+            <form method="post" action="/admin/uprava-delete.php" onsubmit="return confirm('Obrisati člana &quot;<?= htmlspecialchars(addslashes($row['ime']), ENT_QUOTES) ?>&quot;? Ovo briše i sliku.');">
               <?= hnkcms_csrf_field() ?>
               <input type="hidden" name="id" value="<?= (int) $row['id'] ?>">
               <button type="submit" class="link-danger">Obriši</button>

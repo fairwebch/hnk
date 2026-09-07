@@ -3,4 +3,8 @@ public/uploads/sponzori/*
 !public/uploads/sponzori/originals/
 public/uploads/sponzori/originals/*
 !public/uploads/sponzori/originals/.htaccess
+public/uploads/clan-uprave/*
+!public/uploads/clan-uprave/originals/
+public/uploads/clan-uprave/originals/*
+!public/uploads/clan-uprave/originals/.htaccess
 !public/uploads/.htaccess

@@ -1,8 +1,9 @@
 <?php
 /**
- * Logo pipeline: raster upload → 3 WebP veličine (q82) + očuvan original.
- * SVG upload → sanitiziran i spremljen kao vektor (bez rasterizacije),
- * sve tri "veličine" pokazuju na istu SVG datoteku.
+ * Slikovni pipeline (dijeljen preko modula — sponzori.logo, clan_uprave.slika):
+ * raster upload → 3 WebP veličine (q82) + očuvan original. SVG upload →
+ * sanitiziran i spremljen kao vektor (bez rasterizacije), sve tri "veličine"
+ * pokazuju na istu SVG datoteku.
  *
  * Bez Imagick zavisnosti — GD je gotovo univerzalno dostupan na shared
  * hostingu (potvrđeno i u ovom sandboxu: GD + WebP support enabled).
@@ -21,11 +22,13 @@ final class WebpPipeline
 
     /**
      * @param array $file jedan element iz $_FILES (npr. $_FILES['logo'])
-     * @param string $uploadsDir apsolutna putanja do public/uploads/sponzori
-     * @param int $sponzorId koristi se u imenima datoteka
+     * @param string $uploadsDir apsolutna putanja do public/uploads/<modul>
+     * @param int $entityId koristi se u imenima datoteka
+     * @param string $filePrefix prefiks imena datoteke (npr. "sponzor", "clan") — samo
+     *   radi čitljivosti na disku, nema utjecaja na jedinstvenost (svaki modul ima svoj uploadsDir)
      * @return array{is_vector:bool, original:string, small:string, medium:string, large:string, width:?int, height:?int}
      */
-    public static function process(array $file, string $uploadsDir, int $sponzorId): array
+    public static function process(array $file, string $uploadsDir, int $entityId, string $filePrefix = 'sponzor'): array
     {
         if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
             throw new LogoUploadError('Upload nije uspio (error code ' . ($file['error'] ?? 'n/a') . ').');
@@ -43,13 +46,13 @@ final class WebpPipeline
         }
 
         if ($mime === 'image/svg+xml') {
-            return self::processSvg($file, $uploadsDir, $originalsDir, $sponzorId);
+            return self::processSvg($file, $uploadsDir, $originalsDir, $entityId, $filePrefix);
         }
 
-        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $sponzorId);
+        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $entityId, $filePrefix);
     }
 
-    private static function processSvg(array $file, string $uploadsDir, string $originalsDir, int $id): array
+    private static function processSvg(array $file, string $uploadsDir, string $originalsDir, int $id, string $filePrefix): array
     {
         $raw = file_get_contents($file['tmp_name']);
         if ($raw === false || stripos($raw, '<svg') === false) {
@@ -57,7 +60,7 @@ final class WebpPipeline
         }
         $clean = self::sanitizeSvg($raw);
 
-        $filename = "sponzor-{$id}-" . bin2hex(random_bytes(4)) . '.svg';
+        $filename = "{$filePrefix}-{$id}-" . bin2hex(random_bytes(4)) . '.svg';
         $dest = $uploadsDir . '/' . $filename;
         if (file_put_contents($dest, $clean) === false) {
             throw new LogoUploadError('Ne mogu spremiti SVG.');
@@ -98,7 +101,7 @@ final class WebpPipeline
         return [null, null];
     }
 
-    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id): array
+    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id, string $filePrefix): array
     {
         $allowed = ['image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp', 'image/gif' => 'imagecreatefromgif'];
         if (!isset($allowed[$mime])) {
@@ -118,7 +121,7 @@ final class WebpPipeline
         $srcH = imagesy($src);
 
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION) ?: 'bin';
-        $base = "sponzor-{$id}-" . bin2hex(random_bytes(4));
+        $base = "{$filePrefix}-{$id}-" . bin2hex(random_bytes(4));
 
         // Original netaknut, za audit / re-generiranje veličina kasnije.
         move_uploaded_file($file['tmp_name'], $originalsDir . "/{$base}.{$ext}");
@@ -152,16 +155,21 @@ final class WebpPipeline
         return $result;
     }
 
-    /** Briše sve datoteke jednog sponzora (originals + 3 veličine ili svg). */
-    public static function delete(string $uploadsDir, array $row): void
+    /**
+     * Briše sve datoteke jednog retka (originals + 3 veličine ili svg).
+     * @param string $columnPrefix npr. "logo" (sponzori) ili "slika" (clan_uprave)
+     */
+    public static function delete(string $uploadsDir, array $row, string $columnPrefix = 'logo'): void
     {
-        foreach (['logo_small', 'logo_medium', 'logo_large'] as $col) {
+        foreach (['small', 'medium', 'large'] as $size) {
+            $col = "{$columnPrefix}_{$size}";
             if (!empty($row[$col])) {
                 @unlink($uploadsDir . '/' . $row[$col]);
             }
         }
-        if (!empty($row['logo_original'])) {
-            @unlink($uploadsDir . '/' . $row['logo_original']);
+        $originalCol = "{$columnPrefix}_original";
+        if (!empty($row[$originalCol])) {
+            @unlink($uploadsDir . '/' . $row[$originalCol]);
         }
     }
 }

@@ -1,9 +1,10 @@
 -- HNK Kroatien Schwyz — PHP+MySQL CMS backend
--- Modul 1: sponzori
+-- Modul 1: sponzori, Modul 2: clan_uprave
 -- Target: MariaDB 10.11 (Hostpoint hidapifa_hnkcms)
 --
 -- Pokrenuti jednom, na praznoj bazi:
 --   mysql -h hidapifa.mysql.db.hostpoint.ch -u hidapifa_hnkcms -p hidapifa_hnkcms < schema.sql
+-- (idempotentno — CREATE TABLE IF NOT EXISTS, siguran re-run za nove module)
 
 -- ---------------------------------------------------------------------------
 -- sponzori — odgovara Sanity tipu "sponzor" (name, logo, package, link,
@@ -68,3 +69,43 @@ CREATE TABLE IF NOT EXISTS admin_users (
 -- Nema početnog admin naloga u ovoj datoteci namjerno — ne želimo ikakvu
 -- default lozinku u verzioniranom SQL-u. Nalog se pravi preko
 -- bin/create-admin.php (vidi README.md "Prvi deploy").
+
+-- ---------------------------------------------------------------------------
+-- clan_uprave — odgovara Sanity tipu "clanUprave" (name, role, zaduzenje,
+-- phone, image, order). role/zaduzenje su Sanity "localeString" (hr/de) pa
+-- postaju dvije ravne kolone (isti obrazac kao sponzori.opis_paketa_hr/_de).
+-- Slika je NEOBAVEZNA (za razliku od sponzori.logo_*) — Sanity shema nema
+-- required() na image polju; frontend prikazuje inicijale kad slike nema.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS clan_uprave (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  ime               VARCHAR(190) NOT NULL,
+
+  funkcija_hr       VARCHAR(190) NOT NULL,
+  funkcija_de       VARCHAR(190) NULL,
+  zaduzenje_hr      VARCHAR(255) NULL,
+  zaduzenje_de      VARCHAR(255) NULL,
+  telefon           VARCHAR(50) NULL,
+
+  -- Slika: isti obrazac kao sponzori.logo_* (original + 3 WebP veličine ili
+  -- sanitizirani SVG u sva tri polja), ali sve NULL-abilno jer je neobavezna.
+  slika_original    VARCHAR(255) NULL,
+  slika_small       VARCHAR(255) NULL,   -- ~240px širina (srcset 1x)
+  slika_medium      VARCHAR(255) NULL,   -- ~480px širina (srcset 2x)
+  slika_large       VARCHAR(255) NULL,   -- ~800px širina (srcset 3x)
+  slika_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  slika_width       SMALLINT UNSIGNED NULL,
+  slika_height      SMALLINT UNSIGNED NULL,
+
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+
+  -- Entwurf/Veröffentlicht: javni API vraća samo 'veroeffentlicht'.
+  status            ENUM('entwurf','veroeffentlicht') NOT NULL DEFAULT 'veroeffentlicht',
+
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_redoslijed (redoslijed),
+  KEY idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

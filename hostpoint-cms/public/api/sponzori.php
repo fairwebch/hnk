@@ -10,30 +10,10 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../admin/includes/db.php';
+require __DIR__ . '/../admin/includes/cors.php';
 
 header('Content-Type: application/json; charset=utf-8');
-
-// CORS: samo naš Next.js frontend (produkcija + custom domena + Vercel
-// preview deploymenti) i localhost za lokalni razvoj smiju čitati ovo iz
-// browser JS-a. Napomena: Next.js Server Component fetch (SSR) ide server-
-// -to-server i CORS se na njega uopće ne primjenjuje — ovo suženje ne
-// mijenja kako sajt radi, samo sprječava da neki TREĆI sajt čita ove
-// podatke direktno iz JS-a u browseru posjetioca.
-$allowedOrigins = [
-    'https://kroatien-schwyz.vercel.app',
-    'https://kroatien-schwyz.ch',
-    'https://www.kroatien-schwyz.ch',
-    'http://localhost:3000',
-];
-// Vercel preview deploymenti: kroatien-schwyz-<hash>[-<team>].vercel.app
-$vercelPreviewPattern = '#^https://kroatien-schwyz-[a-z0-9-]+\.vercel\.app$#i';
-
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (in_array($origin, $allowedOrigins, true) || preg_match($vercelPreviewPattern, $origin)) {
-    header("Access-Control-Allow-Origin: {$origin}");
-    header('Vary: Origin');
-}
-header('Access-Control-Allow-Methods: GET, OPTIONS');
+hnkcms_apply_public_cors();
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
