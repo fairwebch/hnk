@@ -55,13 +55,7 @@ function mapItem(item: SponsorApiItem): SponzorFromApi {
 /** Lista objavljenih sponzora, sortirana po redoslijedu (isto ponašanje kao sponzoriQuery). */
 export async function fetchSponsors(): Promise<SponzorFromApi[]> {
   try {
-    const url = `${SPONSORS_API_BASE_URL}/api/sponzori.php`;
-    // TEMP diagnostic for the staging pattern-test — this fetch runs
-    // server-side (SSR), so it never shows up in the browser Network tab;
-    // this log is how we prove the request target without it. Fine to
-    // drop once the migration is verified.
-    console.log('[sponsorsApi] fetching', url);
-    const res = await fetch(url, {
+    const res = await fetch(`${SPONSORS_API_BASE_URL}/api/sponzori.php`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) {
