@@ -3,27 +3,17 @@ import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { client } from '@/sanity/lib/client';
-import { sanityConfigured } from '@/sanity/env';
-import { dogadjajBySlugQuery, dogadjajSlugsQuery } from '@/sanity/lib/queries';
-import type { Dogadjaj } from '@/sanity/lib/types';
-import { SanityImage } from '@/components/ui/SanityImage';
-import { PortableText } from '@/components/ui/PortableText';
+import { fetchDogadjaj, fetchDogadjaji } from '@/lib/dogadjajiApi';
+import { CmsImage } from '@/components/ui/CmsImage';
+import { HtmlContent } from '@/components/ui/HtmlContent';
 import { Card } from '@/components/ui/Card';
 import { EventCountdown } from '@/components/EventCountdown';
 import { EventRegistration } from '@/components/EventRegistration';
-import { urlFor } from '@/sanity/lib/image';
-import { pickLocale, pickLocaleBlocks, formatDate } from '@/lib/locale';
+import { pickLocale, formatDate } from '@/lib/locale';
 
 export async function generateStaticParams() {
-  if (!sanityConfigured) return [];
-  try {
-    const slugs = await client.fetch<string[]>(dogadjajSlugsQuery);
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  const { upcoming, past } = await fetchDogadjaji();
+  return [...upcoming, ...past].map((d) => ({ slug: d.slug }));
 }
 
 export async function generateMetadata({
@@ -32,7 +22,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const d = await sanityFetch<Dogadjaj | null>(dogadjajBySlugQuery, { slug }, null);
+  const d = await fetchDogadjaj(slug);
   return { title: d ? pickLocale(d.name, locale) : undefined };
 }
 
@@ -45,11 +35,11 @@ export default async function DogadjajPage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const d = await sanityFetch<Dogadjaj | null>(dogadjajBySlugQuery, { slug }, null);
+  const d = await fetchDogadjaj(slug);
   if (!d) notFound();
 
   const name = pickLocale(d.name, locale);
-  const body = pickLocaleBlocks(d.description, locale);
+  const body = pickLocale(d.descriptionHtml, locale);
   const effectiveEnd = d.datumKraj || d.datumPocetak;
   const isUpcoming = new Date(effectiveEnd).getTime() > Date.now();
   const sponsor = d.sponzorEventa;
@@ -70,9 +60,9 @@ export default async function DogadjajPage({
     <article>
       {/* Navy header */}
       <section className="relative bg-ink-700 overflow-hidden">
-        {d.coverImage?.asset && (
+        {d.coverImage && (
           <div className="absolute inset-0">
-            <SanityImage image={d.coverImage} alt="" fill sizes="100vw" className="object-cover opacity-25" />
+            <CmsImage image={d.coverImage} alt="" fill sizes="100vw" className="object-cover opacity-25" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink-700 via-ink-700/80 to-transparent" />
           </div>
         )}
@@ -108,8 +98,8 @@ export default async function DogadjajPage({
       {/* Body */}
       <div className="container-x py-14 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-12">
         <div className="min-w-0">
-          {body && body.length > 0 ? (
-            <PortableText value={body} />
+          {body ? (
+            <HtmlContent html={body} />
           ) : (
             <p className="text-content-soft">{t('empty.pageSub')}</p>
           )}
@@ -148,14 +138,15 @@ export default async function DogadjajPage({
             <div className="mt-10">
               <h2 className="h-display text-content text-2xl tracking-[.02em] mb-5">{t('events.sponsor')}</h2>
               <div className="flex items-center gap-5">
-                {sponsor.logo?.asset && (
+                {sponsor.logo && (
                   <div className="bg-white border border-line h-20 w-40 flex items-center justify-center p-4">
                     <Image
-                      src={urlFor(sponsor.logo).height(120).fit('max').auto('format').url()}
+                      src={sponsor.logo.medium}
                       alt={sponsor.name || ''}
                       width={160}
                       height={80}
                       className="max-h-12 w-auto object-contain"
+                      unoptimized={sponsor.logo.isVector}
                     />
                   </div>
                 )}

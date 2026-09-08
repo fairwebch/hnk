@@ -1,8 +1,8 @@
 import { Card, cardImage, cardTitle } from '@/components/ui/Card';
-import { SanityImage } from '@/components/ui/SanityImage';
+import { CmsImage } from '@/components/ui/CmsImage';
 import { EventCountdown } from '@/components/EventCountdown';
 import { pickLocale, formatDate } from '@/lib/locale';
-import type { Dogadjaj } from '@/sanity/lib/types';
+import type { DogadjajFromApi as Dogadjaj } from '@/lib/dogadjajiApi';
 
 export function EventCard({
   dogadjaj,
@@ -22,7 +22,7 @@ export function EventCard({
       className="flex flex-col md:flex-row"
     >
       <div className="relative md:w-64 aspect-[16/10] md:aspect-auto overflow-hidden flex-shrink-0">
-        <SanityImage
+        <CmsImage
           image={dogadjaj.coverImage}
           alt={name}
           fill

@@ -1,15 +1,13 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { upcomingDogadjajiQuery, pastDogadjajiQuery } from '@/sanity/lib/queries';
-import type { Dogadjaj } from '@/sanity/lib/types';
+import { fetchDogadjaji, type DogadjajFromApi as Dogadjaj } from '@/lib/dogadjajiApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { EventCard } from '@/components/cards/EventCard';
 import { Card } from '@/components/ui/Card';
 import { EventCountdown } from '@/components/EventCountdown';
-import { SanityImage } from '@/components/ui/SanityImage';
+import { CmsImage } from '@/components/ui/CmsImage';
 import { pickLocale, formatDate } from '@/lib/locale';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -34,10 +32,7 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [upcoming, past] = await Promise.all([
-    sanityFetch<Dogadjaj[]>(upcomingDogadjajiQuery, {}, []),
-    sanityFetch<Dogadjaj[]>(pastDogadjajiQuery, {}, []),
-  ]);
+  const { upcoming, past } = await fetchDogadjaji();
 
   const featured = upcoming[0];
   const rest = upcoming.slice(1);
@@ -58,9 +53,9 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
           <section>
             <div className="kicker text-xs mb-4">{t('events.featuredKicker')} · {t('events.next')}</div>
             <Card tone="dark" className="overflow-hidden">
-              {featured.coverImage?.asset && (
+              {featured.coverImage && (
                 <div className="absolute inset-0">
-                  <SanityImage image={featured.coverImage} alt="" fill sizes="100vw" className="object-cover opacity-30" />
+                  <CmsImage image={featured.coverImage} alt="" fill sizes="100vw" className="object-cover opacity-30" />
                   <div className="absolute inset-0 bg-gradient-to-r from-ink-550 via-ink-550/90 to-ink-550/50" />
                 </div>
               )}
