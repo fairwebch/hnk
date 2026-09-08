@@ -45,7 +45,7 @@ done
 
 case "$TARGET" in
   staging)    REMOTE_DIR="www/api-staging.kroatien-schwyz.ch/" ;;
-  production) REMOTE_DIR="www/api.kroatien-schwyz.ch/" ;;
+  production) REMOTE_DIR="www/api.kroatien-schwyz.ch/public/" ;;
   *)          usage ;;
 esac
 
