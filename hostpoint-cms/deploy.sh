@@ -2,8 +2,10 @@
 # deploy.sh – HNK sponzori CMS (PHP/MySQL): rsync preko SSH na Hostpoint
 #
 # Upotreba:
-#   ./deploy.sh staging              # -> api-staging.kroatien-schwyz.ch
-#   ./deploy.sh staging --dry-run    # samo prikaz, ništa se ne šalje
+#   ./deploy.sh staging                 # -> api-staging.kroatien-schwyz.ch
+#   ./deploy.sh staging --dry-run       # samo prikaz, ništa se ne šalje
+#   ./deploy.sh production              # -> api.kroatien-schwyz.ch
+#   ./deploy.sh production --dry-run    # samo prikaz, ništa se ne šalje
 #
 # Pravila:
 #   - Prije svakog deploya commit (skripta prekida ako ima uncommitted
@@ -28,21 +30,23 @@ SSH_HOST="sl60.web.hostpoint.ch"
 SSH_USER="hidapifa"
 SSH_PORT="22"
 
-usage() { echo "Upotreba: $0 {staging} [--dry-run]" >&2; exit 1; }
+usage() { echo "Upotreba: $0 {staging|production} [--dry-run]" >&2; exit 1; }
 
 TARGET=""
 DRY_RUN=""
 for arg in "$@"; do
   case "$arg" in
-    --dry-run) DRY_RUN="--dry-run" ;;
-    staging)   TARGET="$arg" ;;
-    *)         usage ;;
+    --dry-run)  DRY_RUN="--dry-run" ;;
+    staging)    TARGET="$arg" ;;
+    production) TARGET="$arg" ;;
+    *)          usage ;;
   esac
 done
 
 case "$TARGET" in
-  staging) REMOTE_DIR="www/api-staging.kroatien-schwyz.ch/" ;;
-  *)       usage ;;
+  staging)    REMOTE_DIR="www/api-staging.kroatien-schwyz.ch/" ;;
+  production) REMOTE_DIR="www/api.kroatien-schwyz.ch/" ;;
+  *)          usage ;;
 esac
 
 # Uvijek iz foldera ovog skripta (hostpoint-cms/)
