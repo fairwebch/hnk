@@ -8,7 +8,7 @@ import type { CmsImg } from '@/lib/cmsImage';
  * fallback kao prije (tamni hero/header bez fotografije).
  */
 const SAJT_API_BASE_URL =
-  process.env.SAJT_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.SAJT_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 export interface SajtSlike {
   heroSlike: CmsImg[];

@@ -18,7 +18,7 @@ import type { CmsImg } from '@/lib/cmsImage';
  * `php -S 127.0.0.1:8098 -t hostpoint-cms/public`.
  */
 const MOMCADI_API_BASE_URL =
-  process.env.MOMCADI_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.MOMCADI_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 type ApiLocale = { hr: string | null; de: string | null } | null;
 

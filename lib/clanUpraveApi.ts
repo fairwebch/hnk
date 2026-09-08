@@ -12,7 +12,7 @@ import type { ClanUprave } from '@/lib/cmsTypes';
  * stagingu bez override-a ide na pravu poddomenu.
  */
 const CLAN_UPRAVE_API_BASE_URL =
-  process.env.CLAN_UPRAVE_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.CLAN_UPRAVE_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 interface ClanUpraveApiImage {
   small: string;

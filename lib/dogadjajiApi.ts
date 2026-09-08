@@ -14,7 +14,7 @@ import type { CmsImg } from '@/lib/cmsImage';
  * kao GROQ now() ranije; countdown na sajtu ostaje klijentski.
  */
 const DOGADJAJI_API_BASE_URL =
-  process.env.DOGADJAJI_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.DOGADJAJI_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 type ApiLocale = { hr: string | null; de: string | null } | null;
 

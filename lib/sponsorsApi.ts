@@ -11,7 +11,7 @@ import type { Sponzor } from '@/lib/cmsTypes';
  * produkciji/stagingu bez override-a ide na pravu poddomenu.
  */
 const SPONSORS_API_BASE_URL =
-  process.env.SPONSORS_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.SPONSORS_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 interface SponsorApiLogo {
   small: string;

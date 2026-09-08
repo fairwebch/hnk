@@ -8,7 +8,7 @@ import type { LocaleString } from '@/lib/cmsTypes';
  * tekst s novim redovima (whitespace-pre-line kao prije).
  */
 const KLUB_API_BASE_URL =
-  process.env.KLUB_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.KLUB_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 interface ApiLocale {
   hr: string | null;

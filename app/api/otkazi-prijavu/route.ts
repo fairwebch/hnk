@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
  * prijavu samim otvaranjem linka.
  */
 const PRIJAVA_API_BASE_URL =
-  process.env.PRIJAVA_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.PRIJAVA_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 export async function POST(req: Request) {
   let body: string;

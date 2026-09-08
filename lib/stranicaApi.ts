@@ -18,7 +18,7 @@
  * bez override-a ide na pravu poddomenu.
  */
 const STRANICA_API_BASE_URL =
-  process.env.STRANICA_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.STRANICA_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 interface StranicaApiItem {
   id: number;

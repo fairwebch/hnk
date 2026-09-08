@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
  * components/EventRegistration.tsx ostaje nepromijenjen osim checkboxa privole.
  */
 const PRIJAVA_API_BASE_URL =
-  process.env.PRIJAVA_API_BASE_URL || 'https://api-staging.kroatien-schwyz.ch';
+  process.env.PRIJAVA_API_BASE_URL || 'https://api.kroatien-schwyz.ch';
 
 function clientIp(req: Request) {
   return (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
