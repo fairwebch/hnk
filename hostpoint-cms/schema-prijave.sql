@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS prijave (
   privola_at            DATETIME NOT NULL,
 
   status_placanja       ENUM('neplaceno','placeno') NOT NULL DEFAULT 'neplaceno',
-  datum_prijave         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  datum_prijave         DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- api/prijava.php eksplicitno upisuje UTC_TIMESTAMP() (svi datumi u bazi su UTC)
   otkazana              TINYINT(1) NOT NULL DEFAULT 0,
   datum_otkaza          DATETIME NULL,
   -- Token za link otkaza iz potvrdnog e-maila: čuva se SAMO SHA-256 hash

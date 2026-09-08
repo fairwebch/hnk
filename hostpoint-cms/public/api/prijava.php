@@ -223,8 +223,8 @@ try {
     $priv->prepare(
         'INSERT INTO prijave (tip, dogadjaj_id, dogadjaj_slug, dogadjaj_naziv_hr, dogadjaj_naziv_de, dogadjaj_datum_kraj,
                               ime, prezime, naziv_ekipe, kontakt_osoba, email, telefon, broj_osoba, napomena, jezik,
-                              privola_at, otkazni_token_hash)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(),?)'
+                              privola_at, datum_prijave, otkazni_token_hash)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(),UTC_TIMESTAMP(),?)'
     )->execute([
         $type, (int) $ev['id'], $ev['slug'], $ev['naziv_hr'], $ev['naziv_de'], $ev['datum_kraj'] ?? $ev['datum_pocetak'],
         $ime, $prezime, $nazivEkipe, $kontaktOsoba, $email, $telefon ?: null, $brojOsoba, $napomena, $locale,
