@@ -17,6 +17,7 @@ const HNKCMS_NAV = [
     'galerije' => ['/admin/galerije.php', 'Galerije'],
     'novosti'  => ['/admin/novosti.php', 'Novosti'],
     'dogadjaji' => ['/admin/dogadjaji.php', 'Događaji'],
+    'prijave'   => ['/admin/prijave.php', 'Prijave'],
 ];
 
 /**

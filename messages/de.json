@@ -385,6 +385,8 @@
     "saljem": "Wird gesendet…",
     "greska": "Fehler beim Senden. Bitte erneut versuchen oder schreib uns an info@kroatien-schwyz.ch.",
     "privatnost": "Wir verwenden die Daten ausschliesslich für die Organisation dieses Events. Die Anmeldung kannst du über den Link in der Bestätigungs-E-Mail stornieren.",
+    "privola": "Ich habe die <link>Datenschutzerklärung</link> gelesen und bin einverstanden, dass meine Daten für die Organisation dieses Events verwendet werden.",
+    "privolaObavezna": "Für die Anmeldung ist die Einwilligung zur Datenbearbeitung erforderlich.",
     "uspjehNaslov": "Anmeldung eingegangen!",
     "uspjehTekst": "Wir haben dir eine Bestätigungs-E-Mail mit einem Stornierungslink gesendet. Bis bald!",
     "otkaziTitle": "Anmeldung stornieren",

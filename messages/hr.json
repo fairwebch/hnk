@@ -385,6 +385,8 @@
     "saljem": "Šaljem…",
     "greska": "Greška pri slanju. Pokušaj ponovo ili nam piši na info@kroatien-schwyz.ch.",
     "privatnost": "Podatke koristimo isključivo za organizaciju ovog događaja. Prijavu možeš otkazati preko linka u e-mailu s potvrdom.",
+    "privola": "Pročitao/la sam <link>izjavu o zaštiti podataka</link> i prihvaćam da se moji podaci koriste za organizaciju ovog događaja.",
+    "privolaObavezna": "Za prijavu je potrebna privola za obradu podataka.",
     "uspjehNaslov": "Prijava zaprimljena!",
     "uspjehTekst": "Poslali smo ti e-mail s potvrdom i linkom za otkazivanje. Vidimo se!",
     "otkaziTitle": "Otkazivanje prijave",

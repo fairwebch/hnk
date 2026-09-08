@@ -89,7 +89,12 @@ hostpoint-cms/
       dogadjaji.php              # lista događaja (nadolazeći/prošli, postavke prijava)
       dogadjaj-edit.php          # javni podaci + program ("vrijeme | opis" po redu) + sponzor/galerija select + postavke prijava + rotacija tajnog koda
       dogadjaj-delete.php
-      includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php, api-image.php, api-novost.php
+      prijave.php                # PRIVATNA baza: pregled prijava po događaju (aktivne/osobe/plaćene/otkazane, zadnji purge)
+      prijave-dogadjaj.php       # prijave jednog događaja: lista, klik = plaćeno/neplaćeno, CSV izvoz (?csv=1), brisanje
+      prijava-delete.php         # hard delete pojedinačne prijave (pravo na brisanje)
+      includes/                 # db.php, db-prijave.php, mail.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php, api-image.php, api-novost.php
+                                 # (db-prijave.php = PDO na ZASEBNU bazu prijava, uključuju ga samo api/prijava.php,
+                                 # admin/prijave*.php i bin/purge-prijave.php; mail.php = Resend HTTP API preko curl-a;
                                  # (webp.php dijeljen preko modula: process()/delete() prime
                                  # $filePrefix/$columnPrefix/$widths/$thumbSize, renderVariants() javan za seedove;
                                  # markdown.php je Portable Text zamjena; layout.php = header + nav tabovi
@@ -298,8 +303,30 @@ dataset bez tokena). Admin ih može rotirati checkboxom.
   30 dana nakon kraja događaja i 30 dana nakon otkaza, dnevni Hostpoint cron
   nad `bin/purge-prijave.php`; log samo brojeva. Sanity nije imao nikakvu.
 - E-mail: Resend preko PHP curl-a (paritet s Next.js rutama), ključ u
-  `config.php` van docroota.
-- Status: privatni dio se deploya tek kad baza i korisnik postoje.
+  `config.php` van docroota (`resend.from`, `resend.contact_to`,
+  `site_base_url` imaju defaulte ako nisu u configu).
+
+**Privatni dio — implementirano:**
+- `api/prijava.php` — jedini javni endpoint na privatnoj bazi. Isti ugovor
+  kao stare Next rute (`GET ?slug&kod → {valid}`, `POST` JSON prijava,
+  `POST ?action=otkazi {token}`), isti statusi (404 not_found, 422
+  validation/wrong_type, 409 closed, 403 forbidden, 429 rate_limited, 502
+  store_failed) + novi **422 `consent_required`** ako `privola !== true`.
+  Honeypot `company`, rate limit 5 prijava / 10 otkaza po 10 min preko
+  `prijave_rate_limit` (ključ sha256(IP+dan), bez čitljivih IP-ova), otkazni
+  token 24 random bajta base64url — u bazi samo SHA-256 hash. CORS za taj
+  endpoint dopušta i POST (`hnkcms_apply_public_cors(true)`).
+- Next.js `app/api/prijava/route.ts` i `app/api/otkazi-prijavu/route.ts` su
+  sada tanki proxyji (prosljeđuju tijelo + `X-Forwarded-For`, vraćaju isti
+  status/JSON); `EventRegistration.tsx` dobio obavezan checkbox privole
+  (i18n `prijava.privola`, `prijava.privolaObavezna`).
+- Admin: kartica **Prijave** (`admin/prijave.php`, `prijave-dogadjaj.php`,
+  `prijava-delete.php`) — iza istog login/2FA; kopija naziva/datuma događaja
+  je u samoj tablici pa dashboard ne ovisi o javnoj bazi.
+- Retencija: `bin/purge-prijave.php` (CLI only) — na serveru u
+  `~/www/bin/` (van docroota, pored `config/`), crontab dnevno 03:05:
+  `5 3 * * * /usr/bin/php /home/hidapifa/www/bin/purge-prijave.php >> /home/hidapifa/www/bin/purge-prijave.log 2>&1`.
+  Piše samo brojeve u `prijave_purge_log` (vidljivo na kartici Prijave).
 
 ## Sigurnosne odluke (ukratko, za review)
 

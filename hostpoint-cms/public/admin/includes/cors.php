@@ -14,7 +14,8 @@
 
 declare(strict_types=1);
 
-function hnkcms_apply_public_cors(): void
+/** @param bool $allowPost true samo za api/prijava.php (JSON POST iz browsera ili Next proxyja) */
+function hnkcms_apply_public_cors(bool $allowPost = false): void
 {
     $allowedOrigins = [
         'https://kroatien-schwyz.vercel.app',
@@ -30,5 +31,8 @@ function hnkcms_apply_public_cors(): void
         header("Access-Control-Allow-Origin: {$origin}");
         header('Vary: Origin');
     }
-    header('Access-Control-Allow-Methods: GET, OPTIONS');
+    header('Access-Control-Allow-Methods: ' . ($allowPost ? 'GET, POST, OPTIONS' : 'GET, OPTIONS'));
+    if ($allowPost) {
+        header('Access-Control-Allow-Headers: Content-Type');
+    }
 }

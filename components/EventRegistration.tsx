@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Card } from '@/components/ui/Card';
 
 type Props = {
@@ -118,6 +119,10 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
     email: '', telefon: '', brojOsoba: '1', napomena: '', company: '',
   });
   const [status, setStatus] = useState<Status>('idle');
+  // Privola za obradu osobnih podataka — obavezna (politika privatnosti, t. 10);
+  // server je odbija bez nje (422 consent_required).
+  const [privola, setPrivola] = useState(false);
+  const [privolaMissing, setPrivolaMissing] = useState(false);
 
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setV((s) => ({ ...s, [k]: e.target.value }));
@@ -125,13 +130,17 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (status === 'sending') return;
+    if (!privola) {
+      setPrivolaMissing(true);
+      return;
+    }
     setStatus('sending');
     try {
       const res = await fetch('/api/prijava', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
-          type: vrsta, slug, kod, locale, company: v.company,
+          type: vrsta, slug, kod, locale, company: v.company, privola: true,
           email: v.email, telefon: v.telefon,
           ...(vrsta === 'osoba'
             ? { ime: v.ime, prezime: v.prezime, brojOsoba: Number(v.brojOsoba) || 1, napomena: v.napomena }
@@ -230,6 +239,32 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
         <label htmlFor="pr-company">Company</label>
         <input id="pr-company" tabIndex={-1} autoComplete="off" value={v.company} onChange={set('company')} />
       </div>
+
+      <label className="flex items-start gap-3 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={privola}
+          disabled={sending}
+          onChange={(e) => {
+            setPrivola(e.target.checked);
+            if (e.target.checked) setPrivolaMissing(false);
+          }}
+          className="mt-1 h-4 w-4 accent-croatia"
+        />
+        <span className="font-sans text-sm text-content-soft">
+          {t.rich('privola', {
+            link: (chunks) => (
+              <Link href="/datenschutzerklarung" className="underline underline-offset-2 text-croatia hover:text-croatia-dark" target="_blank">
+                {chunks}
+              </Link>
+            ),
+          })}
+          {' *'}
+        </span>
+      </label>
+      {privolaMissing && (
+        <p className="font-display font-bold uppercase text-xs tracking-wider2 text-croatia">{t('privolaObavezna')}</p>
+      )}
 
       <div className="flex flex-wrap items-center gap-4 pt-1">
         <button type="submit" disabled={sending} className="btn-cta px-6 py-3.5 disabled:opacity-70">
