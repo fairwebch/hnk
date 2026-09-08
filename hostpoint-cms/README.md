@@ -1,17 +1,14 @@
-# HNK Kroatien Schwyz — PHP/MySQL CMS backend (staging)
+# HNK Kroatien Schwyz — PHP/MySQL CMS backend
 
-Zamjena za Sanity, modul po modul. **Modul 1: sponzori**, **Modul 2: clan_uprave**
-(uprava), **Modul 3: stranice** (kontakt, postani-clan, impressum,
-datenschutzerklarung), **Modul 4: momcadi** (Aktivni, Seniori, Juniori — s
-rosterom, popisom imena i galerijom), **Modul 5: galerije** (30 albuma /
-1814 slika), **Modul 6: novosti** (34 novosti, slike u tekstu) i **Modul 7:
-događaji — javni dio** (5 događaja) su gotovi i live na stagingu. Privatni
-dio (prijave sudionika, osobni podaci) ide u ZASEBNU bazu — vidi
-[schema-prijave.sql](schema-prijave.sql) i odjeljak "Modul 7" ispod; deploy
-tek kad baza i korisnik postoje. Next.js frontend na
-Vercelu i dalje čita iz Sanityja za sve OSTALE tipove — mijenja se samo
-izvor podataka za te module, i to samo na testnoj grani (vidi `../hnk`
-repo, grana `staging/php-sponsors-api-test`).
+Zamjena za Sanity, modul po modul — **svi moduli su migrirani**: **1
+sponzori**, **2 clan_uprave** (uprava), **3 stranice** (kontakt, postani-clan,
+impressum, datenschutzerklarung), **4 momcadi** (Aktivni, Seniori, Juniori — s
+rosterom, popisom imena i galerijom), **5 galerije** (30 albuma / 1814
+slika), **6 novosti** (34 novosti, slike u tekstu), **7 događaji** (javni dio
++ privatne prijave u ZASEBNOJ bazi — [schema-prijave.sql](schema-prijave.sql))
+i **8 postavke sajta + Klub priča** (hero/header fotografije, timeline).
+Next.js frontend na grani `staging/php-sponsors-api-test` više **nema nikakav
+Sanity kod** (ni paket, ni Studio, ni tipove) — vidi odjeljak "Cutover" ispod.
 
 Ovaj folder JEST dio hnk Next.js repozitorija (isti git checkout, radi lakšeg
 review-a), ali je funkcionalno zaseban PHP sistem koji ide na sasvim drugu
@@ -49,6 +46,8 @@ hostpoint-cms/
     seed-real-galerije.php    # jednokratna migracija Modul 5 — radi NA serveru (CDN download + WebP), resumable
     seed-real-novosti.php     # jednokratna migracija Modul 6 — radi NA serveru; body iz manifesta (PT -> Markdown, escape `1\.`)
     seed-real-dogadjaji.php   # jednokratna migracija Modul 7 (javni dio) — coveri + program; tajni_kod ROTIRAN, ne prenesen
+    seed-real-sajt.php        # jednokratna migracija Modul 8 — radi NA serveru: hero/header fotografije + klub timeline
+    purge-prijave.php         # retencija prijava (dnevni cron) + --rate-limit (cron svakih 15 min); živi u ~/www/bin/ na serveru
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
@@ -59,6 +58,9 @@ hostpoint-cms/
       galerije.php              # GET lista (cover+count) / ?limit=N teaser / ?slug=X (sve slike, thumb 600x600)
       novosti.php               # GET lista BEZ body-ja / ?limit=N / ?slug=X (body kao HTML + slike u tekstu)
       dogadjaji.php             # GET {upcoming, past} / ?next=1 / ?slug=X — NIKAD tajni_kod, ne spaja se na bazu prijava
+      prijava.php               # JEDINI endpoint na privatnoj bazi: GET validacija koda, POST prijava, POST ?action=otkazi
+      sajt.php                  # GET {heroSlike[], headerKlub, headerSponzoring, headerPostaniClan} (bivši postavkeSajta)
+      klub.php                  # GET {uvod, zavrsni (HTML), timeline[]} (bivši klubStranica)
     admin/
       login.php                # korak 1: lozinka
       setup-2fa.php            # prvi put: uparivanje TOTP-a (ručni unos ključa, bez QR-a)
@@ -92,6 +94,9 @@ hostpoint-cms/
       prijave.php                # PRIVATNA baza: pregled prijava po događaju (aktivne/osobe/plaćene/otkazane, zadnji purge)
       prijave-dogadjaj.php       # prijave jednog događaja: lista, klik = plaćeno/neplaćeno, CSV izvoz (?csv=1), brisanje
       prijava-delete.php         # hard delete pojedinačne prijave (pravo na brisanje)
+      sajt.php                   # Postavke: hero fotografije (do 3, redoslijed) + header /klub, /sponzoring, /postani-clan
+      klub.php                   # Klub priča: uvod/završni tekst (Markdown HR/DE) + lista timeline stavki
+      klub-stavka-edit.php / klub-stavka-delete.php
       includes/                 # db.php, db-prijave.php, mail.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php, api-image.php, api-novost.php
                                  # (db-prijave.php = PDO na ZASEBNU bazu prijava, uključuju ga samo api/prijava.php,
                                  # admin/prijave*.php i bin/purge-prijave.php; mail.php = Resend HTTP API preko curl-a;
@@ -327,6 +332,47 @@ dataset bez tokena). Admin ih može rotirati checkboxom.
   `~/www/bin/` (van docroota, pored `config/`), crontab dnevno 03:05:
   `5 3 * * * /usr/bin/php /home/hidapifa/www/bin/purge-prijave.php >> /home/hidapifa/www/bin/purge-prijave.log 2>&1`.
   Piše samo brojeve u `prijave_purge_log` (vidljivo na kartici Prijave).
+  Hash IP-a (rate limit, prozor 10 min) briše se oportunistički pri svakom
+  zahtjevu i cronom `0,15,30,45 * * * * … --rate-limit` — nikad ne živi dulje
+  od sat vremena, kako obećava izjava o zaštiti podataka (t. 10).
+- Testirano 08.09.2026: svi odbijajući putevi (statusi kao gore), uspješna
+  prijava + oba e-maila (Resend), otkaz preko linka iz e-maila (`otkazana=1`,
+  drugi klik → `already`), testni redci i probni događaj obrisani.
+- Izjava o zaštiti podataka (stranica `datenschutzerklarung`, t. 6 i t. 10)
+  ažurirana u bazi: Hostpoint AG (Švicarska) umjesto Sanity, privola,
+  retencija 30 dana, hash IP-a ≤ 1 h.
+
+## Modul 8: postavke sajta + Klub priča — zadnji Sanity sadržaj
+
+Sanity singletoni `postavkeSajta` (3 hero + 3 header fotografije) i
+`klubStranica` (uvod, 6 timeline stavki, 1 slika). Tablice `slike_sajta`
+(slot `kljuc` hero/header_*, redoslijed, slika_* set + alt), `klub_stranica`
+(singleton id=1, Markdown uvod/završni HR/DE) i `klub_timeline`. Hero slike
+imaju `large` 2560 px (produkcija ih je servirala na 2560), headeri/timeline
+WIDTHS_WIDE. `bin/seed-real-sajt.php` radi na serveru (CDN download). Frontend:
+`lib/sajtApi.ts`, `lib/klubApi.ts`; `PageHero` sada prima `CmsImg`; početna
+čita momčadi/sponzore s PHP API-ja (`homeCountsQuery` zamijenjen dužinom
+liste); join kartica u Headeru je statični `public/assets/join-card.webp`.
+
+## Cutover sa Sanityja (stanje 08.09.2026)
+
+- Grana `staging/php-sponsors-api-test` → `main` je fast-forward (main nema
+  vlastitih commita). Rollback točka: tag `pre-cutover-sanity` (pushan).
+- Uklonjeno iz Next.js repoa: `app/studio`, `app/checkin` + `app/api/checkin`
+  + `lib/izlet.ts` (Europapark alat — dogovoreno ne migrira se), `sanity/`,
+  `sanity.config.ts`, `sanity.cli.ts`, `SanityImage`, `PortableText`,
+  `scripts/migration`, `migration/`, npm paketi `sanity`, `next-sanity`,
+  `@sanity/*`, `@portabletext/react`, `styled-components`; `cdn.sanity.io`
+  više nije u `remotePatterns`. `next build` prolazi bez Sanity env varijabli.
+- Vercel env: ukloniti `SANITY_WRITE_TOKEN` i `NEXT_PUBLIC_SANITY_*` (kod ih
+  više ne čita); zadržati `RESEND_API_KEY`, `CONTACT_TO`, `BREVO_*`. Svi
+  `*_API_BASE_URL` defaultaju na `https://api-staging.kroatien-schwyz.ch` —
+  cutover ide s tom poddomenom, preimenovanje u `api.` je zaseban korak.
+- Backup prije cutover-a: `~/backups/` na Hostpointu (dump obje baze + tar
+  uploads/, chmod 600, van docroota).
+- Rollback: Vercel Instant Rollback / `git reset --hard pre-cutover-sanity`
+  (radi samo dok Sanity API još odgovara); PHP strana nema destruktivnih
+  promjena — `deploy.sh` s prethodnog taga + dump iz `~/backups/`.
 
 ## Sigurnosne odluke (ukratko, za review)
 

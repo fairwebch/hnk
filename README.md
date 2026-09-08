@@ -1,68 +1,53 @@
 # HNK Kroatien Schwyz — web
 
-Dvojezični (HR / DE-CH) sajt hrvatskog nogometnog kluba HNK Kroatien Schwyz,
-sa Sanity CMS-om. Zamjena za stari WordPress sajt (`kroatien-schwyz.ch`).
+Dvojezični (HR / DE-CH) sajt hrvatskog nogometnog kluba HNK Kroatien Schwyz.
+Zamjena za stari WordPress sajt (`kroatien-schwyz.ch`). Sadržaj dolazi sa
+self-hosted PHP/MySQL CMS-a na Hostpointu (folder `hostpoint-cms/`, vlastiti
+deploy) — Sanity je u potpunosti uklonjen (vidi `hostpoint-cms/README.md`,
+odjeljak "Cutover").
 
 ## Tehnologije
-- **Next.js 15** (App Router, TypeScript) — statički generiran sajt (ISR)
+- **Next.js 15** (App Router, TypeScript) — statički generiran sajt (ISR, 60 s)
 - **Tailwind CSS** — dizajn po hi-fi specifikaciji (hrvatska šahovnica, navy paleta, crveni CTA)
-- **Sanity v3** — CMS, sa **Studijem ugrađenim na `/studio`** (isti projekt)
+- **PHP 8 + MariaDB CMS** (`hostpoint-cms/`) — javni JSON API + admin (login + TOTP 2FA), WebP pipeline
 - **next-intl** — rute `/hr/...` (default) i `/de/...`, language switcher
 
 ## Struktura
 ```
 app/
   [locale]/            # sve javne stranice (hr | de)
-    page.tsx           # Početna (hero, statistika, novosti, galerija, sljedeći event)
-    novosti/           # lista + [slug]
-    dogadjaji/         # lista (odbrojavanje) + [slug]
-    galerija/          # lista + [slug] (lightbox)
-    momcadi/           # lista + [slug]
-    uprava/  sponzoring/  kontakt/  klub/  o-nama/
-    postani-clan/  impressum/  datenschutzerklarung/
-  studio/[[...tool]]/  # ugrađeni Sanity Studio → /studio
-components/            # Header, Footer, MobileMenu, EventCountdown, Lightbox, ...
-sanity/                # sheme, klijent, GROQ upiti, env
+    page.tsx           # Početna (hero, statistika, novosti, momčadi, galerija, sponzori, shop)
+    novosti/  dogadjaji/  galerija/  momcadi/   # liste + [slug]
+    uprava/  sponzoring/  kontakt/  klub/
+    postani-clan/  impressum/  datenschutzerklarung/  otkazi-prijavu/  shop/
+  api/                 # kontakt, postani-clan, newsletter (Brevo), prijava + otkazi-prijavu (proxy na PHP)
+components/            # Header, Footer, MobileMenu, EventCountdown, Lightbox, CmsImage, HtmlContent, ...
+lib/                   # *Api.ts (fetch s PHP API-ja, fallback [] / null), cmsImage.ts, cmsTypes.ts, locale.ts
 i18n/  messages/       # next-intl konfiguracija i prijevodi (hr.json, de.json)
-migration/             # WP → Sanity migracija (vidi migration/README.md)
+hostpoint-cms/         # PHP/MySQL CMS (schema.sql, public/api, public/admin, bin/, deploy.sh) — vidi njegov README
 design/                # originalne dizajn reference (.dc.html + slika)
 ```
 
 ## Lokalni razvoj
 ```bash
 npm install
-cp .env.local.example .env.local   # popuni Sanity project ID
+cp .env.local.example .env.local   # Resend/Brevo ključevi po potrebi; sadržaj ide s api-staging bez ikakve konfiguracije
 npm run dev                        # http://localhost:3000
 ```
-Studio: `http://localhost:3000/studio`
 
-## Varijable okruženja (`.env.local`)
-```
-NEXT_PUBLIC_SANITY_PROJECT_ID=<id>
-NEXT_PUBLIC_SANITY_DATASET=production
-NEXT_PUBLIC_SANITY_API_VERSION=2024-10-01
-```
-Sajt se builda i radi i **bez** Sanity projekta — sve kolekcije tada prikazuju
-prazna stanja („Novosti uskoro stižu" itd.).
+## Varijable okruženja
+Vidi `.env.local.example`. Sadržajni API ne treba nikakvu varijablu — svi
+`lib/*Api.ts` defaultaju na `https://api-staging.kroatien-schwyz.ch`;
+`*_API_BASE_URL` override služi samo za lokalno testiranje PHP-a
+(`php -S 127.0.0.1:8098 -t hostpoint-cms/public`). Sajt se builda i radi i kad
+API nije dostupan — kolekcije tada prikazuju prazna stanja.
 
-## Sanity
-```bash
-npx sanity login
-npx sanity init --env          # projekt „Kroatien Schwyz", dataset „production"
-npm run import:data            # uvoz migriranog sadržaja (vidi migration/)
-```
-Sheme: `novost`, `dogadjaj`, `galerija`, `momcad`, `clanUprave`, `sponzor`, `stranica`.
-Lokalizacija: `localeString` / `localeText` / `localeBlockContent` (polja `hr` / `de`).
-
-## Deploy (Vercel)
-```bash
-npx vercel            # poveži projekt, postavi env varijable
-npx vercel --prod
-```
-Nakon deploya dodati live URL (i `http://localhost:3000`) u Sanity
-**CORS origins** (sa credentials): Sanity → Project → API → CORS.
+## Deploy
+- **Next.js:** Vercel, produkcija = grana `main` (`npx vercel --prod` ili push).
+- **CMS:** `hostpoint-cms/deploy.sh staging` (rsync preko SSH na Hostpoint);
+  sadržaj se uređuje na `https://api-staging.kroatien-schwyz.ch/admin/`.
 
 ## Dvojezičnost
 - HR je default; sve rute su prefiksirane (`/hr`, `/de`).
 - Statični UI tekstovi: `messages/hr.json` i `messages/de.json`.
-- Sadržaj iz Sanityja: lokalizirana polja; ako DE nije unesen, prikazuje se HR.
+- Sadržaj iz CMS-a: `_hr`/`_de` kolone; ako DE nije unesen, prikazuje se HR.
