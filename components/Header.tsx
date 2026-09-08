@@ -10,10 +10,10 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileMenu } from './MobileMenu';
 import { SocialIcon } from './SocialIcon';
 
-/* Muotathal 2024 group photo (the same asset as the /postani-clan page
-   header) — the Klub panel's join card. Served straight from the Sanity CDN. */
-const JOIN_CARD_PHOTO =
-  'https://cdn.sanity.io/images/jxoy4fyb/production/c8934db4bb127954e687281191ce38aba6df9ad7-1778x1200.webp';
+/* Muotathal 2024 group photo (the same photo as the /postani-clan page
+   header) — the Klub panel's join card. Static asset in public/ so the menu
+   has no CMS dependency. */
+const JOIN_CARD_PHOTO = '/assets/join-card.webp';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';

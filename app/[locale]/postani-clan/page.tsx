@@ -1,9 +1,8 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
-import { sanityFetch } from '@/sanity/lib/fetch';
 import { fetchStranica } from '@/lib/stranicaApi';
+import { fetchSajtSlike } from '@/lib/sajtApi';
 import { PageHero } from '@/components/ui/PageHero';
-import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
 import { HtmlContent } from '@/components/ui/HtmlContent';
 import { MembershipForm } from '@/components/MembershipForm';
 import { Card } from '@/components/ui/Card';
@@ -21,10 +20,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [page, headers] = await Promise.all([
-    fetchStranica('postani-clan'),
-    sanityFetch<{ headerPostaniClan?: any } | null>(pageHeaderSlikeQuery, {}, null),
-  ]);
+  const [page, headers] = await Promise.all([fetchStranica('postani-clan'), fetchSajtSlike()]);
   const title = (page && pickLocale(page.title, locale)) || t('footer.links.postaniClan');
   const intro = page ? pickLocale(page.intro, locale) : '';
   const body = page ? pickLocale(page.bodyHtml, locale) : '';
@@ -40,7 +36,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           { label: t('nav.klub'), href: '/klub' },
           { label: title },
         ]}
-        image={headers?.headerPostaniClan}
+        image={headers.headerPostaniClan}
         ghost="ČLAN"
       />
       <div className="prose-x py-14">

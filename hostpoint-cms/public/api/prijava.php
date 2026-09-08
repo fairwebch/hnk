@@ -51,6 +51,9 @@ function client_ip(): string
 function rate_limited(PDO $p, string $prefix, int $max, int $windowSec): bool
 {
     $key = hash('sha256', $prefix . '|' . client_ip() . '|' . gmdate('Y-m-d'));
+    // Oportunističko čišćenje isteklih prozora (uz cron --rate-limit svakih 15 min):
+    // hash IP-a ne živi dulje od potrebnog.
+    $p->exec('DELETE FROM prijave_rate_limit WHERE prozor_od < UTC_TIMESTAMP() - INTERVAL 10 MINUTE');
     $row = $p->prepare('SELECT prozor_od, broj FROM prijave_rate_limit WHERE ip_hash = ?');
     $row->execute([$key]);
     $r = $row->fetch();

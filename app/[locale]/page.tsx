@@ -1,17 +1,12 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import {
-  allMomcadiQuery,
-  sponzoriQuery,
-  homeCountsQuery,
-  postavkeSajtaQuery,
-} from '@/sanity/lib/queries';
-import type { Momcad, Sponzor } from '@/sanity/lib/types';
 import { fetchGalerijeTeaser } from '@/lib/galerijeApi';
 import { fetchLatestNovosti } from '@/lib/novostiApi';
 import { fetchNextDogadjaj } from '@/lib/dogadjajiApi';
+import { fetchMomcadi } from '@/lib/momcadiApi';
+import { fetchSponsors } from '@/lib/sponsorsApi';
+import { fetchSajtSlike } from '@/lib/sajtApi';
 import { CmsImage } from '@/components/ui/CmsImage';
 import { NewsHighlights } from '@/components/NewsHighlights';
 import { Card, cardImage } from '@/components/ui/Card';
@@ -19,10 +14,8 @@ import { EventCountdown } from '@/components/EventCountdown';
 import { HeroBackdrop } from '@/components/HeroBackdrop';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { SanityImage } from '@/components/ui/SanityImage';
 import { ShopSlider } from '@/components/shop/ShopSlider';
 import { shopProducts } from '@/lib/shop';
-import { urlFor } from '@/sanity/lib/image';
 import { pickLocale, formatDate } from '@/lib/locale';
 import { site } from '@/lib/site';
 
@@ -35,31 +28,23 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [news, nextEvent, teams, sponsors, galleries, counts, postavke] =
-    await Promise.all([
-      fetchLatestNovosti(5),
-      fetchNextDogadjaj(),
-      sanityFetch<Momcad[]>(allMomcadiQuery, {}, []),
-      sanityFetch<Sponzor[]>(sponzoriQuery, {}, []),
-      fetchGalerijeTeaser(4),
-      sanityFetch<{ novosti: number; momcadi: number; galerije: number }>(
-        homeCountsQuery,
-        {},
-        { novosti: 0, momcadi: 0, galerije: 0 },
-      ),
-      sanityFetch<{ heroSlike?: any[] } | null>(postavkeSajtaQuery, {}, null),
-    ]);
+  const [news, nextEvent, teams, sponsors, galleries, sajt] = await Promise.all([
+    fetchLatestNovosti(5),
+    fetchNextDogadjaj(),
+    fetchMomcadi(),
+    fetchSponsors(),
+    fetchGalerijeTeaser(4),
+    fetchSajtSlike(),
+  ]);
 
-  const heroSrcs = (postavke?.heroSlike ?? [])
-    .filter((img: any) => img?.asset)
-    .slice(0, 3)
-    .map((img: any) => urlFor(img).width(2560).auto('format').quality(75).url());
+  // Hero pozadina: `large` je 2560 px (isto što je Sanity urlFor().width(2560) servirao).
+  const heroSrcs = sajt.heroSlike.slice(0, 3).map((img) => img.large);
 
   const years = new Date().getFullYear() - site.founded;
   const stats = [
     { value: String(site.founded), label: t('home.stats.founded') },
     { value: `${years}`, label: t('home.stats.years') },
-    { value: counts.momcadi > 0 ? `${counts.momcadi}` : '4', label: t('home.stats.teams') },
+    { value: teams.length > 0 ? `${teams.length}` : '4', label: t('home.stats.teams') },
     { value: '250+', label: t('home.stats.members') },
   ];
 
@@ -183,11 +168,11 @@ export default async function HomePage({
                   /* darkPlain when a photo fills the card: the dark tone's 1px
                      slateblue border isn't covered by the inset-0 photo and
                      reads as a light seam along the bottom edge + corner cut. */
-                  tone={photo?.asset ? 'darkPlain' : 'dark'}
+                  tone={photo ? 'darkPlain' : 'dark'}
                   href={`/momcadi/${team.slug}`}
                   className="overflow-hidden flex flex-col justify-end min-h-[220px] p-6"
                 >
-                  {photo?.asset && (
+                  {photo && (
                     /* The whole media block (photo + gradient) zooms together on
                        hover — zooming only the img lets its bright, ungraded
                        bottom row peek out past the gradient's antialiased edge
@@ -196,7 +181,7 @@ export default async function HomePage({
                       aria-hidden
                       className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]"
                     >
-                      <SanityImage
+                      <CmsImage
                         image={photo}
                         alt=""
                         fill
@@ -311,18 +296,19 @@ export default async function HomePage({
             </div>
             <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
               {sponsors.map((s) =>
-                s.logo?.asset ? (
+                s.logo ? (
                   <Card
                     key={s._id}
                     variant="plain"
                     className="h-24 w-40 flex items-center justify-center p-5"
                   >
                     <Image
-                      src={urlFor(s.logo).height(120).fit('max').auto('format').url()}
+                      src={s.logo.medium}
                       alt={s.name}
                       width={180}
                       height={90}
                       className="max-h-14 w-auto object-contain"
+                      unoptimized={s.logo.isVector}
                     />
                   </Card>
                 ) : null,

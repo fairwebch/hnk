@@ -1,5 +1,6 @@
 import { Link } from '@/i18n/navigation';
-import { SanityImage } from '@/components/ui/SanityImage';
+import { CmsImage } from '@/components/ui/CmsImage';
+import type { CmsImg } from '@/lib/cmsImage';
 
 type Crumb = { label: string; href?: string };
 
@@ -16,16 +17,16 @@ export function PageHero({
   subtitle?: string;
   breadcrumb?: Crumb[];
   ghost?: string;
-  /** Optional photo backdrop (Studio → Postavke sajta). Replaces the ghost
+  /** Optional photo backdrop (admin → Postavke sajta). Replaces the ghost
    *  watermark; gets the hero's navy treatment, one notch lighter. */
-  image?: any;
+  image?: CmsImg | null;
 }) {
-  const hasImage = Boolean(image?.asset);
+  const hasImage = Boolean(image);
   return (
     <section className="relative bg-ink-700 overflow-hidden">
-      {hasImage && (
+      {image && (
         <div aria-hidden className="absolute inset-0">
-          <SanityImage
+          <CmsImage
             image={image}
             alt=""
             fill

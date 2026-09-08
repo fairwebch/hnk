@@ -486,3 +486,71 @@ CREATE TABLE IF NOT EXISTS dogadjaj_program (
   KEY idx_dogadjaj_redoslijed (dogadjaj_id, redoslijed),
   CONSTRAINT fk_program_dogadjaj FOREIGN KEY (dogadjaj_id) REFERENCES dogadjaji (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
+-- Modul 8: Postavke sajta (hero + header fotografije) i "Klub — naša priča"
+-- (Sanity singletoni postavkeSajta i klubStranica). Zadnji nemigrirani sadržaj
+-- prije cutover-a.
+-- ---------------------------------------------------------------------------
+
+-- Fotografije sajta po "slotu": hero (do 3, redoslijed = crossfade redoslijed)
+-- i po jedan header za /klub, /sponzoring, /postani-clan. Nema status kolone —
+-- slika ili postoji ili ne (kao u Sanityju).
+CREATE TABLE IF NOT EXISTS slike_sajta (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  kljuc             ENUM('hero','header_klub','header_sponzoring','header_postani_clan') NOT NULL,
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+
+  -- Puna širina (WIDTHS_WIDE 480/1200/1920; hero dodatno 2560 u large).
+  slika_original    VARCHAR(255) NOT NULL,
+  slika_small       VARCHAR(255) NOT NULL,
+  slika_medium      VARCHAR(255) NOT NULL,
+  slika_large       VARCHAR(255) NOT NULL,
+  slika_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  slika_width       SMALLINT UNSIGNED NULL,
+  slika_height      SMALLINT UNSIGNED NULL,
+  slika_alt         VARCHAR(255) NULL,
+
+  created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_kljuc (kljuc, redoslijed)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Singleton (uvijek id = 1): uvod i završni tekst stranice /klub kao Markdown
+-- (isti konverter kao stranice/novosti), timeline u zasebnoj tablici.
+CREATE TABLE IF NOT EXISTS klub_stranica (
+  id                TINYINT UNSIGNED NOT NULL,
+  uvod_hr           MEDIUMTEXT NULL,
+  uvod_de           MEDIUMTEXT NULL,
+  zavrsni_hr        MEDIUMTEXT NULL,
+  zavrsni_de        MEDIUMTEXT NULL,
+  updated_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS klub_timeline (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  godina            SMALLINT NOT NULL,             -- za sortiranje
+  godina_labela_hr  VARCHAR(80) NULL,              -- npr. "Kasne 1990-e"; prazno = prikaz broja
+  godina_labela_de  VARCHAR(80) NULL,
+  naslov_hr         VARCHAR(190) NOT NULL,
+  naslov_de         VARCHAR(190) NULL,
+  tekst_hr          TEXT NOT NULL,                 -- običan tekst (novi redovi se čuvaju), ne Markdown
+  tekst_de          TEXT NULL,
+
+  slika_original    VARCHAR(255) NULL,
+  slika_small       VARCHAR(255) NULL,
+  slika_medium      VARCHAR(255) NULL,
+  slika_large       VARCHAR(255) NULL,
+  slika_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  slika_width       SMALLINT UNSIGNED NULL,
+  slika_height      SMALLINT UNSIGNED NULL,
+  slika_alt         VARCHAR(255) NULL,
+
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+  created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_redoslijed (godina, redoslijed)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

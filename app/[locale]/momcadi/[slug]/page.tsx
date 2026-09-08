@@ -3,7 +3,7 @@ import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import { fetchMomcad, fetchMomcadi, type IgracFromApi } from '@/lib/momcadiApi';
-import type { Pozicija } from '@/sanity/lib/types';
+import type { Pozicija } from '@/lib/cmsTypes';
 import { CmsImage } from '@/components/ui/CmsImage';
 import { Card } from '@/components/ui/Card';
 import { HtmlContent } from '@/components/ui/HtmlContent';

@@ -1,4 +1,4 @@
-import type { ClanUprave } from '@/sanity/lib/types';
+import type { ClanUprave } from '@/lib/cmsTypes';
 
 /**
  * TEST MIGRACIJA (staging/php-sponsors-api-test): članovi uprave se ovdje

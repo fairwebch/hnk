@@ -2,8 +2,7 @@ import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
+import { fetchSajtSlike } from '@/lib/sajtApi';
 import { PageHero } from '@/components/ui/PageHero';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Card } from '@/components/ui/Card';
@@ -25,10 +24,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [sponsors, headers] = await Promise.all([
-    fetchSponsors(),
-    sanityFetch<{ headerSponzoring?: any } | null>(pageHeaderSlikeQuery, {}, null),
-  ]);
+  const [sponsors, headers] = await Promise.all([fetchSponsors(), fetchSajtSlike()]);
 
   return (
     <>
@@ -37,7 +33,7 @@ export default async function SponzoringPage({ params }: { params: Promise<{ loc
         title={t('sponsors.title')}
         subtitle={t('sponsors.subtitle')}
         breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.sponzoring') }]}
-        image={headers?.headerSponzoring}
+        image={headers.headerSponzoring}
         ghost="PARTNERS"
       />
 

@@ -1,16 +1,13 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { klubStranicaQuery } from '@/sanity/lib/queries';
-import type { KlubStranica, TimelineStavka } from '@/sanity/lib/types';
 import { PageHero } from '@/components/ui/PageHero';
-import { pageHeaderSlikeQuery } from '@/sanity/lib/queries';
-import { PortableText } from '@/components/ui/PortableText';
+import { CmsImage } from '@/components/ui/CmsImage';
+import { HtmlContent } from '@/components/ui/HtmlContent';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { urlFor } from '@/sanity/lib/image';
-import { pickLocale, pickLocaleBlocks } from '@/lib/locale';
+import { fetchKlubStranica, type TimelineStavkaFromApi } from '@/lib/klubApi';
+import { fetchSajtSlike } from '@/lib/sajtApi';
+import { pickLocale } from '@/lib/locale';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -23,12 +20,10 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale);
   const t = await getTranslations();
 
-  const [doc, headers] = await Promise.all([
-    sanityFetch<KlubStranica | null>(klubStranicaQuery, {}, null),
-    sanityFetch<{ headerKlub?: any } | null>(pageHeaderSlikeQuery, {}, null),
-  ]);
-  const uvod = doc ? pickLocaleBlocks<any[]>(doc.uvod, locale) : undefined;
-  const zavrsni = doc ? pickLocaleBlocks<any[]>(doc.zavrsniTekst, locale) : undefined;
+  // Modul 8: sadržaj i header fotografija s PHP CMS-a (bivši Sanity klubStranica / postavkeSajta).
+  const [doc, sajt] = await Promise.all([fetchKlubStranica(), fetchSajtSlike()]);
+  const uvod = doc ? pickLocale(doc.uvodHtml, locale) : '';
+  const zavrsni = doc ? pickLocale(doc.zavrsniHtml, locale) : '';
   const timeline = doc?.timeline ?? [];
 
   return (
@@ -38,13 +33,13 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
         title={t('nav.oKlubu')}
         subtitle={t('klub.subtitle')}
         breadcrumb={[{ label: t('nav.pocetna'), href: '/' }, { label: t('nav.klub') }]}
-        image={headers?.headerKlub}
+        image={sajt.headerKlub}
         ghost="1995"
       />
 
-      {uvod && uvod.length > 0 && (
+      {uvod && (
         <div className="prose-x pt-14">
-          <PortableText value={uvod} />
+          <HtmlContent html={uvod} />
         </div>
       )}
 
@@ -66,9 +61,9 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
         </div>
       )}
 
-      {zavrsni && zavrsni.length > 0 && (
+      {zavrsni && (
         <div className="prose-x pb-14">
-          <PortableText value={zavrsni} />
+          <HtmlContent html={zavrsni} />
         </div>
       )}
 
@@ -106,7 +101,7 @@ export default async function KlubPage({ params }: { params: Promise<{ locale: s
   );
 }
 
-function TimelineItem({ item, locale, flip }: { item: TimelineStavka; locale: string; flip: boolean }) {
+function TimelineItem({ item, locale, flip }: { item: TimelineStavkaFromApi; locale: string; flip: boolean }) {
   const label = pickLocale(item.godinaLabela, locale) || String(item.godina);
   const naslov = pickLocale(item.naslov, locale);
   const tekst = pickLocale(item.tekst, locale);
@@ -124,10 +119,10 @@ function TimelineItem({ item, locale, flip }: { item: TimelineStavka; locale: st
         </div>
         <h3 className="h-display text-content text-xl md:text-2xl mt-3">{naslov}</h3>
         <p className="font-sans text-content-soft leading-relaxed mt-3 whitespace-pre-line">{tekst}</p>
-        {item.slika?.asset && (
+        {item.slika && (
           <div className="relative aspect-[16/9] mt-5 overflow-hidden border border-line bg-paper">
-            <Image
-              src={urlFor(item.slika).width(1200).fit('max').auto('format').url()}
+            <CmsImage
+              image={item.slika}
               alt={naslov}
               fill
               sizes="(max-width:768px) 90vw, 45vw"

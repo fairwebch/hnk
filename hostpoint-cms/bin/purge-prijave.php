@@ -7,6 +7,7 @@
  * na Hostpointu (bin/ NIJE u docrootu — deploy.sh ga ne šalje, kopira se
  * rsync-om u ~/www/bin/, pored ~/www/config/):
  *   5 3 * * * /usr/bin/php /home/hidapifa/www/bin/purge-prijave.php >> /home/hidapifa/www/bin/purge-prijave.log 2>&1
+ *   0,15,30,45 * * * * /usr/bin/php /home/hidapifa/www/bin/purge-prijave.php --rate-limit
  */
 declare(strict_types=1);
 
@@ -34,6 +35,14 @@ if (PHP_SAPI !== 'cli') {
 
 $priv = hnkcms_db_prijave();
 $dana = HNKCMS_RETENCIJA_DANA;
+
+// --rate-limit: samo čišćenje isteklih rate-limit redaka (prozor je 10 min;
+// hash IP-a ne smije živjeti dulje od sat vremena — politika privatnosti, t. 10).
+// Cron svakih 15 min, bez zapisa u purge log.
+if (in_array('--rate-limit', $argv, true)) {
+    $priv->exec('DELETE FROM prijave_rate_limit WHERE prozor_od < UTC_TIMESTAMP() - INTERVAL 10 MINUTE');
+    exit(0);
+}
 
 $isteklo = $priv->prepare('DELETE FROM prijave WHERE dogadjaj_datum_kraj < UTC_TIMESTAMP() - INTERVAL ? DAY');
 $isteklo->execute([$dana]);

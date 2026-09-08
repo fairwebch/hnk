@@ -1,4 +1,4 @@
-import type { LocaleString } from '@/sanity/lib/types';
+import type { LocaleString } from '@/lib/cmsTypes';
 import type { CmsImg } from '@/lib/cmsImage';
 
 /**

@@ -1,4 +1,4 @@
-import type { Sponzor } from '@/sanity/lib/types';
+import type { Sponzor } from '@/lib/cmsTypes';
 
 /**
  * TEST MIGRACIJA (staging/php-sponsors-api-test): sponzori se ovdje čitaju
