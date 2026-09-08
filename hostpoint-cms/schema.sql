@@ -1,6 +1,7 @@
 -- HNK Kroatien Schwyz — PHP+MySQL CMS backend
 -- Modul 1: sponzori, Modul 2: clan_uprave, Modul 3: stranice, Modul 4: momcadi,
--- Modul 5: galerije, Modul 6: novosti
+-- Modul 5: galerije, Modul 6: novosti, Modul 7: dogadjaji (javni dio;
+-- privatne prijave su u ZASEBNOJ bazi — vidi schema-prijave.sql)
 -- Target: MariaDB 10.11 (Hostpoint hidapifa_hnkcms)
 --
 -- Pokrenuti jednom, na praznoj bazi:
@@ -407,4 +408,81 @@ CREATE TABLE IF NOT EXISTS novost_slike (
   PRIMARY KEY (id),
   KEY idx_novost_redoslijed (novost_id, redoslijed),
   CONSTRAINT fk_slika_novost FOREIGN KEY (novost_id) REFERENCES novosti (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
+-- dogadjaji — JAVNI dio Sanity tipa "dogadjaj" (name, slug, kategorija,
+-- datumPocetak/Kraj, location, coverImage, description, kotizacija,
+-- prijavaLink, kapacitet, program[], sponzorEventa->, galerija->, postavke
+-- prijava). Sanity reference postaju FK-ovi na već migrirane tablice
+-- (sponzori, galerije) s ON DELETE SET NULL — javni API vraća {name, slug}
+-- galerije umjesto Sanity referenca (dogadjaj.galerija je dosad "visio").
+-- kotizacija/kapacitet ostaju slobodan tekst kao u Sanityju (nikad se ne
+-- provjeravaju numerički). `tajni_kod` (članski link ?kod=) se NIKAD ne
+-- vraća javnim API-jem — validira ga isključivo prijavni endpoint.
+-- PRIVATNE PRIJAVE NISU OVDJE: žive u zasebnoj bazi hidapifa_hnkprijave
+-- (schema-prijave.sql) s vlastitim MySQL korisnikom; korisnik ove baze
+-- nema nikakav grant na nju.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS dogadjaji (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  slug              VARCHAR(96) NOT NULL,
+  naziv_hr          VARCHAR(190) NOT NULL,
+  naziv_de          VARCHAR(190) NULL,
+  kategorija        ENUM('Turnir','Zabava','Izlet','Skupština') NULL,
+  datum_pocetak     DATETIME NOT NULL,                     -- UTC, kao Sanity datetime
+  datum_kraj        DATETIME NULL,                         -- ako NULL, koristi se datum_pocetak
+  lokacija          VARCHAR(190) NULL,
+
+  cover_original    VARCHAR(255) NULL,
+  cover_small       VARCHAR(255) NULL,
+  cover_medium      VARCHAR(255) NULL,
+  cover_large       VARCHAR(255) NULL,
+  cover_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  cover_width       SMALLINT UNSIGNED NULL,
+  cover_height      SMALLINT UNSIGNED NULL,
+  cover_alt         VARCHAR(255) NULL,
+
+  opis_hr           MEDIUMTEXT NULL,   -- Markdown izvor
+  opis_de           MEDIUMTEXT NULL,   -- Markdown izvor
+  kotizacija        VARCHAR(190) NULL, -- slobodan tekst ("30-40 CHF", "Besplatno")
+  kapacitet         VARCHAR(190) NULL, -- slobodan tekst ("16 ekipa", "60")
+  prijava_link      VARCHAR(500) NULL, -- eksterni link za prijavu
+
+  sponzor_id        INT UNSIGNED NULL,
+  galerija_id       INT UNSIGNED NULL,
+
+  -- Postavke prijava (Sanity grupa "prijave"). Same prijave su u drugoj bazi.
+  vrsta_prijave     ENUM('bez','osoba','ekipa') NOT NULL DEFAULT 'bez',
+  pristup_prijavi   ENUM('javna','clanovi') NOT NULL DEFAULT 'javna',
+  prijave_otvorene  TINYINT(1) NOT NULL DEFAULT 0,
+  rok_prijave       DATETIME NULL,
+  tajni_kod         VARCHAR(32) NULL,  -- NIKAD u javnom API-ju
+
+  -- Entwurf/Veröffentlicht: javni API vraća samo 'veroeffentlicht'.
+  status            ENUM('entwurf','veroeffentlicht') NOT NULL DEFAULT 'veroeffentlicht',
+
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_slug (slug),
+  KEY idx_datum_pocetak (datum_pocetak),
+  KEY idx_datum_kraj (datum_kraj),
+  KEY idx_status (status),
+  CONSTRAINT fk_dogadjaj_sponzor FOREIGN KEY (sponzor_id) REFERENCES sponzori (id) ON DELETE SET NULL,
+  CONSTRAINT fk_dogadjaj_galerija FOREIGN KEY (galerija_id) REFERENCES galerije (id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Program dana (Sanity dogadjaj.program[] — stavke {vrijeme, opis}).
+CREATE TABLE IF NOT EXISTS dogadjaj_program (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  dogadjaj_id       INT UNSIGNED NOT NULL,
+  vrijeme           VARCHAR(120) NULL,
+  opis              VARCHAR(255) NULL,
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+
+  PRIMARY KEY (id),
+  KEY idx_dogadjaj_redoslijed (dogadjaj_id, redoslijed),
+  CONSTRAINT fk_program_dogadjaj FOREIGN KEY (dogadjaj_id) REFERENCES dogadjaji (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -16,6 +16,7 @@ const HNKCMS_NAV = [
     'momcadi'  => ['/admin/momcadi.php', 'Momčadi'],
     'galerije' => ['/admin/galerije.php', 'Galerije'],
     'novosti'  => ['/admin/novosti.php', 'Novosti'],
+    'dogadjaji' => ['/admin/dogadjaji.php', 'Događaji'],
 ];
 
 /**

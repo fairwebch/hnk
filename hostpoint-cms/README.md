@@ -4,8 +4,11 @@ Zamjena za Sanity, modul po modul. **Modul 1: sponzori**, **Modul 2: clan_uprave
 (uprava), **Modul 3: stranice** (kontakt, postani-clan, impressum,
 datenschutzerklarung), **Modul 4: momcadi** (Aktivni, Seniori, Juniori — s
 rosterom, popisom imena i galerijom), **Modul 5: galerije** (30 albuma /
-1814 slika) i **Modul 6: novosti** (34 novosti, slike u tekstu) su gotovi i
-live na stagingu. Next.js frontend na
+1814 slika), **Modul 6: novosti** (34 novosti, slike u tekstu) i **Modul 7:
+događaji — javni dio** (5 događaja) su gotovi i live na stagingu. Privatni
+dio (prijave sudionika, osobni podaci) ide u ZASEBNU bazu — vidi
+[schema-prijave.sql](schema-prijave.sql) i odjeljak "Modul 7" ispod; deploy
+tek kad baza i korisnik postoje. Next.js frontend na
 Vercelu i dalje čita iz Sanityja za sve OSTALE tipove — mijenja se samo
 izvor podataka za te module, i to samo na testnoj grani (vidi `../hnk`
 repo, grana `staging/php-sponsors-api-test`).
@@ -33,7 +36,8 @@ Modula 2 (clan_uprave) nadalje: `./deploy.sh staging --dry-run` pa
 ```
 hostpoint-cms/
   deploy.sh                   # rsync preko SSH -> www/api-staging.kroatien-schwyz.ch/ (vidi deploy.sh za pravila)
-  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, momcadi (+3 child), galerije (+1), novosti (+1), admin_users
+  schema.sql                  # CREATE TABLE sponzori, clan_uprave, stranice, momcadi (+3 child), galerije (+1), novosti (+1), dogadjaji (+program), admin_users
+  schema-prijave.sql          # ZASEBNA baza hidapifa_hnkprijave: prijave (osobni podaci), rate limit, purge log
   config/
     config.example.php        # kopirati u config.php na serveru, popuniti
   bin/
@@ -44,6 +48,7 @@ hostpoint-cms/
     seed-real-momcadi.php     # jednokratna migracija Modul 4 (Sanity -> WebP wide/SQL)
     seed-real-galerije.php    # jednokratna migracija Modul 5 — radi NA serveru (CDN download + WebP), resumable
     seed-real-novosti.php     # jednokratna migracija Modul 6 — radi NA serveru; body iz manifesta (PT -> Markdown, escape `1\.`)
+    seed-real-dogadjaji.php   # jednokratna migracija Modul 7 (javni dio) — coveri + program; tajni_kod ROTIRAN, ne prenesen
   public/                     # = document root za api-staging.kroatien-schwyz.ch
     .htaccess                 # HTTPS redirect, blokira .sql/.md/.env
     api/
@@ -53,6 +58,7 @@ hostpoint-cms/
       momcadi.php               # GET lista (lagani oblik + brojIgraca) / ?slug=X (puni: igraci, trener, gallery)
       galerije.php              # GET lista (cover+count) / ?limit=N teaser / ?slug=X (sve slike, thumb 600x600)
       novosti.php               # GET lista BEZ body-ja / ?limit=N / ?slug=X (body kao HTML + slike u tekstu)
+      dogadjaji.php             # GET {upcoming, past} / ?next=1 / ?slug=X — NIKAD tajni_kod, ne spaja se na bazu prijava
     admin/
       login.php                # korak 1: lozinka
       setup-2fa.php            # prvi put: uparivanje TOTP-a (ručni unos ključa, bez QR-a)
@@ -80,6 +86,9 @@ hostpoint-cms/
       novosti.php                # lista novosti (cover, datum, kategorija, broj slika u tekstu)
       novost-edit.php            # naslov/slug/datum/kategorija/cover/sažetak/Markdown + sekcija "Slike u tekstu" (snippet)
       novost-delete.php / novost-slika-upload.php / novost-slika-edit.php / novost-slika-delete.php
+      dogadjaji.php              # lista događaja (nadolazeći/prošli, postavke prijava)
+      dogadjaj-edit.php          # javni podaci + program ("vrijeme | opis" po redu) + sponzor/galerija select + postavke prijava + rotacija tajnog koda
+      dogadjaj-delete.php
       includes/                 # db.php, auth.php, totp.php, cors.php, webp.php, markdown.php, layout.php, api-image.php, api-novost.php
                                  # (webp.php dijeljen preko modula: process()/delete() prime
                                  # $filePrefix/$columnPrefix/$widths/$thumbSize, renderVariants() javan za seedove;
@@ -98,6 +107,8 @@ hostpoint-cms/
       galerije/                  # galerija-<n>-<hex>-{thumb,small,medium,large}.webp — javno (~7.300 datoteka)
         originals/               # netaknuti originali — NIJE javno (.htaccess)
       novosti/                   # cover-<n>-* (naslovne) i slika-<id>-* (u tekstu) WebP — javno
+        originals/               # netaknuti originali — NIJE javno (.htaccess)
+      dogadjaji/                 # cover-<n>-* WebP — javno
         originals/               # netaknuti originali — NIJE javno (.htaccess)
 ```
 
@@ -259,6 +270,36 @@ u adminu to spominje.
 CDN-a, WIDTHS_WIDE), body iz GROQ manifesta. `kategorija` je ENUM s tačnim
 Sanity vrijednostima (uklj. „Skupština“) — frontend labele su u
 `messages/*.json` pod `categories.<vrijednost>`.
+
+## Modul 7: događaji — javni dio live, privatne prijave u zasebnoj bazi
+
+**Javni dio (`dogadjaji` + `dogadjaj_program`, baza hidapifa_hnkcms):** Sanity
+`dogadjaj` bez polja prijava. Reference postaju FK-ovi na već migrirane tablice
+(`sponzor_id` → sponzori, `galerija_id` → galerije, ON DELETE SET NULL) —
+time je riješena "viseća" `dogadjaj.galerija` referenca. `kotizacija`/`kapacitet`
+ostaju slobodan tekst kao u Sanityju. Nadolazeći/prošli računa MySQL u UTC nad
+`COALESCE(datum_kraj, datum_pocetak)`; countdown ostaje klijentski.
+`tajni_kod` (članski link) se **nikad ne vraća javnim API-jem**; pri migraciji
+su svi kodovi **rotirani** jer su u Sanityju bili javno čitljivi (production
+dataset bez tokena). Admin ih može rotirati checkboxom.
+
+**Privatni dio (prijave, osobni podaci) — nalaz i odluke:**
+- U Sanityju prijave NISU bile izolirane (isti javni `production` dataset kao
+  sadržaj; dataset javno čitljiv bez tokena). Stvarnih prijava: 0 — ništa se
+  ne migrira. Europapark check-in alat (zaseban `prijave` dataset) se ne
+  migrira; `scripts/migration/europapark-putnici.json` uklonjen iz repoa.
+- Ovdje: **zasebna baza `hidapifa_hnkprijave` + zaseban MySQL korisnik**
+  (`config.php` → `db_prijave`); korisnik javne baze nema grant na nju.
+  Na nju se spajaju samo `api/prijava.php` (POST prijava/otkaz, GET validacija
+  koda), admin dashboard prijava (iza login/2FA) i `bin/purge-prijave.php`.
+  Shema: [schema-prijave.sql](schema-prijave.sql) — otkazni token samo kao
+  SHA-256 hash, `privola_at` (checkbox privole, novo), rate limit s hashem IP-a.
+- **Retencija (dogovoreno, politika privatnosti je obećava):** hard-delete
+  30 dana nakon kraja događaja i 30 dana nakon otkaza, dnevni Hostpoint cron
+  nad `bin/purge-prijave.php`; log samo brojeva. Sanity nije imao nikakvu.
+- E-mail: Resend preko PHP curl-a (paritet s Next.js rutama), ključ u
+  `config.php` van docroota.
+- Status: privatni dio se deploya tek kad baza i korisnik postoje.
 
 ## Sigurnosne odluke (ukratko, za review)
 

@@ -19,4 +19,8 @@ public/uploads/novosti/*
 !public/uploads/novosti/originals/
 public/uploads/novosti/originals/*
 !public/uploads/novosti/originals/.htaccess
+public/uploads/dogadjaji/*
+!public/uploads/dogadjaji/originals/
+public/uploads/dogadjaji/originals/*
+!public/uploads/dogadjaji/originals/.htaccess
 !public/uploads/.htaccess
