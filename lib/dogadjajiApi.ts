@@ -84,7 +84,8 @@ function mapItem(d: DogadjajApiItem): DogadjajFromApi {
     pristupPrijavi: d.pristupPrijavi,
     prijaveOtvorene: d.prijaveOtvorene,
     rokPrijave: d.rokPrijave ?? undefined,
-    sponsors: d.sponsors.map((s) => ({ name: s.name, logo: s.logo ?? undefined, link: s.link ?? undefined })),
+    // ?? [] — most polje ako je PHP API još stara verzija (deploy race: frontend prije backend-a).
+    sponsors: (d.sponsors ?? []).map((s) => ({ name: s.name, logo: s.logo ?? undefined, link: s.link ?? undefined })),
     galerija: d.galerija ? { name: loc(d.galerija.name), slug: d.galerija.slug } : null,
   };
 }
