@@ -13,6 +13,7 @@ type Props = {
   otvorene: boolean;
   rok?: string;
   kotizacija?: string;
+  prikaziKotizaciju?: boolean;
 };
 
 type Status = 'idle' | 'sending' | 'ok' | 'error' | 'closed' | 'forbidden';
@@ -30,7 +31,7 @@ export function EventRegistration(props: Props) {
   );
 }
 
-function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacija }: Props) {
+function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacija, prikaziKotizaciju }: Props) {
   const t = useTranslations('prijava');
   const locale = useLocale();
   const searchParams = useSearchParams();
@@ -80,7 +81,7 @@ function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacij
 
   return (
     <Wrapper title={t('title')} subtitle={rok ? t('rokDo', { datum: formatRok(rok, locale) }) : undefined}>
-      <Form slug={slug} vrsta={vrsta} kod={kod} kotizacija={kotizacija} />
+      <Form slug={slug} vrsta={vrsta} kod={kod} kotizacija={prikaziKotizaciju !== false ? kotizacija : undefined} />
     </Wrapper>
   );
 }

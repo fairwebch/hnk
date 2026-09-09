@@ -413,16 +413,27 @@ CREATE TABLE IF NOT EXISTS novost_slike (
 -- ---------------------------------------------------------------------------
 -- dogadjaji — JAVNI dio Sanity tipa "dogadjaj" (name, slug, kategorija,
 -- datumPocetak/Kraj, location, coverImage, description, kotizacija,
--- prijavaLink, kapacitet, program[], sponzorEventa->, galerija->, postavke
--- prijava). Sanity reference postaju FK-ovi na već migrirane tablice
--- (sponzori, galerije) s ON DELETE SET NULL — javni API vraća {name, slug}
--- galerije umjesto Sanity referenca (dogadjaj.galerija je dosad "visio").
--- kotizacija/kapacitet ostaju slobodan tekst kao u Sanityju (nikad se ne
--- provjeravaju numerički). `tajni_kod` (članski link ?kod=) se NIKAD ne
--- vraća javnim API-jem — validira ga isključivo prijavni endpoint.
+-- prijavaLink, kapacitet, program[], sponzori[] (M:N, vidi dogadjaj_sponzori
+-- + dogadjaj_sponzori_custom niže), galerija->, postavke prijava). Sanity
+-- reference postaju FK-ovi na već migrirane tablice (sponzori, galerije) s
+-- ON DELETE SET NULL/CASCADE — javni API vraća {name, slug} galerije umjesto
+-- Sanity referenca (dogadjaj.galerija je dosad "visio"). kotizacija/kapacitet
+-- ostaju slobodan tekst kao u Sanityju (nikad se ne provjeravaju numerički).
+-- `tajni_kod` (članski link ?kod=) se NIKAD ne vraća javnim API-jem —
+-- validira ga isključivo prijavni endpoint.
 -- PRIVATNE PRIJAVE NISU OVDJE: žive u zasebnoj bazi hidapifa_hnkprijave
 -- (schema-prijave.sql) s vlastitim MySQL korisnikom; korisnik ove baze
 -- nema nikakav grant na nju.
+--
+-- prikazi_* — po događaju uklj/isklj prikaza pojedinog polja u "Informacije"
+-- kartici na javnoj stranici (npr. skrij "Kotizacija" umjesto da stoji
+-- prazno/placeholder kad je ulaz besplatan). Default 1 = ponašanje kao dosad.
+--
+-- flyer_* — posebna kvadratna (1:1) promo slika za društvene mreže/newsletter,
+-- odvojena od cover_* (koja je široka, za header stranice). Isti WebP obrazac
+-- kao cover/logo, ali generirana s centralnim kvadratnim cropom (vidi
+-- WebpPipeline::WIDTHS_SQUARE) — uvijek 1:1 na disku, bez obzira na omjer
+-- uploadane slike.
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS dogadjaji (
   id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -431,8 +442,11 @@ CREATE TABLE IF NOT EXISTS dogadjaji (
   naziv_de          VARCHAR(190) NULL,
   kategorija        ENUM('Turnir','Zabava','Izlet','Skupština') NULL,
   datum_pocetak     DATETIME NOT NULL,                     -- UTC, kao Sanity datetime
+  prikazi_pocetak   TINYINT(1) NOT NULL DEFAULT 1,
   datum_kraj        DATETIME NULL,                         -- ako NULL, koristi se datum_pocetak
+  prikazi_kraj      TINYINT(1) NOT NULL DEFAULT 1,
   lokacija          VARCHAR(190) NULL,
+  prikazi_lokaciju  TINYINT(1) NOT NULL DEFAULT 1,
 
   cover_original    VARCHAR(255) NULL,
   cover_small       VARCHAR(255) NULL,
@@ -443,13 +457,23 @@ CREATE TABLE IF NOT EXISTS dogadjaji (
   cover_height      SMALLINT UNSIGNED NULL,
   cover_alt         VARCHAR(255) NULL,
 
+  flyer_original    VARCHAR(255) NULL,
+  flyer_small       VARCHAR(255) NULL,
+  flyer_medium      VARCHAR(255) NULL,
+  flyer_large       VARCHAR(255) NULL,
+  flyer_is_vector   TINYINT(1) NOT NULL DEFAULT 0,
+  flyer_width       SMALLINT UNSIGNED NULL,
+  flyer_height      SMALLINT UNSIGNED NULL,
+  flyer_alt         VARCHAR(255) NULL,
+
   opis_hr           MEDIUMTEXT NULL,   -- Markdown izvor
   opis_de           MEDIUMTEXT NULL,   -- Markdown izvor
   kotizacija        VARCHAR(190) NULL, -- slobodan tekst ("30-40 CHF", "Besplatno")
+  prikazi_kotizaciju TINYINT(1) NOT NULL DEFAULT 1,
   kapacitet         VARCHAR(190) NULL, -- slobodan tekst ("16 ekipa", "60")
+  prikazi_kapacitet TINYINT(1) NOT NULL DEFAULT 1,
   prijava_link      VARCHAR(500) NULL, -- eksterni link za prijavu
 
-  sponzor_id        INT UNSIGNED NULL,
   galerija_id       INT UNSIGNED NULL,
 
   -- Postavke prijava (Sanity grupa "prijave"). Same prijave su u drugoj bazi.
@@ -470,7 +494,6 @@ CREATE TABLE IF NOT EXISTS dogadjaji (
   KEY idx_datum_pocetak (datum_pocetak),
   KEY idx_datum_kraj (datum_kraj),
   KEY idx_status (status),
-  CONSTRAINT fk_dogadjaj_sponzor FOREIGN KEY (sponzor_id) REFERENCES sponzori (id) ON DELETE SET NULL,
   CONSTRAINT fk_dogadjaj_galerija FOREIGN KEY (galerija_id) REFERENCES galerije (id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -485,6 +508,47 @@ CREATE TABLE IF NOT EXISTS dogadjaj_program (
   PRIMARY KEY (id),
   KEY idx_dogadjaj_redoslijed (dogadjaj_id, redoslijed),
   CONSTRAINT fk_program_dogadjaj FOREIGN KEY (dogadjaj_id) REFERENCES dogadjaji (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Opći sponzori (postojeća "sponzori" tabela, isti kao na /sponzoring)
+-- prikvačeni na događaj, N:M. Više događaja može deliti istog sponzora;
+-- jedan događaj može imati više sponzora, s vlastitim redoslijedom prikaza.
+CREATE TABLE IF NOT EXISTS dogadjaj_sponzori (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  dogadjaj_id       INT UNSIGNED NOT NULL,
+  sponzor_id        INT UNSIGNED NOT NULL,
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+
+  PRIMARY KEY (id),
+  UNIQUE KEY uniq_dogadjaj_sponzor (dogadjaj_id, sponzor_id),
+  KEY idx_dogadjaj_redoslijed (dogadjaj_id, redoslijed),
+  CONSTRAINT fk_ds_dogadjaj FOREIGN KEY (dogadjaj_id) REFERENCES dogadjaji (id) ON DELETE CASCADE,
+  CONSTRAINT fk_ds_sponzor  FOREIGN KEY (sponzor_id)  REFERENCES sponzori (id)  ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Sponzor koji postoji SAMO za jedan događaj — nikad na /sponzoring, nikad u
+-- općoj listi sponzora. Lagana tablica (bez paket/status Entwurf-Veröffentlicht
+-- kao opći "sponzori" — event-only sponzor "postoji" prostim postojanjem retka).
+CREATE TABLE IF NOT EXISTS dogadjaj_sponzori_custom (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  dogadjaj_id       INT UNSIGNED NOT NULL,
+  naziv             VARCHAR(190) NOT NULL,
+  link              VARCHAR(500) NULL,
+
+  logo_original     VARCHAR(255) NULL,
+  logo_small        VARCHAR(255) NULL,
+  logo_medium       VARCHAR(255) NULL,
+  logo_large        VARCHAR(255) NULL,
+  logo_is_vector    TINYINT(1) NOT NULL DEFAULT 0,
+  logo_width        SMALLINT UNSIGNED NULL,
+  logo_height       SMALLINT UNSIGNED NULL,
+
+  redoslijed        SMALLINT NOT NULL DEFAULT 100,
+  created_at        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  KEY idx_dogadjaj_redoslijed (dogadjaj_id, redoslijed),
+  CONSTRAINT fk_dsc_dogadjaj FOREIGN KEY (dogadjaj_id) REFERENCES dogadjaji (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------------

@@ -46,32 +46,55 @@ function hnkcms_dt(?string $mysql): ?string
     return $mysql === null ? null : str_replace(' ', 'T', $mysql) . 'Z';
 }
 
-// Jedan SELECT za sve: sponzor i galerija se pridružuju odmah (LEFT JOIN),
-// program se dohvaća po događaju (max nekoliko stavki).
+// Jedan SELECT za sve: galerija se pridružuje odmah (LEFT JOIN), program i
+// sponzori (opći + event-only) se dohvaćaju po događaju (max nekoliko stavki).
 const HNKCMS_DOGADJAJ_SELECT = "
     SELECT d.*,
-           s.naziv AS sp_naziv, s.link AS sp_link,
-           s.logo_small AS sp_logo_small, s.logo_medium AS sp_logo_medium, s.logo_large AS sp_logo_large,
-           s.logo_is_vector AS sp_logo_is_vector, s.logo_width AS sp_logo_width, s.logo_height AS sp_logo_height,
            g.slug AS gal_slug, g.naziv_hr AS gal_naziv_hr, g.naziv_de AS gal_naziv_de, g.status AS gal_status
     FROM dogadjaji d
-    LEFT JOIN sponzori s ON s.id = d.sponzor_id AND s.status = 'veroeffentlicht'
     LEFT JOIN galerije g ON g.id = d.galerija_id
 ";
+
+/** Opći sponzori (preko dogadjaj_sponzori) + event-only sponzori, spojeni i sortirani po redoslijedu. */
+function hnkcms_dogadjaj_sponzori(PDO $db, int $dogadjajId, string $sponzoriUrl, string $uploadsUrl): array
+{
+    $opci = $db->prepare(
+        "SELECT s.naziv, s.link, s.logo_small, s.logo_medium, s.logo_large, s.logo_is_vector, s.logo_width, s.logo_height, ds.redoslijed
+         FROM dogadjaj_sponzori ds
+         JOIN sponzori s ON s.id = ds.sponzor_id AND s.status = 'veroeffentlicht'
+         WHERE ds.dogadjaj_id = ?"
+    );
+    $opci->execute([$dogadjajId]);
+    $items = array_map(fn($s) => [
+        'name' => $s['naziv'],
+        'logo' => hnkcms_image_json($s, 'logo', $sponzoriUrl),
+        'link' => $s['link'] ?: null,
+        'redoslijed' => (int) $s['redoslijed'],
+    ], $opci->fetchAll());
+
+    $custom = $db->prepare(
+        'SELECT naziv, link, logo_small, logo_medium, logo_large, logo_is_vector, logo_width, logo_height, redoslijed
+         FROM dogadjaj_sponzori_custom WHERE dogadjaj_id = ?'
+    );
+    $custom->execute([$dogadjajId]);
+    foreach ($custom->fetchAll() as $s) {
+        $items[] = [
+            'name' => $s['naziv'],
+            'logo' => hnkcms_image_json($s, 'logo', $uploadsUrl),
+            'link' => $s['link'] ?: null,
+            'redoslijed' => (int) $s['redoslijed'],
+        ];
+    }
+
+    usort($items, fn($a, $b) => $a['redoslijed'] <=> $b['redoslijed']);
+    return array_map(fn($s) => ['name' => $s['name'], 'logo' => $s['logo'], 'link' => $s['link']], $items);
+}
 
 function hnkcms_dogadjaj_json(PDO $db, array $r, string $uploadsUrl, string $sponzoriUrl): array
 {
     $program = $db->prepare('SELECT vrijeme, opis FROM dogadjaj_program WHERE dogadjaj_id = ? ORDER BY redoslijed ASC, id ASC');
     $program->execute([(int) $r['id']]);
 
-    $sponzor = null;
-    if ($r['sp_naziv'] !== null) {
-        $sponzor = [
-            'name' => $r['sp_naziv'],
-            'logo' => hnkcms_image_json($r, 'sp_logo', $sponzoriUrl),
-            'link' => $r['sp_link'] ?: null,
-        ];
-    }
     $galerija = null;
     if ($r['gal_slug'] !== null && $r['gal_status'] === 'veroeffentlicht') {
         $galerija = ['name' => ['hr' => $r['gal_naziv_hr'], 'de' => $r['gal_naziv_de'] ?: null], 'slug' => $r['gal_slug']];
@@ -83,22 +106,28 @@ function hnkcms_dogadjaj_json(PDO $db, array $r, string $uploadsUrl, string $spo
         'name' => ['hr' => $r['naziv_hr'], 'de' => $r['naziv_de'] ?: null],
         'kategorija' => $r['kategorija'],
         'datumPocetak' => hnkcms_dt($r['datum_pocetak']),
+        'prikaziPocetak' => (bool) $r['prikazi_pocetak'],
         'datumKraj' => hnkcms_dt($r['datum_kraj']),
+        'prikaziKraj' => (bool) $r['prikazi_kraj'],
         'location' => $r['lokacija'] ?: null,
+        'prikaziLokaciju' => (bool) $r['prikazi_lokaciju'],
         'coverImage' => hnkcms_image_json($r, 'cover', $uploadsUrl, 'cover_alt'),
+        'flyerImage' => hnkcms_image_json($r, 'flyer', $uploadsUrl, 'flyer_alt'),
         'description' => [
             'hr' => hnkcms_markdown_to_html($r['opis_hr']) ?: null,
             'de' => hnkcms_markdown_to_html($r['opis_de']) ?: null,
         ],
         'kotizacija' => $r['kotizacija'] ?: null,
+        'prikaziKotizaciju' => (bool) $r['prikazi_kotizaciju'],
         'prijavaLink' => $r['prijava_link'] ?: null,
         'kapacitet' => $r['kapacitet'] ?: null,
+        'prikaziKapacitet' => (bool) $r['prikazi_kapacitet'],
         'program' => array_map(fn($p) => ['vrijeme' => $p['vrijeme'] ?: null, 'opis' => $p['opis'] ?: null], $program->fetchAll()),
         'vrstaPrijave' => $r['vrsta_prijave'],
         'pristupPrijavi' => $r['pristup_prijavi'],
         'prijaveOtvorene' => (bool) $r['prijave_otvorene'],
         'rokPrijave' => hnkcms_dt($r['rok_prijave']),
-        'sponzorEventa' => $sponzor,
+        'sponsors' => hnkcms_dogadjaj_sponzori($db, (int) $r['id'], $sponzoriUrl, $uploadsUrl),
         'galerija' => $galerija,
         // NAMJERNO bez tajni_kod.
     ];

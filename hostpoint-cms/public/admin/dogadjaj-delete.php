@@ -19,9 +19,17 @@ $stmt->execute([$id]);
 $row = $stmt->fetch();
 
 if ($row) {
-    WebpPipeline::delete(__DIR__ . '/../uploads/dogadjaji', $row, 'cover');
-    // Program se briše FK cascade-om. Prijave su u drugoj bazi — ostaju do
-    // isteka retencije (bin/purge-prijave.php), namjerno se ne diraju odavde.
+    $uploadsDir = __DIR__ . '/../uploads/dogadjaji';
+    WebpPipeline::delete($uploadsDir, $row, 'cover');
+    WebpPipeline::delete($uploadsDir, $row, 'flyer');
+    $customSponsors = $db->prepare('SELECT * FROM dogadjaj_sponzori_custom WHERE dogadjaj_id = ?');
+    $customSponsors->execute([$id]);
+    foreach ($customSponsors->fetchAll() as $cs) {
+        WebpPipeline::delete($uploadsDir, $cs, 'logo');
+    }
+    // Program i sponzori (opći/event-only) se brišu FK cascade-om. Prijave su
+    // u drugoj bazi — ostaju do isteka retencije (bin/purge-prijave.php),
+    // namjerno se ne diraju odavde.
     $db->prepare('DELETE FROM dogadjaji WHERE id = ?')->execute([$id]);
     header('Location: /admin/dogadjaji.php?msg=' . rawurlencode('Događaj obrisan.'));
 } else {

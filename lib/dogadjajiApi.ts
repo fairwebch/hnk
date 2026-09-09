@@ -24,28 +24,35 @@ interface DogadjajApiItem {
   name: { hr: string; de: string | null };
   kategorija: Dogadjaj['kategorija'] | null;
   datumPocetak: string;
+  prikaziPocetak: boolean;
   datumKraj: string | null;
+  prikaziKraj: boolean;
   location: string | null;
+  prikaziLokaciju: boolean;
   coverImage: CmsImg | null;
+  flyerImage: CmsImg | null;
   description: { hr: string | null; de: string | null };
   kotizacija: string | null;
+  prikaziKotizaciju: boolean;
   prijavaLink: string | null;
   kapacitet: string | null;
+  prikaziKapacitet: boolean;
   program: { vrijeme: string | null; opis: string | null }[];
   vrstaPrijave: 'bez' | 'osoba' | 'ekipa';
   pristupPrijavi: 'javna' | 'clanovi';
   prijaveOtvorene: boolean;
   rokPrijave: string | null;
-  sponzorEventa: { name: string; logo: CmsImg | null; link: string | null } | null;
+  sponsors: { name: string; logo: CmsImg | null; link: string | null }[];
   galerija: { name: ApiLocale; slug: string } | null;
 }
 
 /** Događaj iz PHP API-ja, oblikovan što bliže Sanity `Dogadjaj` tipu (cover/logo su CmsImg, opis je HTML). */
-export type DogadjajFromApi = Omit<Dogadjaj, 'coverImage' | 'description' | 'sponzorEventa'> & {
+export type DogadjajFromApi = Omit<Dogadjaj, 'coverImage' | 'flyerImage' | 'description' | 'sponsors'> & {
   coverImage?: CmsImg;
+  flyerImage?: CmsImg;
   /** Markdown već renderiran u HTML na PHP strani. */
   descriptionHtml?: LocaleString;
-  sponzorEventa?: { name?: string; logo?: CmsImg; link?: string } | null;
+  sponsors?: { name?: string; logo?: CmsImg; link?: string }[];
 };
 
 function loc(v: ApiLocale): LocaleString | undefined {
@@ -59,21 +66,25 @@ function mapItem(d: DogadjajApiItem): DogadjajFromApi {
     name: { hr: d.name.hr, de: d.name.de ?? undefined },
     kategorija: d.kategorija ?? undefined,
     datumPocetak: d.datumPocetak,
+    prikaziPocetak: d.prikaziPocetak,
     datumKraj: d.datumKraj ?? undefined,
+    prikaziKraj: d.prikaziKraj,
     location: d.location ?? undefined,
+    prikaziLokaciju: d.prikaziLokaciju,
     coverImage: d.coverImage ?? undefined,
+    flyerImage: d.flyerImage ?? undefined,
     descriptionHtml: { hr: d.description.hr ?? undefined, de: d.description.de ?? undefined },
     kotizacija: d.kotizacija ?? undefined,
+    prikaziKotizaciju: d.prikaziKotizaciju,
     prijavaLink: d.prijavaLink ?? undefined,
     kapacitet: d.kapacitet ?? undefined,
+    prikaziKapacitet: d.prikaziKapacitet,
     program: d.program.map((p, i) => ({ _key: String(i), vrijeme: p.vrijeme ?? undefined, opis: p.opis ?? undefined })),
     vrstaPrijave: d.vrstaPrijave,
     pristupPrijavi: d.pristupPrijavi,
     prijaveOtvorene: d.prijaveOtvorene,
     rokPrijave: d.rokPrijave ?? undefined,
-    sponzorEventa: d.sponzorEventa
-      ? { name: d.sponzorEventa.name, logo: d.sponzorEventa.logo ?? undefined, link: d.sponzorEventa.link ?? undefined }
-      : null,
+    sponsors: d.sponsors.map((s) => ({ name: s.name, logo: s.logo ?? undefined, link: s.link ?? undefined })),
     galerija: d.galerija ? { name: loc(d.galerija.name), slug: d.galerija.slug } : null,
   };
 }

@@ -19,6 +19,8 @@ final class WebpPipeline
     private const WIDTHS = ['small' => 240, 'medium' => 480, 'large' => 800];
     /** Za fotografije pune širine (hero pozadina 100vw, grupna fotografija 1200px, galerija/lightbox). */
     public const WIDTHS_WIDE = ['small' => 480, 'medium' => 1200, 'large' => 1920];
+    /** Kvadratne (1:1) promo slike, npr. dogadjaj.flyer — centralni crop, vidi $squareCrop u process(). */
+    public const WIDTHS_SQUARE = ['small' => 400, 'medium' => 800, 'large' => 1200];
     /** Kvadratni thumb za grid galerija (isto kao Sanity 600x600 fit=crop na produkciji). */
     public const THUMB_SIZE = 600;
     private const QUALITY = 82;
@@ -31,11 +33,14 @@ final class WebpPipeline
      * @param string $filePrefix prefiks imena datoteke (npr. "sponzor", "clan") — samo
      *   radi čitljivosti na disku, nema utjecaja na jedinstvenost (svaki modul ima svoj uploadsDir)
      * @param array|null $widths ciljne širine po ključu small/medium/large; null = self::WIDTHS
-     *   (logotipi/portreti), self::WIDTHS_WIDE za fotografije pune širine
+     *   (logotipi/portreti), self::WIDTHS_WIDE za fotografije pune širine, self::WIDTHS_SQUARE za 1:1 promo slike
      * @param int|null $thumbSize ako je zadan, generira i kvadratni centralni crop `thumb` te veličine
+     * @param bool $squareCrop ako je true, small/medium/large se generiraju centralnim kvadratnim cropom
+     *   (isto kao $thumbSize, ali za sve tri veličine) umjesto proporcionalnog skaliranja — za flyer (1:1)
+     *   gdje uploadana slika ne mora nužno biti kvadratna
      * @return array{is_vector:bool, original:string, small:string, medium:string, large:string, thumb?:string, width:?int, height:?int}
      */
-    public static function process(array $file, string $uploadsDir, int $entityId, string $filePrefix = 'sponzor', ?array $widths = null, ?int $thumbSize = null): array
+    public static function process(array $file, string $uploadsDir, int $entityId, string $filePrefix = 'sponzor', ?array $widths = null, ?int $thumbSize = null, bool $squareCrop = false): array
     {
         if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
             throw new LogoUploadError('Upload nije uspio (error code ' . ($file['error'] ?? 'n/a') . ').');
@@ -56,7 +61,7 @@ final class WebpPipeline
             return self::processSvg($file, $uploadsDir, $originalsDir, $entityId, $filePrefix);
         }
 
-        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $entityId, $filePrefix, $widths ?? self::WIDTHS, $thumbSize);
+        return self::processRaster($file, $mime, $uploadsDir, $originalsDir, $entityId, $filePrefix, $widths ?? self::WIDTHS, $thumbSize, $squareCrop);
     }
 
     private static function processSvg(array $file, string $uploadsDir, string $originalsDir, int $id, string $filePrefix): array
@@ -109,7 +114,7 @@ final class WebpPipeline
         return [null, null];
     }
 
-    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id, string $filePrefix, array $widths, ?int $thumbSize): array
+    private static function processRaster(array $file, string $mime, string $uploadsDir, string $originalsDir, int $id, string $filePrefix, array $widths, ?int $thumbSize, bool $squareCrop = false): array
     {
         $allowed = ['image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp', 'image/gif' => 'imagecreatefromgif'];
         if (!isset($allowed[$mime])) {
@@ -134,12 +139,15 @@ final class WebpPipeline
         // Original netaknut, za audit / re-generiranje veličina kasnije.
         move_uploaded_file($file['tmp_name'], $originalsDir . "/{$base}.{$ext}");
 
+        // Kod forsiranog kvadratnog cropa width/height opisuju STVARNO isporučenu
+        // (izrezanu) sliku, ne sirovi upload — bitno za admin prikaz "Trenutna (WxH)".
+        $reportedSide = min($srcW, $srcH);
         $result = [
             'is_vector' => false,
             'original' => "originals/{$base}.{$ext}",
-            'width' => $srcW,
-            'height' => $srcH,
-        ] + self::renderVariants($src, $uploadsDir, $base, $widths, $thumbSize);
+            'width' => $squareCrop ? $reportedSide : $srcW,
+            'height' => $squareCrop ? $reportedSide : $srcH,
+        ] + self::renderVariants($src, $uploadsDir, $base, $widths, $thumbSize, $squareCrop);
         imagedestroy($src);
 
         return $result;
@@ -147,23 +155,33 @@ final class WebpPipeline
 
     /**
      * Generira WebP varijante iz već učitanog GD resursa: proporcionalne širine
-     * ($widths) i opcioni kvadratni centralni crop ($thumbSize). Javno da ga
+     * ($widths, ili centralni kvadratni crop na svaku širinu ako je $squareCrop
+     * true) i opcioni dodatni kvadratni centralni crop ($thumbSize). Javno da ga
      * mogu koristiti i jednokratne migracijske skripte (bin/seed-real-*.php)
      * umjesto da kopiraju petlju — process() ga ne može poslužiti jer zahtijeva
      * pravi HTTP upload. Ne uvećava preko izvorne veličine.
      * @return array<string,string> ključ (small/medium/large/thumb) => ime datoteke
      */
-    public static function renderVariants(\GdImage $src, string $uploadsDir, string $base, array $widths, ?int $thumbSize = null): array
+    public static function renderVariants(\GdImage $src, string $uploadsDir, string $base, array $widths, ?int $thumbSize = null, bool $squareCrop = false): array
     {
         $srcW = imagesx($src);
         $srcH = imagesy($src);
         $out = [];
 
         foreach ($widths as $key => $targetW) {
-            $w = min($targetW, $srcW);
-            $h = (int) round($srcH * ($w / $srcW));
-            $canvas = self::canvas($w, $h);
-            imagecopyresampled($canvas, $src, 0, 0, 0, 0, $w, $h, $srcW, $srcH);
+            if ($squareCrop) {
+                $side = min($targetW, $srcW, $srcH);
+                $cropSide = min($srcW, $srcH);
+                $cropX = (int) floor(($srcW - $cropSide) / 2);
+                $cropY = (int) floor(($srcH - $cropSide) / 2);
+                $canvas = self::canvas($side, $side);
+                imagecopyresampled($canvas, $src, 0, 0, $cropX, $cropY, $side, $side, $cropSide, $cropSide);
+            } else {
+                $w = min($targetW, $srcW);
+                $h = (int) round($srcH * ($w / $srcW));
+                $canvas = self::canvas($w, $h);
+                imagecopyresampled($canvas, $src, 0, 0, 0, 0, $w, $h, $srcW, $srcH);
+            }
             $out[$key] = self::saveWebp($canvas, $uploadsDir, "{$base}-{$key}.webp");
         }
 

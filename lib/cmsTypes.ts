@@ -50,18 +50,26 @@ export interface Dogadjaj {
   slug: string;
   kategorija?: 'Turnir' | 'Zabava' | 'Izlet' | 'Skupština';
   datumPocetak: string;
+  prikaziPocetak?: boolean;
   datumKraj?: string;
+  prikaziKraj?: boolean;
   location?: string;
+  prikaziLokaciju?: boolean;
   coverImage?: CmsImg;
+  /** Zasebna kvadratna (1:1) promo slika za društvene mreže/newsletter, odvojeno od coverImage. */
+  flyerImage?: CmsImg;
   description?: LocaleBlocks;
   kotizacija?: string;
+  prikaziKotizaciju?: boolean;
   prijavaLink?: string;
   kapacitet?: string;
+  prikaziKapacitet?: boolean;
   vrstaPrijave?: 'bez' | 'osoba' | 'ekipa';
   pristupPrijavi?: 'javna' | 'clanovi';
   prijaveOtvorene?: boolean;
   rokPrijave?: string;
   program?: ProgramStavka[];
-  sponzorEventa?: { name?: string; logo?: CmsImg; link?: string } | null;
+  /** Opći sponzori (M:N) + event-only sponzori, već spojeni i sortirani po redoslijedu. */
+  sponsors?: { name?: string; logo?: CmsImg; link?: string }[];
   galerija?: { name?: LocaleString; slug?: string } | null;
 }

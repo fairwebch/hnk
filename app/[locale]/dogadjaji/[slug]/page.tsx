@@ -23,7 +23,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const d = await fetchDogadjaj(slug);
-  return { title: d ? pickLocale(d.name, locale) : undefined };
+  if (!d) return { title: undefined };
+
+  const title = pickLocale(d.name, locale);
+  // Flyer (1:1, za newsletter/društvene mreže) je bolji social-preview nego
+  // široki cover — fallback na cover ako flyer nije postavljen.
+  const socialImage = d.flyerImage?.large ?? d.coverImage?.large;
+
+  return {
+    title,
+    openGraph: socialImage ? { title, images: [{ url: socialImage }] } : { title },
+    twitter: socialImage ? { card: 'summary_large_image', title, images: [socialImage] } : { title },
+  };
 }
 
 export default async function DogadjajPage({
@@ -42,18 +53,18 @@ export default async function DogadjajPage({
   const body = pickLocale(d.descriptionHtml, locale);
   const effectiveEnd = d.datumKraj || d.datumPocetak;
   const isUpcoming = new Date(effectiveEnd).getTime() > Date.now();
-  const sponsor = d.sponzorEventa;
+  const sponsors = d.sponsors ?? [];
   const imaPrijave = d.vrstaPrijave === 'osoba' || d.vrstaPrijave === 'ekipa';
 
   const dateFull = (v: string) =>
     formatDate(v, locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
   const info: { label: string; value: string }[] = [
-    { label: t('events.start'), value: dateFull(d.datumPocetak) },
-    ...(d.datumKraj ? [{ label: t('events.end'), value: dateFull(d.datumKraj) }] : []),
-    ...(d.location ? [{ label: t('events.locationLabel'), value: d.location }] : []),
-    ...(d.kotizacija ? [{ label: t('events.kotizacija'), value: d.kotizacija }] : []),
-    ...(d.kapacitet ? [{ label: t('events.kapacitet'), value: d.kapacitet }] : []),
+    ...(d.prikaziPocetak !== false ? [{ label: t('events.start'), value: dateFull(d.datumPocetak) }] : []),
+    ...(d.datumKraj && d.prikaziKraj !== false ? [{ label: t('events.end'), value: dateFull(d.datumKraj) }] : []),
+    ...(d.location && d.prikaziLokaciju !== false ? [{ label: t('events.locationLabel'), value: d.location }] : []),
+    ...(d.kotizacija && d.prikaziKotizaciju !== false ? [{ label: t('events.kotizacija'), value: d.kotizacija }] : []),
+    ...(d.kapacitet && d.prikaziKapacitet !== false ? [{ label: t('events.kapacitet'), value: d.kapacitet }] : []),
   ];
 
   return (
@@ -130,41 +141,46 @@ export default async function DogadjajPage({
               otvorene={Boolean(d.prijaveOtvorene)}
               rok={d.rokPrijave}
               kotizacija={d.kotizacija}
+              prikaziKotizaciju={d.prikaziKotizaciju}
             />
           )}
 
-          {/* Event sponsor */}
-          {sponsor && (
+          {/* Event sponsors */}
+          {sponsors.length > 0 && (
             <div className="mt-10">
               <h2 className="h-display text-content text-2xl tracking-[.02em] mb-5">{t('events.sponsor')}</h2>
-              <div className="flex items-center gap-5">
-                {sponsor.logo && (
-                  <div className="bg-white border border-line h-20 w-40 flex items-center justify-center p-4">
-                    <Image
-                      src={sponsor.logo.medium}
-                      alt={sponsor.name || ''}
-                      width={160}
-                      height={80}
-                      className="max-h-12 w-auto object-contain"
-                      unoptimized={sponsor.logo.isVector}
-                    />
+              <div className="flex flex-wrap items-start gap-8">
+                {sponsors.map((sponsor, i) => (
+                  <div key={i} className="flex items-center gap-5">
+                    {sponsor.logo && (
+                      <div className="bg-white border border-line h-20 w-40 flex items-center justify-center p-4">
+                        <Image
+                          src={sponsor.logo.medium}
+                          alt={sponsor.name || ''}
+                          width={160}
+                          height={80}
+                          className="max-h-12 w-auto object-contain"
+                          unoptimized={sponsor.logo.isVector}
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <div className="h-display text-content text-lg">{sponsor.name}</div>
+                      {sponsor.link && (
+                        <a href={sponsor.link} target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-croatia underline underline-offset-2 hover:text-croatia-dark">
+                          {t('sponsors.visit')} →
+                        </a>
+                      )}
+                    </div>
                   </div>
-                )}
-                <div>
-                  <div className="h-display text-content text-lg">{sponsor.name}</div>
-                  {sponsor.link && (
-                    <a href={sponsor.link} target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-croatia underline underline-offset-2 hover:text-croatia-dark">
-                      {t('sponsors.visit')} →
-                    </a>
-                  )}
-                </div>
+                ))}
               </div>
             </div>
           )}
         </div>
 
         {/* Info card */}
-        <aside className="lg:sticky lg:top-28 self-start">
+        <aside className="lg:sticky lg:top-28 self-start space-y-6">
           <Card className="p-6">
             <h2 className="h-display text-content text-xl tracking-[.02em] mb-4">{t('events.infoTitle')}</h2>
             <dl className="space-y-3">
@@ -185,6 +201,21 @@ export default async function DogadjajPage({
               </a>
             ) : null}
           </Card>
+
+          {/* Flyer — promo slika za dijeljenje na društvenim mrežama/newsletteru */}
+          {d.flyerImage && (
+            <Card className="p-4">
+              <CmsImage image={d.flyerImage} alt="" width={480} height={480} className="w-full object-cover" />
+              <a
+                href={d.flyerImage.large}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 flex justify-center font-display font-bold uppercase text-xs tracking-wider2 text-croatia hover:text-croatia-dark transition-colors"
+              >
+                {t('events.flyerDownload')} →
+              </a>
+            </Card>
+          )}
         </aside>
       </div>
     </article>

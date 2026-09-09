@@ -428,6 +428,10 @@ a { color: inherit; }
 .admin-inline-form { display: flex; gap: .7rem; align-items: flex-end; flex-wrap: wrap; background: var(--surface); padding: 1rem; box-shadow: 0 1px 3px rgba(19, 31, 51, .06); margin-top: 1rem; }
 .admin-inline-form label { margin: 0; flex: 1 1 220px; }
 .admin-inline-form .btn-primary { margin-bottom: 1px; }
+.admin-inline-form .sponsor-custom-thumb { width: 48px; height: 48px; object-fit: cover; border: 1px solid var(--border); background: var(--canvas); flex: 0 0 auto; }
+
+.sponsor-row { gap: .6rem; }
+.sponsor-row .sponsor-row-order { width: 60px; margin-left: auto; }
 
 /* Sastav momčadi/galerija: više sekcija na jednoj stranici */
 .admin-section { margin-top: 2.5rem; }
