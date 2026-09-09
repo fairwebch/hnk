@@ -1,97 +1,443 @@
+/*
+ * HNK Kroatien Schwyz — CMS admin. Faza 1 redizajna (vidi
+ * hostpoint-cms/README.md): sidebar navigacija, tokeni izvedeni iz
+ * klupskog brenda (isti navy/crvena kao javni sajt), Inter za UI (ne
+ * Barlow — admin je radni alat, ne brendirana stranica).
+ *
+ * Radius hijerarhija (namjerna, ne "sve zaokruženo"): STRUKTURA (tablice,
+ * kartice, sidebar) = oštri uglovi, isti jezik kao javni Card sustav.
+ * KONTROLE (dugmad, input, bedž) = 6px, blaga zaokruženost kao afordanca
+ * za "ovo se može kliknuti/upisati".
+ */
+
 :root {
-  --navy: #0D1B33;
-  --navy-dark: #070E1D;
-  --red: #D8232F;
-  --red-dark: #B4121E;
-  --paper: #F5F6FA;
-  --line: #E4E8F0;
+  --ink: #0D1B33;
+  --ink-deep: #070E1D;
+  --accent: #D8232F;
+  --accent-dark: #B4121E;
+  --canvas: #F5F6FA;
+  --surface: #FFFFFF;
+  --border: #E4E8F0;
   --text: #33405C;
   --text-soft: #55617A;
+  --text-muted: #8A93A8;
+
+  --radius-control: 6px;
+  --sidebar-w: 232px;
+  --topbar-h: 56px;
+
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
+
 * { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, -apple-system, sans-serif; color: var(--text); background: var(--paper); }
 
-/* Auth pages */
-.auth-body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--navy-dark); padding: 1.5rem; }
-.auth-card { background: #fff; padding: 2.25rem 2rem; width: 100%; max-width: 380px; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  color: var(--text);
+  background: var(--canvas);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+/* Vidljiv fokus prsten svugdje — tastatura, ne mišu (accessibility). */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ── Auth stranice (login, 2FA setup) ──────────────────────────────── */
+.auth-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-deep);
+  padding: 1.5rem;
+}
+.auth-card {
+  background: var(--surface);
+  padding: 0 0 2.25rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+  overflow: hidden;
+}
 .auth-card--wide { max-width: 460px; }
-.auth-card h1 { font-size: 1.05rem; margin: 0 0 .25rem; color: var(--navy); }
+/* Šahovnica mikro-akcent — suptilan klupski potpis, ne dominantan. */
+.auth-card-flag {
+  height: 5px;
+  background: repeating-conic-gradient(var(--accent) 0% 25%, var(--surface) 0% 50%) 0 0 / 14px 14px;
+}
+.auth-card-body { padding: 2.25rem 2rem 0; }
+.auth-card h1 { font-size: 1.05rem; margin: 0 0 .25rem; color: var(--ink); font-weight: 700; }
 .auth-sub { margin: 0 0 1.5rem; color: var(--text-soft); font-size: .9rem; }
-.auth-error { background: #FBEAEC; color: var(--red-dark); padding: .6rem .8rem; font-size: .85rem; margin-bottom: 1rem; }
+.auth-error {
+  background: #FBEAEC;
+  color: var(--accent-dark);
+  padding: .6rem .8rem;
+  font-size: .85rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-control);
+}
 .auth-form label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 1rem; }
-.auth-form input { display: block; width: 100%; margin-top: .35rem; padding: .6rem .7rem; border: 1px solid var(--line); font-size: .95rem; }
-.auth-form button, .btn-primary { background: var(--red); color: #fff; border: none; padding: .65rem 1.2rem; font-weight: 700; cursor: pointer; }
-.auth-form button:hover, .btn-primary:hover { background: var(--red-dark); }
-.setup-steps { font-size: .85rem; padding-left: 1.2rem; }
+.auth-form input {
+  display: block;
+  width: 100%;
+  margin-top: .35rem;
+  padding: .6rem .7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  font: inherit;
+  font-size: .95rem;
+}
+.auth-form input:focus-visible { border-color: var(--accent); }
+.auth-form button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: .65rem 1.2rem;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: .9rem;
+  cursor: pointer;
+  border-radius: var(--radius-control);
+}
+.auth-form button:hover { background: var(--accent-dark); }
+.setup-steps { font-size: .85rem; padding-left: 1.2rem; color: var(--text-soft); }
 .setup-steps li { margin-bottom: .8rem; }
-.secret-box { font-family: ui-monospace, monospace; font-size: 1.1rem; letter-spacing: .05em; background: var(--paper); border: 1px dashed var(--line); padding: .6rem .8rem; margin-top: .4rem; }
+.secret-box {
+  font-family: ui-monospace, 'SF Mono', monospace;
+  font-size: 1.1rem;
+  letter-spacing: .05em;
+  background: var(--canvas);
+  border: 1px dashed var(--border);
+  padding: .6rem .8rem;
+  margin-top: .4rem;
+  border-radius: var(--radius-control);
+}
 .hint { color: var(--text-soft); font-size: .78rem; margin: .3rem 0 0; }
+.hint code {
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  padding: .05rem .3rem;
+  font-size: .75rem;
+  border-radius: 3px;
+}
 
-/* Admin shell */
-.admin-header { display: flex; align-items: center; justify-content: space-between; background: var(--navy); color: #fff; padding: .9rem 1.5rem; }
-.admin-header h1 { font-size: 1rem; margin: 0; }
-.admin-header-right { display: flex; align-items: center; gap: 1rem; font-size: .85rem; }
-.btn { display: inline-block; padding: .4rem .8rem; text-decoration: none; font-size: .82rem; font-weight: 600; }
-.btn-ghost { color: #fff; border: 1px solid rgba(255,255,255,.35); }
-.btn-ghost:hover { border-color: #fff; }
-.admin-nav { display: flex; gap: 1.25rem; background: #fff; border-bottom: 1px solid var(--line); padding: 0 1.5rem; }
-.admin-nav a { display: inline-block; padding: .8rem 0; font-size: .85rem; font-weight: 600; color: var(--text-soft); text-decoration: none; border-bottom: 2px solid transparent; }
-.admin-nav a:hover { color: var(--text); }
-.admin-nav a.is-active { color: var(--navy); border-bottom-color: var(--red); }
-.admin-main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+/* ── Admin shell: sidebar + topbar + content ───────────────────────── */
+.admin-body { background: var(--canvas); }
+
+.nav-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 40;
+  transform: translateX(-100%);
+  transition: transform .2s ease;
+}
+.nav-toggle:checked ~ .admin-shell .admin-sidebar { transform: translateX(0); }
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 14, 29, .55);
+  z-index: 30;
+}
+.nav-toggle:checked ~ .admin-shell .sidebar-backdrop { display: block; }
+
+.sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.1rem .9rem;
+}
+.sidebar-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; color: #fff; }
+.sidebar-brand-mark {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 800;
+  font-size: .68rem;
+  letter-spacing: .02em;
+  border-radius: var(--radius-control);
+}
+.sidebar-brand-label { font-size: .8rem; font-weight: 600; line-height: 1.3; }
+.sidebar-brand-label small { color: rgba(255, 255, 255, .55); font-weight: 500; font-size: .72rem; }
+.sidebar-close {
+  display: none;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, .7);
+  cursor: pointer;
+  border-radius: var(--radius-control);
+}
+.sidebar-close svg { width: 18px; height: 18px; }
+.sidebar-close:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: .5rem .7rem;
+}
+.nav-group + .nav-group { margin-top: 1.4rem; }
+.nav-group-label {
+  display: block;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: rgba(255, 255, 255, .4);
+  padding: 0 .6rem;
+  margin-bottom: .4rem;
+}
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .55rem .6rem;
+  margin-bottom: .1rem;
+  color: rgba(255, 255, 255, .78);
+  text-decoration: none;
+  font-size: .87rem;
+  font-weight: 500;
+  border-radius: var(--radius-control);
+  border-left: 3px solid transparent;
+  margin-left: -3px;
+}
+.sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
+.sidebar-nav a:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+.sidebar-nav a.is-active {
+  background: var(--ink-deep);
+  color: #fff;
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar-bottom {
+  padding: .9rem 1.1rem 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, .1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+}
+.sidebar-user {
+  font-size: .78rem;
+  color: rgba(255, 255, 255, .6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sidebar-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sidebar-logout svg { width: 15px; height: 15px; }
+
+.admin-content {
+  flex: 1;
+  min-width: 0;
+  margin-left: 0;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  height: var(--topbar-h);
+  padding: 0 1.25rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.hamburger {
+  display: flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: var(--radius-control);
+  flex-shrink: 0;
+}
+.hamburger svg { width: 20px; height: 20px; }
+.hamburger:hover { background: var(--canvas); }
+.nav-toggle:focus-visible ~ .admin-shell .hamburger {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.topbar-title { font-weight: 700; font-size: .95rem; color: var(--ink); }
+
+.admin-main { padding: 1.75rem 1.5rem 3rem; max-width: 1100px; overflow-x: auto; }
 .admin-main--narrow { max-width: 640px; }
-.admin-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-.admin-toolbar h2 { margin: 0; }
-.btn-primary { text-decoration: none; }
+.admin-main > h2:first-child, .admin-main > p:first-child + h2 { margin-top: 0; }
 
-.flash { padding: .7rem 1rem; margin-bottom: 1rem; font-size: .88rem; }
+@media (min-width: 768px) {
+  .admin-sidebar { position: sticky; top: 0; height: 100vh; transform: none; }
+  .sidebar-close { display: none !important; }
+  .hamburger { display: none; }
+  .sidebar-backdrop { display: none !important; }
+  .admin-main { padding: 2.25rem 2.5rem 4rem; }
+  .admin-topbar { padding: 0 2.5rem; }
+}
+
+/* ── Zajedničke komponente svih modula ─────────────────────────────── */
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.admin-toolbar h2 { margin: 0; font-size: 1.3rem; font-weight: 700; color: var(--ink); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem .85rem;
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: var(--radius-control);
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-ghost { color: var(--text); border-color: var(--border); background: var(--surface); }
+.btn-ghost:hover { border-color: var(--text-muted); }
+/* Na tamnom sidebaru (Odjava) — svjetliji obrub umjesto navy-na-navy. */
+.sidebar-bottom .btn-ghost {
+  color: rgba(255, 255, 255, .85);
+  border-color: rgba(255, 255, 255, .25);
+  background: transparent;
+}
+.sidebar-bottom .btn-ghost:hover { border-color: rgba(255, 255, 255, .5); background: rgba(255, 255, 255, .06); }
+
+.flash { padding: .7rem 1rem; margin-bottom: 1.25rem; font-size: .88rem; border-radius: var(--radius-control); }
 .flash-ok { background: #E6F4EA; color: #1E7B34; }
-.flash-error { background: #FBEAEC; color: var(--red-dark); }
+.flash-error { background: #FBEAEC; color: var(--accent-dark); }
 
-.admin-table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-.admin-table th, .admin-table td { padding: .65rem .8rem; border-bottom: 1px solid var(--line); font-size: .88rem; text-align: left; vertical-align: middle; }
-.admin-table .empty { text-align: center; color: var(--text-soft); padding: 2rem; }
-.thumb { width: 48px; height: 32px; object-fit: contain; background: var(--paper); }
+/* Tablice — struktura = oštri uglovi. overflow-x na .admin-main (gore)
+   pokriva mobilni scroll bez dodavanja wrapper diva u svaki modul. */
+.admin-table { width: 100%; min-width: 640px; border-collapse: collapse; background: var(--surface); box-shadow: 0 1px 3px rgba(19, 31, 51, .06); }
+.admin-table th {
+  text-align: left;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  padding: .7rem .9rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--canvas);
+}
+.admin-table td { padding: .65rem .9rem; border-bottom: 1px solid var(--border); font-size: .88rem; vertical-align: middle; }
+.admin-table tbody tr:hover td { background: var(--canvas); }
+.admin-table .empty { text-align: center; color: var(--text-soft); padding: 2.5rem; }
+
+.thumb { width: 48px; height: 32px; object-fit: contain; background: var(--canvas); }
 .thumb-round { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
 .thumb-wide { width: 64px; height: 36px; object-fit: cover; }
 .thumb-square { width: 44px; height: 44px; object-fit: cover; }
-.pill-sport { background: #E3E9F7; color: var(--navy); }
-.pill-feste { background: #FBEAEC; color: var(--red-dark); }
-.admin-gallery--square { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); margin-top: 1.25rem; }
-.admin-gallery--square img { aspect-ratio: 1 / 1; }
 .thumb-portrait { width: 32px; height: 40px; object-fit: cover; }
+.thumb-empty { display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); }
 
-/* Sastav momčadi: više sekcija na jednoj stranici */
+/* Bedževi — jedino mjesto s uppercase+letter-spacing (skeniranje statusa). */
+.pill { display: inline-block; padding: .18rem .55rem; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; border-radius: var(--radius-control); }
+.pill-basic { background: #EEF1F7; color: var(--text-soft); }
+.pill-standard { background: #E3E9F7; color: var(--ink); }
+.pill-premium { background: #FBEAEC; color: var(--accent-dark); }
+.pill-live { background: #E6F4EA; color: #1E7B34; }
+.pill-draft { background: #FFF4E0; color: #A9660B; }
+.pill-sport { background: #E3E9F7; color: var(--ink); }
+.pill-feste { background: #FBEAEC; color: var(--accent-dark); }
+
+.admin-row-actions { display: flex; gap: .7rem; align-items: center; }
+.admin-row-actions form { margin: 0; }
+.link-danger { background: none; border: none; color: var(--accent); cursor: pointer; font-size: .85rem; padding: 0; text-decoration: underline; font-family: inherit; }
+.link-danger:hover { color: var(--accent-dark); }
+
+/* Forme */
+.admin-form { max-width: 100%; }
+.admin-form label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: 1.1rem; color: var(--text); }
+.admin-form input, .admin-form select, .admin-form textarea {
+  display: block;
+  width: 100%;
+  margin-top: .4rem;
+  padding: .55rem .65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  font-size: .92rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+}
+.admin-form input:focus-visible, .admin-form select:focus-visible, .admin-form textarea:focus-visible { border-color: var(--accent); }
+.admin-textarea-mono { font-family: ui-monospace, 'SF Mono', monospace; font-size: .82rem; line-height: 1.5; }
+.current-logo { display: flex; align-items: center; gap: .7rem; margin: -.6rem 0 1.1rem; }
+.current-logo img { width: 80px; height: 48px; object-fit: contain; background: var(--canvas); border: 1px solid var(--border); }
+.current-logo.current-photo img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; }
+
+.checkbox-inline { display: flex; align-items: center; gap: .5rem; font-weight: 500; margin: -.6rem 0 1.1rem; }
+.checkbox-inline input { width: auto; margin: 0; }
+
+.field-group { border: 1px solid var(--border); background: var(--surface); padding: 1rem 1rem .1rem; margin-bottom: 1.25rem; }
+.field-group > .group-title { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin: 0 0 .9rem; }
+
+.admin-inline-form { display: flex; gap: .7rem; align-items: flex-end; flex-wrap: wrap; background: var(--surface); padding: 1rem; box-shadow: 0 1px 3px rgba(19, 31, 51, .06); margin-top: 1rem; }
+.admin-inline-form label { margin: 0; flex: 1 1 220px; }
+.admin-inline-form .btn-primary { margin-bottom: 1px; }
+
+/* Sastav momčadi/galerija: više sekcija na jednoj stranici */
 .admin-section { margin-top: 2.5rem; }
 .admin-section:first-of-type { margin-top: 0; }
 .admin-section .admin-toolbar h2 { font-size: 1.1rem; }
+
 .admin-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
-.admin-gallery figure { margin: 0; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.admin-gallery figure { margin: 0; background: var(--surface); box-shadow: 0 1px 3px rgba(19, 31, 51, .06); }
 .admin-gallery img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .admin-gallery figcaption { padding: .5rem .65rem; font-size: .78rem; color: var(--text-soft); display: flex; justify-content: space-between; gap: .5rem; align-items: center; }
 .admin-gallery figcaption .admin-row-actions { gap: .5rem; }
-.admin-inline-form { display: flex; gap: .7rem; align-items: flex-end; flex-wrap: wrap; background: #fff; padding: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-top: 1rem; }
-.admin-inline-form label { margin: 0; flex: 1 1 220px; }
-.admin-inline-form .btn-primary { margin-bottom: 1px; }
-.checkbox-inline { display: flex; align-items: center; gap: .5rem; font-weight: 500; margin: -.6rem 0 1.1rem; }
-.checkbox-inline input { width: auto; margin: 0; }
-.field-group { border: 1px solid var(--line); background: #fff; padding: 1rem 1rem .1rem; margin-bottom: 1.25rem; }
-.field-group > .group-title { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-soft); margin: 0 0 .9rem; }
-.thumb-empty { display: inline-flex; align-items: center; justify-content: center; color: var(--text-soft); }
-.pill { display: inline-block; padding: .15rem .55rem; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-.pill-basic { background: #EEF1F7; color: var(--text-soft); }
-.pill-standard { background: #E3E9F7; color: var(--navy); }
-.pill-premium { background: #FBEAEC; color: var(--red-dark); }
-.pill-live { background: #E6F4EA; color: #1E7B34; }
-.pill-draft { background: #FFF4E0; color: #A9660B; }
-.admin-row-actions { display: flex; gap: .7rem; align-items: center; }
-.admin-row-actions form { margin: 0; }
-.link-danger { background: none; border: none; color: var(--red); cursor: pointer; font-size: .85rem; padding: 0; text-decoration: underline; }
-
-.admin-form label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: 1.1rem; }
-.admin-form input, .admin-form select, .admin-form textarea { display: block; width: 100%; margin-top: .35rem; padding: .55rem .65rem; border: 1px solid var(--line); font-size: .92rem; font-family: inherit; }
-.admin-textarea-mono { font-family: ui-monospace, monospace; font-size: .82rem; line-height: 1.5; }
-.hint code { background: var(--paper); border: 1px solid var(--line); padding: .05rem .3rem; font-size: .75rem; }
-.current-logo { display: flex; align-items: center; gap: .7rem; margin: -.6rem 0 1.1rem; }
-.current-logo img { width: 80px; height: 48px; object-fit: contain; background: var(--paper); border: 1px solid var(--line); }
-.current-logo.current-photo img { width: 64px; height: 64px; object-fit: cover; border-radius: 50%; }
+.admin-gallery--square { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); margin-top: 1.25rem; }
+.admin-gallery--square img { aspect-ratio: 1 / 1; }

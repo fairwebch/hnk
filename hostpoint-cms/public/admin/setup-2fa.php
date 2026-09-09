@@ -68,6 +68,8 @@ $uri = Totp::otpauthUri($secret, $user['username'], $issuer);
 </head>
 <body class="auth-body">
 <main class="auth-card auth-card--wide">
+  <div class="auth-card-flag" aria-hidden="true"></div>
+  <div class="auth-card-body">
   <h1>HNK Kroatien Schwyz</h1>
   <p class="auth-sub">Postavljanje dvofaktorske autentikacije (prvi put)</p>
 
@@ -91,6 +93,7 @@ $uri = Totp::otpauthUri($secret, $user['username'], $issuer);
     </label>
     <button type="submit">Potvrdi i aktiviraj 2FA</button>
   </form>
+  </div>
 </main>
 </body>
 </html>

@@ -97,6 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="auth-body">
 <main class="auth-card">
+  <div class="auth-card-flag" aria-hidden="true"></div>
+  <div class="auth-card-body">
   <h1>HNK Kroatien Schwyz</h1>
   <p class="auth-sub">Admin · <?= htmlspecialchars($step === 'totp' ? 'Kod za potvrdu (2FA)' : 'Prijava', ENT_QUOTES) ?></p>
 
@@ -124,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button type="submit">Prijavi se</button>
     </form>
   <?php endif; ?>
+  </div>
 </main>
 </body>
 </html>
