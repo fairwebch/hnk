@@ -99,6 +99,14 @@ export default async function DogadjajPage({
   const showRegisterCta = d.prikaziGumbPrijave !== false && (showRegisterAnchor || showRegisterExternal);
   const showInfoCard = d.prikaziInfoKarticu !== false && (info.length > 0 || showRegisterCta);
 
+  // Kad je prijava (EventRegistration) prva/jedina stvar u lijevoj koloni (nema
+  // opisa ni programa), njen naslov ("Prijava na događaj") sjedi IZNAD bijele
+  // kartice, dok sidebar (flyer/info) nema takav naslov — pa sidebar vizualno
+  // kreće više. Gurni sidebar dolje za istu visinu koliko taj naslov+razmak
+  // zauzima (izmjereno na stranici), samo u tom točno određenom slučaju —
+  // kad opis/program postoje, kolone se već prirodno poravnaju bez ovoga.
+  const registrationHeadsColumn = imaPrijave && isUpcoming && !body && !(d.program && d.program.length > 0);
+
   return (
     <article>
       {/* Navy header */}
@@ -176,7 +184,7 @@ export default async function DogadjajPage({
           </div>
 
           {/* Sidebar: flyer prvo (vizualno privlači pažnju), Informacije ispod. */}
-          <aside className="self-start space-y-6">
+          <aside className={`self-start space-y-6 ${registrationHeadsColumn ? 'lg:mt-[108px]' : ''}`}>
             {d.flyerImage && (
               <Card className="p-4">
                 <CmsImage image={d.flyerImage} alt="" width={480} height={480} className="w-full object-cover" />
