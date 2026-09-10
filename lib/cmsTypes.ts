@@ -62,6 +62,7 @@ export interface Dogadjaj {
   kotizacija?: string;
   prikaziKotizaciju?: boolean;
   prijavaLink?: string;
+  prikaziGumbPrijave?: boolean;
   kapacitet?: string;
   prikaziKapacitet?: boolean;
   vrstaPrijave?: 'bez' | 'osoba' | 'ekipa';

@@ -35,6 +35,7 @@ interface DogadjajApiItem {
   kotizacija: string | null;
   prikaziKotizaciju: boolean;
   prijavaLink: string | null;
+  prikaziGumbPrijave: boolean;
   kapacitet: string | null;
   prikaziKapacitet: boolean;
   program: { vrijeme: string | null; opis: string | null }[];
@@ -77,6 +78,7 @@ function mapItem(d: DogadjajApiItem): DogadjajFromApi {
     kotizacija: d.kotizacija ?? undefined,
     prikaziKotizaciju: d.prikaziKotizaciju,
     prijavaLink: d.prijavaLink ?? undefined,
+    prikaziGumbPrijave: d.prikaziGumbPrijave,
     kapacitet: d.kapacitet ?? undefined,
     prikaziKapacitet: d.prikaziKapacitet,
     program: d.program.map((p, i) => ({ _key: String(i), vrijeme: p.vrijeme ?? undefined, opis: p.opis ?? undefined })),

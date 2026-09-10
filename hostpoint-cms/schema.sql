@@ -473,6 +473,7 @@ CREATE TABLE IF NOT EXISTS dogadjaji (
   kapacitet         VARCHAR(190) NULL, -- slobodan tekst ("16 ekipa", "60")
   prikazi_kapacitet TINYINT(1) NOT NULL DEFAULT 1,
   prijava_link      VARCHAR(500) NULL, -- eksterni link za prijavu
+  prikazi_gumb_prijave TINYINT(1) NOT NULL DEFAULT 1, -- CTA gumb u info kartici (vodi na #prijava ili prijava_link) — isključiti kad je puna forma već vidljiva na stranici
 
   galerija_id       INT UNSIGNED NULL,
 

@@ -10,6 +10,30 @@ import { Card } from '@/components/ui/Card';
 import { EventCountdown } from '@/components/EventCountdown';
 import { EventRegistration } from '@/components/EventRegistration';
 import { pickLocale, formatDate } from '@/lib/locale';
+import type { CmsImg } from '@/lib/cmsImage';
+
+/** Logo već sadrži naziv sponzora — nema teksta pored, cijeli logo je link kad postoji sponsor.link. */
+function SponsorLogo({ sponsor }: { sponsor: { name?: string; logo?: CmsImg; link?: string } }) {
+  const box = (
+    <div className="bg-white border border-line h-20 w-40 flex items-center justify-center p-4">
+      <Image
+        src={sponsor.logo!.medium}
+        alt={sponsor.name || ''}
+        width={160}
+        height={80}
+        className="max-h-12 w-auto object-contain"
+        unoptimized={sponsor.logo!.isVector}
+      />
+    </div>
+  );
+  return sponsor.link ? (
+    <a href={sponsor.link} target="_blank" rel="noopener noreferrer" aria-label={sponsor.name}>
+      {box}
+    </a>
+  ) : (
+    box
+  );
+}
 
 export async function generateStaticParams() {
   const { upcoming, past } = await fetchDogadjaji();
@@ -109,11 +133,7 @@ export default async function DogadjajPage({
       {/* Body */}
       <div className="container-x py-14 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-12">
         <div className="min-w-0">
-          {body ? (
-            <HtmlContent html={body} />
-          ) : (
-            <p className="text-content-soft">{t('empty.pageSub')}</p>
-          )}
+          {body && <HtmlContent html={body} />}
 
           {/* Program */}
           {d.program && d.program.length > 0 && (
@@ -149,22 +169,14 @@ export default async function DogadjajPage({
           {sponsors.length > 0 && (
             <div className="mt-10">
               <h2 className="h-display text-content text-2xl tracking-[.02em] mb-5">{t('events.sponsor')}</h2>
-              <div className="flex flex-wrap items-start gap-8">
-                {sponsors.map((sponsor, i) => (
-                  <div key={i} className="flex items-center gap-5">
-                    {sponsor.logo && (
-                      <div className="bg-white border border-line h-20 w-40 flex items-center justify-center p-4">
-                        <Image
-                          src={sponsor.logo.medium}
-                          alt={sponsor.name || ''}
-                          width={160}
-                          height={80}
-                          className="max-h-12 w-auto object-contain"
-                          unoptimized={sponsor.logo.isVector}
-                        />
-                      </div>
-                    )}
-                    <div>
+              <div className="flex flex-wrap items-center gap-6">
+                {sponsors.map((sponsor, i) =>
+                  sponsor.logo ? (
+                    // Logo već sadrži naziv sponzora — ne duplirati tekstom pored.
+                    // Cijeli logo je link na sponsor.link kad postoji.
+                    <SponsorLogo key={i} sponsor={sponsor} />
+                  ) : (
+                    <div key={i}>
                       <div className="h-display text-content text-lg">{sponsor.name}</div>
                       {sponsor.link && (
                         <a href={sponsor.link} target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-croatia underline underline-offset-2 hover:text-croatia-dark">
@@ -172,15 +184,15 @@ export default async function DogadjajPage({
                         </a>
                       )}
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           )}
         </div>
 
         {/* Info card */}
-        <aside className="lg:sticky lg:top-28 self-start space-y-6">
+        <aside className="self-start space-y-6">
           <Card className="p-6">
             <h2 className="h-display text-content text-xl tracking-[.02em] mb-4">{t('events.infoTitle')}</h2>
             <dl className="space-y-3">
@@ -191,29 +203,23 @@ export default async function DogadjajPage({
                 </div>
               ))}
             </dl>
-            {imaPrijave && isUpcoming && d.prijaveOtvorene ? (
-              <a href="#prijava" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
-                <span>{t('events.register')}</span>
-              </a>
-            ) : d.prijavaLink ? (
-              <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
-                <span>{t('events.register')}</span>
-              </a>
-            ) : null}
+            {d.prikaziGumbPrijave !== false && (
+              imaPrijave && isUpcoming && d.prijaveOtvorene ? (
+                <a href="#prijava" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
+                  <span>{t('events.register')}</span>
+                </a>
+              ) : d.prijavaLink ? (
+                <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
+                  <span>{t('events.register')}</span>
+                </a>
+              ) : null
+            )}
           </Card>
 
           {/* Flyer — promo slika za dijeljenje na društvenim mrežama/newsletteru */}
           {d.flyerImage && (
             <Card className="p-4">
               <CmsImage image={d.flyerImage} alt="" width={480} height={480} className="w-full object-cover" />
-              <a
-                href={d.flyerImage.large}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 flex justify-center font-display font-bold uppercase text-xs tracking-wider2 text-croatia hover:text-croatia-dark transition-colors"
-              >
-                {t('events.flyerDownload')} →
-              </a>
             </Card>
           )}
         </aside>

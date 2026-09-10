@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $kapacitet = trim((string) ($_POST['kapacitet'] ?? ''));
     $prikaziKapacitet = !empty($_POST['prikazi_kapacitet']) ? 1 : 0;
     $prijavaLink = trim((string) ($_POST['prijava_link'] ?? ''));
+    $prikaziGumbPrijave = !empty($_POST['prikazi_gumb_prijave']) ? 1 : 0;
     $galerijaId = ctype_digit((string) ($_POST['galerija_id'] ?? '')) ? (int) $_POST['galerija_id'] : null;
     $programRaw = (string) ($_POST['program'] ?? '');
     $vrsta = (string) ($_POST['vrsta_prijave'] ?? 'bez');
@@ -191,8 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tajniKod = hnkcms_novi_tajni_kod();
     }
 
-    $baseCols = 'slug=?, naziv_hr=?, naziv_de=?, kategorija=?, datum_pocetak=?, prikazi_pocetak=?, datum_kraj=?, prikazi_kraj=?, lokacija=?, prikazi_lokaciju=?, cover_alt=?, flyer_alt=?, opis_hr=?, opis_de=?, kotizacija=?, prikazi_kotizaciju=?, kapacitet=?, prikazi_kapacitet=?, prijava_link=?, galerija_id=?, vrsta_prijave=?, pristup_prijavi=?, prijave_otvorene=?, rok_prijave=?, tajni_kod=?, status=?';
-    $baseParams = [$slug, $nazivHr, $nazivDe ?: null, $kategorija, $datumPocetak, $prikaziPocetak, $datumKraj, $prikaziKraj, $lokacija ?: null, $prikaziLokaciju, $coverAlt ?: null, $flyerAlt ?: null, $opisHr ?: null, $opisDe ?: null, $kotizacija ?: null, $prikaziKotizaciju, $kapacitet ?: null, $prikaziKapacitet, $prijavaLink ?: null, $galerijaId, $vrsta, $pristup, $otvorene, $rokPrijave, $tajniKod, $status];
+    $baseCols = 'slug=?, naziv_hr=?, naziv_de=?, kategorija=?, datum_pocetak=?, prikazi_pocetak=?, datum_kraj=?, prikazi_kraj=?, lokacija=?, prikazi_lokaciju=?, cover_alt=?, flyer_alt=?, opis_hr=?, opis_de=?, kotizacija=?, prikazi_kotizaciju=?, kapacitet=?, prikazi_kapacitet=?, prijava_link=?, prikazi_gumb_prijave=?, galerija_id=?, vrsta_prijave=?, pristup_prijavi=?, prijave_otvorene=?, rok_prijave=?, tajni_kod=?, status=?';
+    $baseParams = [$slug, $nazivHr, $nazivDe ?: null, $kategorija, $datumPocetak, $prikaziPocetak, $datumKraj, $prikaziKraj, $lokacija ?: null, $prikaziLokaciju, $coverAlt ?: null, $flyerAlt ?: null, $opisHr ?: null, $opisDe ?: null, $kotizacija ?: null, $prikaziKotizaciju, $kapacitet ?: null, $prikaziKapacitet, $prijavaLink ?: null, $prikaziGumbPrijave, $galerijaId, $vrsta, $pristup, $otvorene, $rokPrijave, $tajniKod, $status];
 
     $coverData = null;
     $removeCover = false;
@@ -478,6 +479,7 @@ hnkcms_admin_page_start($isEdit ? 'Uredi događaj' : 'Novi događaj', 'dogadjaji
     <label>Eksterni link za prijavu (opciono)
       <input type="url" name="prijava_link" value="<?= $v('prijava_link') ?>" placeholder="https://...">
     </label>
+    <label class="checkbox-inline"><input type="checkbox" name="prikazi_gumb_prijave" value="1" <?= $prikaziChecked('prikazi_gumb_prijave') ? 'checked' : '' ?>> Prikaži "Prijavi se" gumb u info kartici <span class="hint" style="display:inline">(isključi ako je puna forma za prijavu već vidljiva na stranici — izbjegava dupli CTA)</span></label>
 
     <div class="field-group">
       <p class="group-title">Sponzori događaja</p>
