@@ -104,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prikaziKapacitet = !empty($_POST['prikazi_kapacitet']) ? 1 : 0;
     $prijavaLink = trim((string) ($_POST['prijava_link'] ?? ''));
     $prikaziGumbPrijave = !empty($_POST['prikazi_gumb_prijave']) ? 1 : 0;
+    $prikaziInfoKarticu = !empty($_POST['prikazi_info_karticu']) ? 1 : 0;
     $galerijaId = ctype_digit((string) ($_POST['galerija_id'] ?? '')) ? (int) $_POST['galerija_id'] : null;
     $programRaw = (string) ($_POST['program'] ?? '');
     $vrsta = (string) ($_POST['vrsta_prijave'] ?? 'bez');
@@ -192,8 +193,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tajniKod = hnkcms_novi_tajni_kod();
     }
 
-    $baseCols = 'slug=?, naziv_hr=?, naziv_de=?, kategorija=?, datum_pocetak=?, prikazi_pocetak=?, datum_kraj=?, prikazi_kraj=?, lokacija=?, prikazi_lokaciju=?, cover_alt=?, flyer_alt=?, opis_hr=?, opis_de=?, kotizacija=?, prikazi_kotizaciju=?, kapacitet=?, prikazi_kapacitet=?, prijava_link=?, prikazi_gumb_prijave=?, galerija_id=?, vrsta_prijave=?, pristup_prijavi=?, prijave_otvorene=?, rok_prijave=?, tajni_kod=?, status=?';
-    $baseParams = [$slug, $nazivHr, $nazivDe ?: null, $kategorija, $datumPocetak, $prikaziPocetak, $datumKraj, $prikaziKraj, $lokacija ?: null, $prikaziLokaciju, $coverAlt ?: null, $flyerAlt ?: null, $opisHr ?: null, $opisDe ?: null, $kotizacija ?: null, $prikaziKotizaciju, $kapacitet ?: null, $prikaziKapacitet, $prijavaLink ?: null, $prikaziGumbPrijave, $galerijaId, $vrsta, $pristup, $otvorene, $rokPrijave, $tajniKod, $status];
+    $baseCols = 'slug=?, naziv_hr=?, naziv_de=?, kategorija=?, datum_pocetak=?, prikazi_pocetak=?, datum_kraj=?, prikazi_kraj=?, lokacija=?, prikazi_lokaciju=?, cover_alt=?, flyer_alt=?, opis_hr=?, opis_de=?, kotizacija=?, prikazi_kotizaciju=?, kapacitet=?, prikazi_kapacitet=?, prijava_link=?, prikazi_gumb_prijave=?, prikazi_info_karticu=?, galerija_id=?, vrsta_prijave=?, pristup_prijavi=?, prijave_otvorene=?, rok_prijave=?, tajni_kod=?, status=?';
+    $baseParams = [$slug, $nazivHr, $nazivDe ?: null, $kategorija, $datumPocetak, $prikaziPocetak, $datumKraj, $prikaziKraj, $lokacija ?: null, $prikaziLokaciju, $coverAlt ?: null, $flyerAlt ?: null, $opisHr ?: null, $opisDe ?: null, $kotizacija ?: null, $prikaziKotizaciju, $kapacitet ?: null, $prikaziKapacitet, $prijavaLink ?: null, $prikaziGumbPrijave, $prikaziInfoKarticu, $galerijaId, $vrsta, $pristup, $otvorene, $rokPrijave, $tajniKod, $status];
 
     $coverData = null;
     $removeCover = false;
@@ -403,6 +404,8 @@ hnkcms_admin_page_start($isEdit ? 'Uredi događaj' : 'Novi događaj', 'dogadjaji
         <?php endforeach; ?>
       </select>
     </label>
+
+    <label class="checkbox-inline"><input type="checkbox" name="prikazi_info_karticu" value="1" <?= $prikaziChecked('prikazi_info_karticu') ? 'checked' : '' ?>> Prikaži "Informacije" karticu na stranici <span class="hint" style="display:inline">(master prekidač — isključi da sakriješ cijelu karticu bez obzira na polja ispod; kartica se i sama sakriva kad nema ničeg za prikazati)</span></label>
 
     <label>Početak * <span class="hint" style="display:inline">(UTC — sajt prikazuje u lokalnom vremenu posjetitelja)</span>
       <input type="datetime-local" name="datum_pocetak" value="<?= htmlspecialchars((string) ($_POST['datum_pocetak'] ?? $dtLocal($row['datum_pocetak'] ?? null)), ENT_QUOTES) ?>" required>

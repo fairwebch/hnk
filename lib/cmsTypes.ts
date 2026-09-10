@@ -63,6 +63,7 @@ export interface Dogadjaj {
   prikaziKotizaciju?: boolean;
   prijavaLink?: string;
   prikaziGumbPrijave?: boolean;
+  prikaziInfoKarticu?: boolean;
   kapacitet?: string;
   prikaziKapacitet?: boolean;
   vrstaPrijave?: 'bez' | 'osoba' | 'ekipa';

@@ -91,6 +91,14 @@ export default async function DogadjajPage({
     ...(d.kapacitet && d.prikaziKapacitet !== false ? [{ label: t('events.kapacitet'), value: d.kapacitet }] : []),
   ];
 
+  // CTA gumb u info kartici: anchor na formu ispod (kad je prijava otvorena
+  // i na stranici), ili eksterni link kao fallback. Kartica se sama sakriva
+  // kad nema ni polja ni gumba za prikazati (bez obzira na prikazi_info_karticu).
+  const showRegisterAnchor = imaPrijave && isUpcoming && Boolean(d.prijaveOtvorene);
+  const showRegisterExternal = !showRegisterAnchor && Boolean(d.prijavaLink);
+  const showRegisterCta = d.prikaziGumbPrijave !== false && (showRegisterAnchor || showRegisterExternal);
+  const showInfoCard = d.prikaziInfoKarticu !== false && (info.length > 0 || showRegisterCta);
+
   return (
     <article>
       {/* Navy header */}
@@ -131,98 +139,103 @@ export default async function DogadjajPage({
       </section>
 
       {/* Body */}
-      <div className="container-x py-14 grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-12">
-        <div className="min-w-0">
-          {body && <HtmlContent html={body} />}
+      <div className="container-x py-14">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-12">
+          <div className="min-w-0">
+            {body && <HtmlContent html={body} />}
 
-          {/* Program */}
-          {d.program && d.program.length > 0 && (
-            <div className="mt-10">
-              <h2 className="h-display text-content text-2xl tracking-[.02em] mb-5">{t('events.program')}</h2>
-              <div className="divide-y divide-line border-y border-line">
-                {d.program.map((p, i) => (
-                  <div key={p._key ?? i} className="flex gap-5 py-4">
-                    <span className="font-display font-bold uppercase text-sm tracking-wider2 text-croatia w-24 shrink-0">
-                      {p.vrijeme}
-                    </span>
-                    <span className="font-sans text-content-soft">{p.opis}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Registration */}
-          {imaPrijave && isUpcoming && (
-            <EventRegistration
-              slug={d.slug}
-              vrsta={d.vrstaPrijave as 'osoba' | 'ekipa'}
-              pristup={d.pristupPrijavi === 'clanovi' ? 'clanovi' : 'javna'}
-              otvorene={Boolean(d.prijaveOtvorene)}
-              rok={d.rokPrijave}
-              kotizacija={d.kotizacija}
-              prikaziKotizaciju={d.prikaziKotizaciju}
-            />
-          )}
-
-          {/* Event sponsors */}
-          {sponsors.length > 0 && (
-            <div className="mt-10">
-              <h2 className="h-display text-content text-2xl tracking-[.02em] mb-5">{t('events.sponsor')}</h2>
-              <div className="flex flex-wrap items-center gap-6">
-                {sponsors.map((sponsor, i) =>
-                  sponsor.logo ? (
-                    // Logo već sadrži naziv sponzora — ne duplirati tekstom pored.
-                    // Cijeli logo je link na sponsor.link kad postoji.
-                    <SponsorLogo key={i} sponsor={sponsor} />
-                  ) : (
-                    <div key={i}>
-                      <div className="h-display text-content text-lg">{sponsor.name}</div>
-                      {sponsor.link && (
-                        <a href={sponsor.link} target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-croatia underline underline-offset-2 hover:text-croatia-dark">
-                          {t('sponsors.visit')} →
-                        </a>
-                      )}
+            {/* Program */}
+            {d.program && d.program.length > 0 && (
+              <div className="mt-10">
+                <h2 className="h-display text-content text-2xl tracking-[.02em] mb-5">{t('events.program')}</h2>
+                <div className="divide-y divide-line border-y border-line">
+                  {d.program.map((p, i) => (
+                    <div key={p._key ?? i} className="flex gap-5 py-4">
+                      <span className="font-display font-bold uppercase text-sm tracking-wider2 text-croatia w-24 shrink-0">
+                        {p.vrijeme}
+                      </span>
+                      <span className="font-sans text-content-soft">{p.opis}</span>
                     </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Registration — posljednje u lijevoj koloni: posjetitelj prvo pročita opis/program. */}
+            {imaPrijave && isUpcoming && (
+              <EventRegistration
+                slug={d.slug}
+                vrsta={d.vrstaPrijave as 'osoba' | 'ekipa'}
+                pristup={d.pristupPrijavi === 'clanovi' ? 'clanovi' : 'javna'}
+                otvorene={Boolean(d.prijaveOtvorene)}
+                rok={d.rokPrijave}
+                kotizacija={d.kotizacija}
+                prikaziKotizaciju={d.prikaziKotizaciju}
+              />
+            )}
+          </div>
+
+          {/* Sidebar: flyer prvo (vizualno privlači pažnju), Informacije ispod. */}
+          <aside className="self-start space-y-6">
+            {d.flyerImage && (
+              <Card className="p-4">
+                <CmsImage image={d.flyerImage} alt="" width={480} height={480} className="w-full object-cover" />
+              </Card>
+            )}
+
+            {showInfoCard && (
+              <Card className="p-6">
+                <h2 className="h-display text-content text-xl tracking-[.02em] mb-4">{t('events.infoTitle')}</h2>
+                {info.length > 0 && (
+                  <dl className="space-y-3">
+                    {info.map((row, i) => (
+                      <div key={i}>
+                        <dt className="font-display font-bold uppercase text-[10px] tracking-wider2 text-content-muted">{row.label}</dt>
+                        <dd className="font-sans text-content mt-0.5">{row.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {showRegisterCta && (
+                  showRegisterAnchor ? (
+                    <a href="#prijava" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
+                      <span>{t('events.register')}</span>
+                    </a>
+                  ) : (
+                    <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
+                      <span>{t('events.register')}</span>
+                    </a>
                   )
                 )}
-              </div>
-            </div>
-          )}
+              </Card>
+            )}
+          </aside>
         </div>
 
-        {/* Info card */}
-        <aside className="self-start space-y-6">
-          <Card className="p-6">
-            <h2 className="h-display text-content text-xl tracking-[.02em] mb-4">{t('events.infoTitle')}</h2>
-            <dl className="space-y-3">
-              {info.map((row, i) => (
-                <div key={i}>
-                  <dt className="font-display font-bold uppercase text-[10px] tracking-wider2 text-content-muted">{row.label}</dt>
-                  <dd className="font-sans text-content mt-0.5">{row.value}</dd>
-                </div>
-              ))}
-            </dl>
-            {d.prikaziGumbPrijave !== false && (
-              imaPrijave && isUpcoming && d.prijaveOtvorene ? (
-                <a href="#prijava" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
-                  <span>{t('events.register')}</span>
-                </a>
-              ) : d.prijavaLink ? (
-                <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
-                  <span>{t('events.register')}</span>
-                </a>
-              ) : null
-            )}
-          </Card>
-
-          {/* Flyer — promo slika za dijeljenje na društvenim mrežama/newsletteru */}
-          {d.flyerImage && (
-            <Card className="p-4">
-              <CmsImage image={d.flyerImage} alt="" width={480} height={480} className="w-full object-cover" />
-            </Card>
-          )}
-        </aside>
+        {/* Event sponsors — puna širina, zadnje na stranici. */}
+        {sponsors.length > 0 && (
+          <div className="mt-14">
+            <h2 className="h-display text-content text-2xl tracking-[.02em] mb-5">{t('events.sponsor')}</h2>
+            <div className="flex flex-wrap items-center gap-6">
+              {sponsors.map((sponsor, i) =>
+                sponsor.logo ? (
+                  // Logo već sadrži naziv sponzora — ne duplirati tekstom pored.
+                  // Cijeli logo je link na sponsor.link kad postoji.
+                  <SponsorLogo key={i} sponsor={sponsor} />
+                ) : (
+                  <div key={i}>
+                    <div className="h-display text-content text-lg">{sponsor.name}</div>
+                    {sponsor.link && (
+                      <a href={sponsor.link} target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-croatia underline underline-offset-2 hover:text-croatia-dark">
+                        {t('sponsors.visit')} →
+                      </a>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </article>
   );

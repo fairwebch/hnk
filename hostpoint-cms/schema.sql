@@ -474,6 +474,7 @@ CREATE TABLE IF NOT EXISTS dogadjaji (
   prikazi_kapacitet TINYINT(1) NOT NULL DEFAULT 1,
   prijava_link      VARCHAR(500) NULL, -- eksterni link za prijavu
   prikazi_gumb_prijave TINYINT(1) NOT NULL DEFAULT 1, -- CTA gumb u info kartici (vodi na #prijava ili prijava_link) — isključiti kad je puna forma već vidljiva na stranici
+  prikazi_info_karticu TINYINT(1) NOT NULL DEFAULT 1, -- ručni master prekidač za cijelu "Informacije" karticu, neovisan o prikazi_pocetak/kraj/lokaciju/kotizaciju/kapacitet/gumb_prijave; frontend je svejedno sam sakriva kad nema ničeg za prikazati
 
   galerija_id       INT UNSIGNED NULL,
 

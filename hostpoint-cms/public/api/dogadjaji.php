@@ -121,6 +121,7 @@ function hnkcms_dogadjaj_json(PDO $db, array $r, string $uploadsUrl, string $spo
         'prikaziKotizaciju' => (bool) $r['prikazi_kotizaciju'],
         'prijavaLink' => $r['prijava_link'] ?: null,
         'prikaziGumbPrijave' => (bool) $r['prikazi_gumb_prijave'],
+        'prikaziInfoKarticu' => (bool) $r['prikazi_info_karticu'],
         'kapacitet' => $r['kapacitet'] ?: null,
         'prikaziKapacitet' => (bool) $r['prikazi_kapacitet'],
         'program' => array_map(fn($p) => ['vrijeme' => $p['vrijeme'] ?: null, 'opis' => $p['opis'] ?: null], $program->fetchAll()),
