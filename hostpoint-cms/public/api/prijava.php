@@ -186,7 +186,7 @@ if (!$privola) {
     respond(422, ['error' => 'consent_required']);
 }
 
-$ime = $prezime = $nazivEkipe = $kontaktOsoba = null;
+$ime = $prezime = $nazivEkipe = $kontaktOsoba = $kategorijaEkipe = null;
 $brojOsoba = 1;
 $napomena = null;
 if ($type === 'osoba') {
@@ -201,7 +201,13 @@ if ($type === 'osoba') {
 } else {
     $nazivEkipe = mb_substr(trim((string) ($body['nazivEkipe'] ?? '')), 0, 120);
     $kontaktOsoba = mb_substr(trim((string) ($body['kontaktOsoba'] ?? '')), 0, 120);
-    if ($nazivEkipe === '' || $kontaktOsoba === '') {
+    $kategorijaEkipeOpts = ['Aktivni', 'Seniori', 'Djeca'];
+    $kategorijaEkipe = in_array($body['kategorijaEkipe'] ?? null, $kategorijaEkipeOpts, true)
+        ? $body['kategorijaEkipe']
+        : null;
+    // Telefon je obavezan za ekipnu prijavu (klub treba moći nazvati ekipu uoči
+    // događaja) — za 'osoba' ostaje neobavezan, provjera se ne dira gore.
+    if ($nazivEkipe === '' || $kontaktOsoba === '' || $kategorijaEkipe === null || $telefon === '') {
         respond(422, ['error' => 'validation']);
     }
     $naslovPrijave = $nazivEkipe;
@@ -225,12 +231,12 @@ $token = rtrim(strtr(base64_encode(random_bytes(24)), '+/', '-_'), '=');
 try {
     $priv->prepare(
         'INSERT INTO prijave (tip, dogadjaj_id, dogadjaj_slug, dogadjaj_naziv_hr, dogadjaj_naziv_de, dogadjaj_datum_kraj,
-                              ime, prezime, naziv_ekipe, kontakt_osoba, email, telefon, broj_osoba, napomena, jezik,
+                              ime, prezime, naziv_ekipe, kategorija_ekipe, kontakt_osoba, email, telefon, broj_osoba, napomena, jezik,
                               privola_at, datum_prijave, otkazni_token_hash)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(),UTC_TIMESTAMP(),?)'
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,UTC_TIMESTAMP(),UTC_TIMESTAMP(),?)'
     )->execute([
         $type, (int) $ev['id'], $ev['slug'], $ev['naziv_hr'], $ev['naziv_de'], $ev['datum_kraj'] ?? $ev['datum_pocetak'],
-        $ime, $prezime, $nazivEkipe, $kontaktOsoba, $email, $telefon ?: null, $brojOsoba, $napomena, $locale,
+        $ime, $prezime, $nazivEkipe, $kategorijaEkipe, $kontaktOsoba, $email, $telefon ?: null, $brojOsoba, $napomena, $locale,
         hash('sha256', $token),
     ]);
     $newId = (int) $priv->lastInsertId();
@@ -246,7 +252,9 @@ $siteBase = rtrim((string) (hnkcms_config()['site_base_url'] ?? 'https://kroatie
 $cancelUrl = "{$siteBase}/{$locale}/otkazi-prijavu?token={$token}";
 
 $details = ['Događaj' => $naslovEventa]
-    + ($type === 'osoba' ? ['Ime i prezime' => "{$ime} {$prezime}", 'Broj osoba' => (string) $brojOsoba] : ['Naziv ekipe' => $nazivEkipe, 'Kontakt osoba' => $kontaktOsoba])
+    + ($type === 'osoba'
+        ? ['Ime i prezime' => "{$ime} {$prezime}", 'Broj osoba' => (string) $brojOsoba]
+        : ['Naziv ekipe' => $nazivEkipe, 'Kategorija' => $kategorijaEkipe, 'Kontakt osoba' => $kontaktOsoba])
     + ['E-mail' => $email]
     + ($telefon ? ['Telefon' => $telefon] : [])
     + ($napomena ? ['Napomena' => $napomena] : [])

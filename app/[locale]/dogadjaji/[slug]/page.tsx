@@ -79,6 +79,16 @@ export default async function DogadjajPage({
   const isUpcoming = new Date(effectiveEnd).getTime() > Date.now();
   const sponsors = d.sponsors ?? [];
   const imaPrijave = d.vrstaPrijave === 'osoba' || d.vrstaPrijave === 'ekipa';
+  const jeEkipa = d.vrstaPrijave === 'ekipa';
+  // "Prijavi se"/"Prijava na događaj" su generički tekstovi dijeljeni sa SVIM
+  // događajima — za ekipne prijave (danas: samo malonogometni turnir) koristi
+  // specifičniju formulaciju izvedenu iz postojećih vrstaPrijave/kategorija
+  // polja, bez ikakvog novog CMS unosa (generalizira se automatski na budući
+  // ekipni događaj; "na turnir" ostaje specifično za kategoriju "Turnir").
+  const registerLabel = jeEkipa ? t('events.registerEkipa') : t('events.register');
+  const registrationTitle = jeEkipa
+    ? (d.kategorija === 'Turnir' ? t('prijava.titleEkipaTurnir') : t('prijava.titleEkipa'))
+    : undefined;
 
   const dateFull = (v: string) =>
     formatDate(v, locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -174,6 +184,7 @@ export default async function DogadjajPage({
               <EventRegistration
                 slug={d.slug}
                 vrsta={d.vrstaPrijave as 'osoba' | 'ekipa'}
+                title={registrationTitle}
                 pristup={d.pristupPrijavi === 'clanovi' ? 'clanovi' : 'javna'}
                 otvorene={Boolean(d.prijaveOtvorene)}
                 rok={d.rokPrijave}
@@ -207,11 +218,11 @@ export default async function DogadjajPage({
                 {showRegisterCta && (
                   showRegisterAnchor ? (
                     <a href="#prijava" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
-                      <span>{t('events.register')}</span>
+                      <span>{registerLabel}</span>
                     </a>
                   ) : (
                     <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
-                      <span>{t('events.register')}</span>
+                      <span>{registerLabel}</span>
                     </a>
                   )
                 )}
