@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   description:
     'Hrvatski nogometni klub u kantonu Schwyz. Od 1995. spajamo sport, prijateljstvo i tradiciju.',
   icons: { icon: '/favicon.svg' },
+  // PRIVREMENO tokom selidbe s WordPressa na ovu domenu: dopusti Googleu da
+  // crawla (prati stare WP redirecte -> nove URL-ove) ali ne indeksira dok ne
+  // potvrdimo da je sve ispravno nakon DNS prekidača. Ukloniti ovo polje čim
+  // se potvrdi da sajt radi na kroatien-schwyz.ch.
+  robots: { index: false, follow: true },
 };
 
 export default function RootLayout({
