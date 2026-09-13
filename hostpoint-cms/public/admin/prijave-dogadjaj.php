@@ -57,7 +57,7 @@ if (isset($_GET['csv'])) {
                 $p['tip'] === 'osoba' ? 'Osoba' : 'Ekipa',
                 $p['tip'] === 'osoba' ? $p['ime'] : $p['naziv_ekipe'],
             ],
-            $isEkipa ? [$p['kategorija_ekipe'] ?? ''] : [],
+            $isEkipa ? [str_replace(',', ', ', (string) ($p['kategorija_ekipe'] ?? ''))] : [],
             [
                 $p['tip'] === 'osoba' ? $p['prezime'] : $p['kontakt_osoba'],
                 $p['email'], $p['telefon'] ?? '', (int) $p['broj_osoba'], $p['napomena'] ?? '',
@@ -95,7 +95,7 @@ hnkcms_admin_page_start('Prijave · ' . $naslov, 'prijave', $user);
             <?= htmlspecialchars($p['tip'] === 'osoba' ? trim($p['ime'] . ' ' . $p['prezime']) : $p['naziv_ekipe'], ENT_QUOTES) ?>
             <?= $p['tip'] === 'ekipa' ? '<br><span class="hint" style="display:inline">' . htmlspecialchars((string) $p['kontakt_osoba'], ENT_QUOTES) . '</span>' : '' ?>
           </td>
-          <?php if ($isEkipa): ?><td><?= htmlspecialchars((string) ($p['kategorija_ekipe'] ?? ''), ENT_QUOTES) ?></td><?php endif; ?>
+          <?php if ($isEkipa): ?><td><?= htmlspecialchars(str_replace(',', ', ', (string) ($p['kategorija_ekipe'] ?? '')), ENT_QUOTES) ?></td><?php endif; ?>
           <td><a href="mailto:<?= htmlspecialchars($p['email'], ENT_QUOTES) ?>"><?= htmlspecialchars($p['email'], ENT_QUOTES) ?></a></td>
           <td><?= htmlspecialchars((string) $p['telefon'], ENT_QUOTES) ?></td>
           <td><?= (int) $p['broj_osoba'] ?></td>

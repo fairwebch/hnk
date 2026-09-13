@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS prijave (
   ime                   VARCHAR(80) NULL,    -- osoba
   prezime               VARCHAR(80) NULL,    -- osoba
   naziv_ekipe           VARCHAR(120) NULL,   -- ekipa
-  kategorija_ekipe      ENUM('Aktivni','Seniori','Djeca') NULL,  -- ekipa; NULL za osoba (isti obrazac kao ime/prezime/telefon — obavezno po tipu se provjerava u api/prijava.php, ne NOT NULL ogradom)
+  kategorija_ekipe      SET('Aktivni','Seniori','Djeca') NULL,  -- ekipa, jedna ili više (npr. 'Aktivni,Djeca'); NULL za osoba (isti obrazac kao ime/prezime/telefon — obavezno po tipu se provjerava u api/prijava.php, ne NOT NULL ogradom)
   kontakt_osoba         VARCHAR(120) NULL,   -- ekipa
   email                 VARCHAR(190) NOT NULL,
   telefon               VARCHAR(60) NULL,
