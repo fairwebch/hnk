@@ -14,6 +14,8 @@ type Props = {
   rok?: string;
   kotizacija?: string;
   prikaziKotizaciju?: boolean;
+  /** Override za naslov forme (npr. "Prijavi ekipu na turnir") — bez ovoga koristi se t('title'). */
+  title?: string;
 };
 
 type Status = 'idle' | 'sending' | 'ok' | 'error' | 'closed' | 'forbidden';
@@ -31,11 +33,12 @@ export function EventRegistration(props: Props) {
   );
 }
 
-function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacija, prikaziKotizaciju }: Props) {
+function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacija, prikaziKotizaciju, title }: Props) {
   const t = useTranslations('prijava');
   const locale = useLocale();
   const searchParams = useSearchParams();
   const kod = searchParams.get('kod');
+  const effectiveTitle = title ?? t('title');
 
   const rokIstekao = Boolean(rok && new Date(rok).getTime() < Date.now());
   const zatvorene = !otvorene || rokIstekao;
@@ -61,7 +64,7 @@ function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacij
 
   if (zatvorene) {
     return (
-      <Wrapper title={t('title')}>
+      <Wrapper title={effectiveTitle}>
         <Notice text={rokIstekao ? t('rokIstekao') : t('zatvorene')} />
       </Wrapper>
     );
@@ -69,7 +72,7 @@ function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacij
 
   if (pristup === 'clanovi' && allowed !== true) {
     return (
-      <Wrapper title={t('title')}>
+      <Wrapper title={effectiveTitle}>
         {allowed === null ? (
           <p className="font-sans text-sm text-content-muted">{t('provjera')}</p>
         ) : (
@@ -80,7 +83,7 @@ function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacij
   }
 
   return (
-    <Wrapper title={t('title')} subtitle={rok ? t('rokDo', { datum: formatRok(rok, locale) }) : undefined}>
+    <Wrapper title={effectiveTitle} subtitle={rok ? t('rokDo', { datum: formatRok(rok, locale) }) : undefined}>
       <Form slug={slug} vrsta={vrsta} kod={kod} kotizacija={prikaziKotizaciju !== false ? kotizacija : undefined} />
     </Wrapper>
   );
@@ -116,7 +119,7 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
   const t = useTranslations('prijava');
   const locale = useLocale();
   const [v, setV] = useState({
-    ime: '', prezime: '', nazivEkipe: '', kontaktOsoba: '',
+    ime: '', prezime: '', nazivEkipe: '', kategorijaEkipe: '', kontaktOsoba: '',
     email: '', telefon: '', brojOsoba: '1', napomena: '', company: '',
   });
   const [status, setStatus] = useState<Status>('idle');
@@ -124,9 +127,17 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
   // server je odbija bez nje (422 consent_required).
   const [privola, setPrivola] = useState(false);
   const [privolaMissing, setPrivolaMissing] = useState(false);
+  // Sva polja ekipne prijave su obavezna (klub treba moći kontaktirati ekipu)
+  // — provjerava se ovdje PRIJE slanja, s jasnom porukom po polju, uz istu
+  // provjeru ponovljenu na PHP strani (422 "validation") kao zadnju liniju
+  // obrane ako bi ovo ikad bilo zaobiđeno.
+  type EkipaFieldKey = 'nazivEkipe' | 'kategorijaEkipe' | 'kontaktOsoba' | 'email' | 'telefon';
+  const [errors, setErrors] = useState<Partial<Record<EkipaFieldKey, string>>>({});
 
-  const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+  const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setV((s) => ({ ...s, [k]: e.target.value }));
+    setErrors((s) => (s[k as EkipaFieldKey] ? { ...s, [k]: undefined } : s));
+  };
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -134,6 +145,19 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
     if (!privola) {
       setPrivolaMissing(true);
       return;
+    }
+    if (vrsta === 'ekipa') {
+      const newErrors: Partial<Record<EkipaFieldKey, string>> = {};
+      if (!v.nazivEkipe.trim()) newErrors.nazivEkipe = t('errNazivEkipe');
+      if (!v.kategorijaEkipe) newErrors.kategorijaEkipe = t('errKategorija');
+      if (!v.kontaktOsoba.trim()) newErrors.kontaktOsoba = t('errKontaktOsoba');
+      if (!v.email.trim()) newErrors.email = t('errEmail');
+      if (!v.telefon.trim()) newErrors.telefon = t('errTelefon');
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+      setErrors({});
     }
     setStatus('sending');
     try {
@@ -145,7 +169,7 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
           email: v.email, telefon: v.telefon,
           ...(vrsta === 'osoba'
             ? { ime: v.ime, prezime: v.prezime, brojOsoba: Number(v.brojOsoba) || 1, napomena: v.napomena }
-            : { nazivEkipe: v.nazivEkipe, kontaktOsoba: v.kontaktOsoba }),
+            : { nazivEkipe: v.nazivEkipe, kategorijaEkipe: v.kategorijaEkipe, kontaktOsoba: v.kontaktOsoba }),
         }),
       });
       if (res.ok) setStatus('ok');
@@ -171,7 +195,9 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
   const field =
     'w-full bg-white border border-line px-4 py-3 font-sans text-content placeholder:text-content-muted focus:outline-none focus:border-croatia transition-colors disabled:opacity-60';
   const label = 'block font-display font-bold uppercase text-xs tracking-wider2 text-content-soft mb-2';
+  const errText = 'mt-1.5 font-display font-bold uppercase text-xs tracking-wider2 text-croatia';
   const sending = status === 'sending';
+  const kategorije = ['Aktivni', 'Seniori', 'Djeca'] as const;
 
   return (
     <Card className="p-6 md:p-8"><form onSubmit={submit} className="space-y-4" noValidate>
@@ -210,20 +236,69 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
         <>
           <div>
             <label htmlFor="pr-ekipa" className={label}>{t('nazivEkipe')}</label>
-            <input id="pr-ekipa" required value={v.nazivEkipe} disabled={sending} onChange={set('nazivEkipe')} className={field} />
+            <input
+              id="pr-ekipa" required value={v.nazivEkipe} disabled={sending} onChange={set('nazivEkipe')}
+              className={field} aria-invalid={!!errors.nazivEkipe} aria-describedby={errors.nazivEkipe ? 'pr-ekipa-err' : undefined}
+            />
+            {errors.nazivEkipe && <p id="pr-ekipa-err" className={errText}>{errors.nazivEkipe}</p>}
+          </div>
+          <div>
+            <span className={label}>{t('kategorija')}</span>
+            <div
+              className="flex flex-wrap gap-3" role="radiogroup" aria-label={t('kategorija')}
+              aria-invalid={!!errors.kategorijaEkipe} aria-describedby={errors.kategorijaEkipe ? 'pr-kategorija-err' : undefined}
+            >
+              {kategorije.map((opt) => (
+                <label
+                  key={opt}
+                  className={`cursor-pointer border px-6 py-3 font-display font-bold uppercase text-xs tracking-wider2 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-content has-[:focus-visible]:ring-offset-2 ${
+                    v.kategorijaEkipe === opt
+                      ? 'border-croatia text-croatia'
+                      : 'border-line text-content-soft hover:border-content-soft'
+                  } ${sending ? 'opacity-60 pointer-events-none' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="kategorijaEkipe"
+                    required
+                    disabled={sending}
+                    className="sr-only"
+                    checked={v.kategorijaEkipe === opt}
+                    onChange={() => {
+                      setV((s) => ({ ...s, kategorijaEkipe: opt }));
+                      setErrors((s) => (s.kategorijaEkipe ? { ...s, kategorijaEkipe: undefined } : s));
+                    }}
+                  />
+                  {t(`kategorija${opt}`)}
+                </label>
+              ))}
+            </div>
+            {errors.kategorijaEkipe && <p id="pr-kategorija-err" className={errText}>{errors.kategorijaEkipe}</p>}
           </div>
           <div>
             <label htmlFor="pr-kontakt" className={label}>{t('kontaktOsoba')}</label>
-            <input id="pr-kontakt" required value={v.kontaktOsoba} disabled={sending} onChange={set('kontaktOsoba')} className={field} />
+            <input
+              id="pr-kontakt" required value={v.kontaktOsoba} disabled={sending} onChange={set('kontaktOsoba')}
+              className={field} aria-invalid={!!errors.kontaktOsoba} aria-describedby={errors.kontaktOsoba ? 'pr-kontakt-err' : undefined}
+            />
+            {errors.kontaktOsoba && <p id="pr-kontakt-err" className={errText}>{errors.kontaktOsoba}</p>}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="pr-email2" className={label}>{t('email')}</label>
-              <input id="pr-email2" type="email" required value={v.email} disabled={sending} onChange={set('email')} className={field} />
+              <input
+                id="pr-email2" type="email" required value={v.email} disabled={sending} onChange={set('email')}
+                className={field} aria-invalid={!!errors.email} aria-describedby={errors.email ? 'pr-email2-err' : undefined}
+              />
+              {errors.email && <p id="pr-email2-err" className={errText}>{errors.email}</p>}
             </div>
             <div>
               <label htmlFor="pr-telefon2" className={label}>{t('telefon')}</label>
-              <input id="pr-telefon2" type="tel" value={v.telefon} disabled={sending} onChange={set('telefon')} className={field} />
+              <input
+                id="pr-telefon2" type="tel" required value={v.telefon} disabled={sending} onChange={set('telefon')}
+                className={field} aria-invalid={!!errors.telefon} aria-describedby={errors.telefon ? 'pr-telefon2-err' : undefined}
+              />
+              {errors.telefon && <p id="pr-telefon2-err" className={errText}>{errors.telefon}</p>}
             </div>
           </div>
         </>

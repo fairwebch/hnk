@@ -81,7 +81,7 @@ export default async function DogadjajiPage({ params }: { params: Promise<{ loca
                   <div className="flex gap-3">
                     {featured.prijavaLink && (
                       <a href={featured.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta px-5 py-3">
-                        <span>{t('events.register')}</span>
+                        <span>{featured.vrstaPrijave === 'ekipa' ? t('events.registerEkipa') : t('events.register')}</span>
                       </a>
                     )}
                     <Link href={`/dogadjaji/${featured.slug}`} className="btn-ghost px-5 py-3 text-sm">

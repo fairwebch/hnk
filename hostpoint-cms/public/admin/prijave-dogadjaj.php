@@ -34,6 +34,11 @@ if (!$prijave) {
 }
 $naslov = $prijave[0]['dogadjaj_naziv_hr'];
 $slug = $prijave[0]['dogadjaj_slug'];
+// Stranica je uvijek scoped na jedan dogadjaj_id, a prijava.php odbija
+// prijavu čiji tip ne odgovara dogadjaji.vrsta_prijave — svi retci ovdje
+// zato uvijek dijele isti tip, nikad mix. Kategorija stupac se prikazuje
+// samo kad je $isEkipa, inače bi bio prazan na SVAKOM osoba-tipa događaju.
+$isEkipa = ($prijave[0]['tip'] ?? null) === 'ekipa';
 
 // --- CSV (UTF-8 BOM + ; separator, isti stupci kao Sanity dashboard) ---
 if (isset($_GET['csv'])) {
@@ -41,16 +46,25 @@ if (isset($_GET['csv'])) {
     header('Content-Disposition: attachment; filename="prijave-' . preg_replace('/[^a-z0-9-]/', '', $slug) . '.csv"');
     $out = fopen('php://output', 'w');
     fwrite($out, "\xEF\xBB\xBF");
-    fputcsv($out, ['Tip', 'Ime / Naziv ekipe', 'Prezime / Kontakt osoba', 'E-mail', 'Telefon', 'Broj osoba', 'Napomena', 'Status plaćanja', 'Datum prijave', 'Otkazana', 'Datum otkaza'], ';');
+    fputcsv($out, array_merge(
+        ['Tip', 'Ime / Naziv ekipe'],
+        $isEkipa ? ['Kategorija'] : [],
+        ['Prezime / Kontakt osoba', 'E-mail', 'Telefon', 'Broj osoba', 'Napomena', 'Status plaćanja', 'Datum prijave', 'Otkazana', 'Datum otkaza'],
+    ), ';');
     foreach ($prijave as $p) {
-        fputcsv($out, [
-            $p['tip'] === 'osoba' ? 'Osoba' : 'Ekipa',
-            $p['tip'] === 'osoba' ? $p['ime'] : $p['naziv_ekipe'],
-            $p['tip'] === 'osoba' ? $p['prezime'] : $p['kontakt_osoba'],
-            $p['email'], $p['telefon'] ?? '', (int) $p['broj_osoba'], $p['napomena'] ?? '',
-            $p['status_placanja'] === 'placeno' ? 'Plaćeno' : 'Neplaćeno',
-            $p['datum_prijave'], (int) $p['otkazana'] ? 'da' : 'ne', $p['datum_otkaza'] ?? '',
-        ], ';');
+        fputcsv($out, array_merge(
+            [
+                $p['tip'] === 'osoba' ? 'Osoba' : 'Ekipa',
+                $p['tip'] === 'osoba' ? $p['ime'] : $p['naziv_ekipe'],
+            ],
+            $isEkipa ? [$p['kategorija_ekipe'] ?? ''] : [],
+            [
+                $p['tip'] === 'osoba' ? $p['prezime'] : $p['kontakt_osoba'],
+                $p['email'], $p['telefon'] ?? '', (int) $p['broj_osoba'], $p['napomena'] ?? '',
+                $p['status_placanja'] === 'placeno' ? 'Plaćeno' : 'Neplaćeno',
+                $p['datum_prijave'], (int) $p['otkazana'] ? 'da' : 'ne', $p['datum_otkaza'] ?? '',
+            ],
+        ), ';');
     }
     fclose($out);
     exit;
@@ -71,7 +85,7 @@ hnkcms_admin_page_start('Prijave · ' . $naslov, 'prijave', $user);
 
   <table class="admin-table">
     <thead>
-      <tr><th>Tip</th><th>Ime / ekipa</th><th>E-mail</th><th>Telefon</th><th>Osobe</th><th>Napomena</th><th>Plaćeno</th><th>Prijava</th><th></th></tr>
+      <tr><th>Tip</th><th>Ime / ekipa</th><?= $isEkipa ? '<th>Kategorija</th>' : '' ?><th>E-mail</th><th>Telefon</th><th>Osobe</th><th>Napomena</th><th>Plaćeno</th><th>Prijava</th><th></th></tr>
     </thead>
     <tbody>
       <?php foreach ($prijave as $p): $otk = (int) $p['otkazana']; ?>
@@ -81,6 +95,7 @@ hnkcms_admin_page_start('Prijave · ' . $naslov, 'prijave', $user);
             <?= htmlspecialchars($p['tip'] === 'osoba' ? trim($p['ime'] . ' ' . $p['prezime']) : $p['naziv_ekipe'], ENT_QUOTES) ?>
             <?= $p['tip'] === 'ekipa' ? '<br><span class="hint" style="display:inline">' . htmlspecialchars((string) $p['kontakt_osoba'], ENT_QUOTES) . '</span>' : '' ?>
           </td>
+          <?php if ($isEkipa): ?><td><?= htmlspecialchars((string) ($p['kategorija_ekipe'] ?? ''), ENT_QUOTES) ?></td><?php endif; ?>
           <td><a href="mailto:<?= htmlspecialchars($p['email'], ENT_QUOTES) ?>"><?= htmlspecialchars($p['email'], ENT_QUOTES) ?></a></td>
           <td><?= htmlspecialchars((string) $p['telefon'], ENT_QUOTES) ?></td>
           <td><?= (int) $p['broj_osoba'] ?></td>

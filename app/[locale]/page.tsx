@@ -104,7 +104,7 @@ export default async function HomePage({
                   <EventCountdown date={nextEvent.datumPocetak} size="md" />
                 </div>
                 <Link href={`/dogadjaji/${nextEvent.slug}`} className="btn-cta px-5 py-3 w-fit mt-6">
-                  <span>{t('home.eventRegister')}</span>
+                  <span>{nextEvent.vrstaPrijave === 'ekipa' ? t('home.eventRegisterEkipa') : t('home.eventRegister')}</span>
                 </Link>
               </div>
             )}
