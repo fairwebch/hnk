@@ -201,10 +201,20 @@ if ($type === 'osoba') {
 } else {
     $nazivEkipe = mb_substr(trim((string) ($body['nazivEkipe'] ?? '')), 0, 120);
     $kontaktOsoba = mb_substr(trim((string) ($body['kontaktOsoba'] ?? '')), 0, 120);
+    // Ekipa smije prijaviti više kategorija odjednom (npr. i aktivne i
+    // seniore) — kategorija_ekipe je MySQL SET stupac (od migracije 008),
+    // pa se ovdje sprema kao zarezom odvojen string u FIKSNOM, kanonskom
+    // redoslijedu (array_intersect čuva redoslijed $kategorijaEkipeOpts),
+    // bez obzira kojim je redoslijedom korisnik klikao.
+    $kategorijaEkipeRaw = $body['kategorijaEkipe'] ?? null;
+    // Prihvati i stari oblik (jedan string, dok stari frontend/keš još
+    // može slati taj oblik) i novi (niz).
+    $kategorijaEkipeInput = is_array($kategorijaEkipeRaw)
+        ? array_filter($kategorijaEkipeRaw, 'is_string')
+        : (is_string($kategorijaEkipeRaw) && $kategorijaEkipeRaw !== '' ? [$kategorijaEkipeRaw] : []);
     $kategorijaEkipeOpts = ['Aktivni', 'Seniori', 'Djeca'];
-    $kategorijaEkipe = in_array($body['kategorijaEkipe'] ?? null, $kategorijaEkipeOpts, true)
-        ? $body['kategorijaEkipe']
-        : null;
+    $kategorijaEkipeArr = array_values(array_intersect($kategorijaEkipeOpts, $kategorijaEkipeInput));
+    $kategorijaEkipe = $kategorijaEkipeArr ? implode(',', $kategorijaEkipeArr) : null;
     // Telefon je obavezan za ekipnu prijavu (klub treba moći nazvati ekipu uoči
     // događaja) — za 'osoba' ostaje neobavezan, provjera se ne dira gore.
     if ($nazivEkipe === '' || $kontaktOsoba === '' || $kategorijaEkipe === null || $telefon === '') {
@@ -254,7 +264,7 @@ $cancelUrl = "{$siteBase}/{$locale}/otkazi-prijavu?token={$token}";
 $details = ['Događaj' => $naslovEventa]
     + ($type === 'osoba'
         ? ['Ime i prezime' => "{$ime} {$prezime}", 'Broj osoba' => (string) $brojOsoba]
-        : ['Naziv ekipe' => $nazivEkipe, 'Kategorija' => $kategorijaEkipe, 'Kontakt osoba' => $kontaktOsoba])
+        : ['Naziv ekipe' => $nazivEkipe, 'Kategorija' => str_replace(',', ', ', (string) $kategorijaEkipe), 'Kontakt osoba' => $kontaktOsoba])
     + ['E-mail' => $email]
     + ($telefon ? ['Telefon' => $telefon] : [])
     + ($napomena ? ['Napomena' => $napomena] : [])

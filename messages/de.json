@@ -396,7 +396,7 @@
     "privola": "Ich habe die <link>Datenschutzerklärung</link> gelesen und bin einverstanden, dass meine Daten für die Organisation dieses Events verwendet werden.",
     "privolaObavezna": "Für die Anmeldung ist die Einwilligung zur Datenbearbeitung erforderlich.",
     "errNazivEkipe": "Bitte Teamnamen eingeben.",
-    "errKategorija": "Bitte Kategorie auswählen.",
+    "errKategorija": "Bitte mindestens eine Kategorie auswählen.",
     "errKontaktOsoba": "Bitte Name der Kontaktperson eingeben.",
     "errEmail": "Bitte E-Mail-Adresse eingeben.",
     "errTelefon": "Bitte Telefonnummer eingeben.",

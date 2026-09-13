@@ -119,9 +119,16 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
   const t = useTranslations('prijava');
   const locale = useLocale();
   const [v, setV] = useState({
-    ime: '', prezime: '', nazivEkipe: '', kategorijaEkipe: '', kontaktOsoba: '',
+    ime: '', prezime: '', nazivEkipe: '', kontaktOsoba: '',
     email: '', telefon: '', brojOsoba: '1', napomena: '', company: '',
   });
+  // Ekipa smije prijaviti više kategorija odjednom (npr. i aktivne i
+  // seniore) — niz, ne string kao ostala polja iznad.
+  const [kategorijaEkipe, setKategorijaEkipe] = useState<string[]>([]);
+  function toggleKategorija(opt: string) {
+    setKategorijaEkipe((s) => (s.includes(opt) ? s.filter((k) => k !== opt) : [...s, opt]));
+    setErrors((s) => (s.kategorijaEkipe ? { ...s, kategorijaEkipe: undefined } : s));
+  }
   const [status, setStatus] = useState<Status>('idle');
   // Privola za obradu osobnih podataka — obavezna (politika privatnosti, t. 10);
   // server je odbija bez nje (422 consent_required).
@@ -149,7 +156,7 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
     if (vrsta === 'ekipa') {
       const newErrors: Partial<Record<EkipaFieldKey, string>> = {};
       if (!v.nazivEkipe.trim()) newErrors.nazivEkipe = t('errNazivEkipe');
-      if (!v.kategorijaEkipe) newErrors.kategorijaEkipe = t('errKategorija');
+      if (kategorijaEkipe.length === 0) newErrors.kategorijaEkipe = t('errKategorija');
       if (!v.kontaktOsoba.trim()) newErrors.kontaktOsoba = t('errKontaktOsoba');
       if (!v.email.trim()) newErrors.email = t('errEmail');
       if (!v.telefon.trim()) newErrors.telefon = t('errTelefon');
@@ -169,7 +176,7 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
           email: v.email, telefon: v.telefon,
           ...(vrsta === 'osoba'
             ? { ime: v.ime, prezime: v.prezime, brojOsoba: Number(v.brojOsoba) || 1, napomena: v.napomena }
-            : { nazivEkipe: v.nazivEkipe, kategorijaEkipe: v.kategorijaEkipe, kontaktOsoba: v.kontaktOsoba }),
+            : { nazivEkipe: v.nazivEkipe, kategorijaEkipe, kontaktOsoba: v.kontaktOsoba }),
         }),
       });
       if (res.ok) setStatus('ok');
@@ -245,29 +252,24 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
           <div>
             <span className={label}>{t('kategorija')}</span>
             <div
-              className="flex flex-wrap gap-3" role="radiogroup" aria-label={t('kategorija')}
+              className="flex flex-wrap gap-3" role="group" aria-label={t('kategorija')}
               aria-invalid={!!errors.kategorijaEkipe} aria-describedby={errors.kategorijaEkipe ? 'pr-kategorija-err' : undefined}
             >
               {kategorije.map((opt) => (
                 <label
                   key={opt}
                   className={`cursor-pointer border px-6 py-3 font-display font-bold uppercase text-xs tracking-wider2 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-content has-[:focus-visible]:ring-offset-2 ${
-                    v.kategorijaEkipe === opt
+                    kategorijaEkipe.includes(opt)
                       ? 'border-croatia text-croatia'
                       : 'border-line text-content-soft hover:border-content-soft'
                   } ${sending ? 'opacity-60 pointer-events-none' : ''}`}
                 >
                   <input
-                    type="radio"
-                    name="kategorijaEkipe"
-                    required
+                    type="checkbox"
                     disabled={sending}
                     className="sr-only"
-                    checked={v.kategorijaEkipe === opt}
-                    onChange={() => {
-                      setV((s) => ({ ...s, kategorijaEkipe: opt }));
-                      setErrors((s) => (s.kategorijaEkipe ? { ...s, kategorijaEkipe: undefined } : s));
-                    }}
+                    checked={kategorijaEkipe.includes(opt)}
+                    onChange={() => toggleKategorija(opt)}
                   />
                   {t(`kategorija${opt}`)}
                 </label>

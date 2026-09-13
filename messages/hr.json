@@ -396,7 +396,7 @@
     "privola": "Pročitao/la sam <link>izjavu o zaštiti podataka</link> i prihvaćam da se moji podaci koriste za organizaciju ovog događaja.",
     "privolaObavezna": "Za prijavu je potrebna privola za obradu podataka.",
     "errNazivEkipe": "Upišite naziv ekipe.",
-    "errKategorija": "Odaberite kategoriju.",
+    "errKategorija": "Odaberite barem jednu kategoriju.",
     "errKontaktOsoba": "Upišite ime i prezime kontakt osobe.",
     "errEmail": "Upišite e-mail adresu.",
     "errTelefon": "Upišite telefonski broj.",
