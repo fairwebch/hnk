@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useMemo, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
@@ -16,6 +16,15 @@ type Props = {
   prikaziKotizaciju?: boolean;
   /** Override za naslov forme (npr. "Prijavi ekipu na turnir") — bez ovoga koristi se t('title'). */
   title?: string;
+  /**
+   * Strukturirana cijena po kategoriji (Aktivni/Seniori/Djeca) — kad barem
+   * jedna nije undefined, ukupna kotizacija se računa uživo iz kategorija
+   * koje ekipa odabere, umjesto statičnog `kotizacija` teksta iznad. Ista
+   * formula kao hnkcms_kotizacija_ekipe() u
+   * hostpoint-cms/public/admin/includes/kotizacija-ekipe.php (email/admin) —
+   * namjerno duplicirano, PHP i TS ne dijele kod.
+   */
+  cijenePoKategoriji?: Partial<Record<string, number>>;
 };
 
 type Status = 'idle' | 'sending' | 'ok' | 'error' | 'closed' | 'forbidden';
@@ -33,7 +42,7 @@ export function EventRegistration(props: Props) {
   );
 }
 
-function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacija, prikaziKotizaciju, title }: Props) {
+function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacija, prikaziKotizaciju, title, cijenePoKategoriji }: Props) {
   const t = useTranslations('prijava');
   const locale = useLocale();
   const searchParams = useSearchParams();
@@ -84,7 +93,11 @@ function EventRegistrationInner({ slug, vrsta, pristup, otvorene, rok, kotizacij
 
   return (
     <Wrapper title={effectiveTitle} subtitle={rok ? t('rokDo', { datum: formatRok(rok, locale) }) : undefined}>
-      <Form slug={slug} vrsta={vrsta} kod={kod} kotizacija={prikaziKotizaciju !== false ? kotizacija : undefined} />
+      <Form
+        slug={slug} vrsta={vrsta} kod={kod}
+        kotizacija={prikaziKotizaciju !== false ? kotizacija : undefined}
+        cijenePoKategoriji={prikaziKotizaciju !== false ? cijenePoKategoriji : undefined}
+      />
     </Wrapper>
   );
 }
@@ -115,7 +128,46 @@ function Notice({ text }: { text: string }) {
   );
 }
 
-function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' | 'ekipa'; kod: string | null; kotizacija?: string }) {
+/** "100" za cijele brojeve, "100.50" kad ima decimala — isto kao PHP hnkcms_format_chf(). */
+function formatChf(iznos: number): string {
+  const s = iznos.toFixed(2);
+  return s.endsWith('.00') ? s.slice(0, -3) : s;
+}
+
+/**
+ * Isti izračun kao hnkcms_kotizacija_ekipe() u
+ * hostpoint-cms/public/admin/includes/kotizacija-ekipe.php — vidi taj fajl
+ * za objašnjenje formule. Namjerno neuravnotežena riječ "Besplatno"/
+ * "besplatno" ostaje hrvatska u oba jezika (isto kao u emailu) da forma i
+ * email uvijek pokazuju identičan tekst bez obzira na locale.
+ */
+function kotizacijaEkipeText(odabraneKategorije: string[], cijene: Partial<Record<string, number>>): string {
+  const kanonskiRedoslijed = ['Aktivni', 'Seniori', 'Djeca'];
+  const placeno: [string, number][] = [];
+  const besplatno: string[] = [];
+  for (const kat of kanonskiRedoslijed) {
+    if (!odabraneKategorije.includes(kat)) continue;
+    const iznos = cijene[kat] ?? 0;
+    if (iznos > 0) placeno.push([kat, iznos]);
+    else besplatno.push(kat);
+  }
+  if (placeno.length === 0) return 'Besplatno';
+  if (placeno.length === 1 && besplatno.length === 0) {
+    const [naziv, iznos] = placeno[0];
+    return `${naziv} CHF ${formatChf(iznos)}`;
+  }
+  const ukupno = placeno.reduce((sum, [, iznos]) => sum + iznos, 0);
+  let prikaz = placeno.map(([naziv, iznos]) => `${naziv} CHF ${formatChf(iznos)}`).join(' + ') + ' = CHF ' + formatChf(ukupno);
+  if (besplatno.length > 0) prikaz += ` (${besplatno.join(', ')} besplatno)`;
+  return prikaz;
+}
+
+function Form({
+  slug, vrsta, kod, kotizacija, cijenePoKategoriji,
+}: {
+  slug: string; vrsta: 'osoba' | 'ekipa'; kod: string | null; kotizacija?: string;
+  cijenePoKategoriji?: Partial<Record<string, number>>;
+}) {
   const t = useTranslations('prijava');
   const locale = useLocale();
   const [v, setV] = useState({
@@ -129,6 +181,15 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
     setKategorijaEkipe((s) => (s.includes(opt) ? s.filter((k) => k !== opt) : [...s, opt]));
     setErrors((s) => (s.kategorijaEkipe ? { ...s, kategorijaEkipe: undefined } : s));
   }
+  // Ima li događaj strukturiranu cijenu (barem jedna kategorija konfigurirana)?
+  // Ako ne, ispod se koristi statični `kotizacija` tekst kao prije.
+  const imaStrukturiranuCijenu = Object.values(cijenePoKategoriji ?? {}).some((v) => v !== undefined);
+  const kotizacijaZivi = useMemo(
+    () => (imaStrukturiranuCijenu && kategorijaEkipe.length > 0
+      ? kotizacijaEkipeText(kategorijaEkipe, cijenePoKategoriji ?? {})
+      : undefined),
+    [imaStrukturiranuCijenu, kategorijaEkipe, cijenePoKategoriji],
+  );
   const [status, setStatus] = useState<Status>('idle');
   // Privola za obradu osobnih podataka — obavezna (politika privatnosti, t. 10);
   // server je odbija bez nje (422 consent_required).
@@ -306,9 +367,12 @@ function Form({ slug, vrsta, kod, kotizacija }: { slug: string; vrsta: 'osoba' |
         </>
       )}
 
-      {kotizacija && (
+      {/* Kad je strukturirana cijena konfigurirana za ovaj događaj, prikaz
+          se računa uživo iz odabranih kategorija (isti tekst kao u emailu
+          nakon slanja) — inače isti statični tekst kao prije. */}
+      {(kotizacijaZivi ?? (!imaStrukturiranuCijenu ? kotizacija : undefined)) && (
         <p className="font-sans text-sm text-content-soft border-l-2 border-croatia pl-3">
-          {t('kotizacijaInfo', { iznos: kotizacija })}
+          {t('kotizacijaInfo', { iznos: (kotizacijaZivi ?? kotizacija)! })}
         </p>
       )}
 

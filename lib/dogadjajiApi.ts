@@ -33,6 +33,9 @@ interface DogadjajApiItem {
   flyerImage: CmsImg | null;
   description: { hr: string | null; de: string | null };
   kotizacija: string | null;
+  cijenaAktivni: number | null;
+  cijenaSeniori: number | null;
+  cijenaDjeca: number | null;
   prikaziKotizaciju: boolean;
   prijavaLink: string | null;
   prikaziGumbPrijave: boolean;
@@ -77,6 +80,11 @@ function mapItem(d: DogadjajApiItem): DogadjajFromApi {
     flyerImage: d.flyerImage ?? undefined,
     descriptionHtml: { hr: d.description.hr ?? undefined, de: d.description.de ?? undefined },
     kotizacija: d.kotizacija ?? undefined,
+    // ?? undefined (ne d.cijenaAktivni! koji bi 0 tretirao kao "nema cijene")
+    // — i most polje ako je PHP API još stara verzija (deploy race).
+    cijenaAktivni: d.cijenaAktivni ?? undefined,
+    cijenaSeniori: d.cijenaSeniori ?? undefined,
+    cijenaDjeca: d.cijenaDjeca ?? undefined,
     prikaziKotizaciju: d.prikaziKotizaciju,
     prijavaLink: d.prijavaLink ?? undefined,
     prikaziGumbPrijave: d.prikaziGumbPrijave,

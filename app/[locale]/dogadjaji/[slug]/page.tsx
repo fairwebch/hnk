@@ -89,6 +89,11 @@ export default async function DogadjajPage({
   const registrationTitle = jeEkipa
     ? (d.kategorija === 'Turnir' ? t('prijava.titleEkipaTurnir') : t('prijava.titleEkipa'))
     : undefined;
+  // Strukturirana cijena po kategoriji (ako je konfigurirana za ovaj događaj)
+  // — EventRegistration računa i prikazuje živo dok ekipa bira kategorije,
+  // umjesto statičnog `kotizacija` teksta. undefined vrijednosti (nema cijene
+  // za tu kategoriju) su namjerne, ne 0 — vidi cijenePoKategoriji tip.
+  const cijenePoKategoriji = { Aktivni: d.cijenaAktivni, Seniori: d.cijenaSeniori, Djeca: d.cijenaDjeca };
 
   const dateFull = (v: string) =>
     formatDate(v, locale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -190,6 +195,7 @@ export default async function DogadjajPage({
                 rok={d.rokPrijave}
                 kotizacija={d.kotizacija}
                 prikaziKotizaciju={d.prikaziKotizaciju}
+                cijenePoKategoriji={cijenePoKategoriji}
               />
             )}
           </div>

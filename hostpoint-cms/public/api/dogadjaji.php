@@ -118,6 +118,13 @@ function hnkcms_dogadjaj_json(PDO $db, array $r, string $uploadsUrl, string $spo
             'de' => hnkcms_markdown_to_html($r['opis_de']) ?: null,
         ],
         'kotizacija' => $r['kotizacija'] ?: null,
+        // Strukturirana cijena po kategoriji (samo relevantno za ekipne
+        // prijave) — kad barem jedna nije null, frontend računa ukupnu
+        // kotizaciju iz odabranih kategorija umjesto koristeći 'kotizacija'
+        // iznad (vidi components/EventRegistration.tsx).
+        'cijenaAktivni' => $r['cijena_aktivni'] !== null ? (float) $r['cijena_aktivni'] : null,
+        'cijenaSeniori' => $r['cijena_seniori'] !== null ? (float) $r['cijena_seniori'] : null,
+        'cijenaDjeca' => $r['cijena_djeca'] !== null ? (float) $r['cijena_djeca'] : null,
         'prikaziKotizaciju' => (bool) $r['prikazi_kotizaciju'],
         'prijavaLink' => $r['prijava_link'] ?: null,
         'prikaziGumbPrijave' => (bool) $r['prikazi_gumb_prijave'],

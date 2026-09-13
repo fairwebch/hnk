@@ -25,7 +25,24 @@ declare(strict_types=1);
 if (PHP_SAPI !== 'cli') {
     die("Samo za CLI.\n");
 }
-require __DIR__ . '/../public/admin/includes/db.php';
+// Lokalni repo layout (bin/../public/…) ili server layout (~/www/bin/../<docroot>/…)
+// — isti dual-path obrazac kao bin/purge-prijave.php i
+// bin/run-migration-prijave.php, otkriven kad je ova skripta prvi put
+// uploadana na staging (flat raspored: bin/ dijeljen na ~/www/bin/, ne
+// ugniježđen pored public/ kao na produkciji).
+foreach ([
+    __DIR__ . '/../public/admin/includes/db.php',
+    __DIR__ . '/../api-staging.kroatien-schwyz.ch/admin/includes/db.php',
+] as $inc) {
+    if (is_file($inc)) {
+        require $inc;
+        break;
+    }
+}
+if (!function_exists('hnkcms_db')) {
+    fwrite(STDERR, "db.php nije pronađen pored bin/.\n");
+    exit(1);
+}
 
 $path = $argv[1] ?? null;
 if (!$path || !is_file($path)) {
@@ -54,7 +71,14 @@ $db = hnkcms_db();
 $n = 0;
 foreach ($statements as $stmt) {
     try {
-        $db->exec($stmt);
+        // query(), ne exec(): kad idempotentna grana odabere "EXECUTE stmt"
+        // nad "SELECT 1" (već primijenjeno, ništa za mijenjati), taj EXECUTE
+        // vraća rezultat-set — exec() ga ne konzumira, pa sljedeća naredba
+        // (DEALLOCATE PREPARE) na istoj konekciji baci "Cannot execute
+        // queries while other unbuffered queries are active." query()
+        // vraća PDOStatement čiji kursor PHP zatvara kad se odbaci, pa je
+        // ponovno pokretanje iste migracije stvarno sigurno.
+        $db->query($stmt);
         $n++;
     } catch (PDOException $e) {
         fwrite(STDERR, "GREŠKA na naredbi #" . ($n + 1) . " od " . count($statements) . ":\n");

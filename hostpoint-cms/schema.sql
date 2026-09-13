@@ -417,8 +417,11 @@ CREATE TABLE IF NOT EXISTS novost_slike (
 -- + dogadjaj_sponzori_custom niže), galerija->, postavke prijava). Sanity
 -- reference postaju FK-ovi na već migrirane tablice (sponzori, galerije) s
 -- ON DELETE SET NULL/CASCADE — javni API vraća {name, slug} galerije umjesto
--- Sanity referenca (dogadjaj.galerija je dosad "visio"). kotizacija/kapacitet
--- ostaju slobodan tekst kao u Sanityju (nikad se ne provjeravaju numerički).
+-- Sanity referenca (dogadjaj.galerija je dosad "visio"). kapacitet ostaje
+-- slobodan tekst kao u Sanityju (nikad se ne provjerava numerički); kotizacija
+-- isto ostaje slobodan tekst kao fallback, ali za ekipne prijave (kolone
+-- cijena_aktivni/seniori/djeca, migracija 009) klub može unijeti strukturiranu
+-- cijenu po kategoriji koja se automatski zbraja umjesto tog teksta.
 -- `tajni_kod` (članski link ?kod=) se NIKAD ne vraća javnim API-jem —
 -- validira ga isključivo prijavni endpoint.
 -- PRIVATNE PRIJAVE NISU OVDJE: žive u zasebnoj bazi hidapifa_hnkprijave
@@ -468,7 +471,16 @@ CREATE TABLE IF NOT EXISTS dogadjaji (
 
   opis_hr           MEDIUMTEXT NULL,   -- Markdown izvor
   opis_de           MEDIUMTEXT NULL,   -- Markdown izvor
-  kotizacija        VARCHAR(190) NULL, -- slobodan tekst ("30-40 CHF", "Besplatno")
+  kotizacija        VARCHAR(190) NULL, -- slobodan tekst ("30-40 CHF", "Besplatno") — fallback kad cijena_* niže nisu postavljene
+  -- Strukturirana cijena po kategoriji ekipe (Aktivni/Seniori/Djeca), SAMO za
+  -- vrsta_prijave='ekipa': kad je barem jedna od ove tri postavljena, ukupna
+  -- kotizacija se RAČUNA iz zbroja odabranih kategorija (vidi
+  -- admin/includes/kotizacija-ekipe.php) umjesto da se koristi slobodni tekst
+  -- `kotizacija` iznad. NULL i 0.00 tretiraju se jednako ("besplatno za tu
+  -- kategoriju") — nema potrebe razlikovati "nepostavljeno" od "nula".
+  cijena_aktivni    DECIMAL(6,2) NULL,
+  cijena_seniori    DECIMAL(6,2) NULL,
+  cijena_djeca      DECIMAL(6,2) NULL,
   prikazi_kotizaciju TINYINT(1) NOT NULL DEFAULT 1,
   kapacitet         VARCHAR(190) NULL, -- slobodan tekst ("16 ekipa", "60")
   prikazi_kapacitet TINYINT(1) NOT NULL DEFAULT 1,

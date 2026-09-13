@@ -66,6 +66,19 @@ function hnkcms_parse_dt(string $raw)
     return str_replace('T', ' ', strlen($raw) === 16 ? $raw . ':00' : $raw);
 }
 
+/** Cijena po kategoriji (broj input) -> float zaokružen na centi, ili null ako prazno; false ako neispravno/negativno. */
+function hnkcms_parse_cijena(string $raw)
+{
+    $raw = trim($raw);
+    if ($raw === '') {
+        return null;
+    }
+    if (!is_numeric($raw) || (float) $raw < 0) {
+        return false;
+    }
+    return round((float) $raw, 2);
+}
+
 /** Jedan $_FILES-oblik element iz array-style file inputa (name="x[$idx]"). */
 function hnkcms_file_at(string $key, $idx): array
 {
@@ -100,6 +113,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $opisDe = (string) ($_POST['opis_de'] ?? '');
     $kotizacija = trim((string) ($_POST['kotizacija'] ?? ''));
     $prikaziKotizaciju = !empty($_POST['prikazi_kotizaciju']) ? 1 : 0;
+    // Strukturirana cijena po kategoriji (samo relevantno za ekipne prijave,
+    // ali polje ostaje uvijek vidljivo — nema JS-a u adminu za uvjetno
+    // sakrivanje). Prazno = koristi se slobodni tekst kotizacije iznad.
+    $cijenaAktivni = hnkcms_parse_cijena((string) ($_POST['cijena_aktivni'] ?? ''));
+    $cijenaSeniori = hnkcms_parse_cijena((string) ($_POST['cijena_seniori'] ?? ''));
+    $cijenaDjeca = hnkcms_parse_cijena((string) ($_POST['cijena_djeca'] ?? ''));
     $kapacitet = trim((string) ($_POST['kapacitet'] ?? ''));
     $prikaziKapacitet = !empty($_POST['prikazi_kapacitet']) ? 1 : 0;
     $prijavaLink = trim((string) ($_POST['prijava_link'] ?? ''));
@@ -157,6 +176,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($rokPrijave === false) {
         $errors[] = 'Rok prijave nije ispravan.';
     }
+    if ($cijenaAktivni === false || $cijenaSeniori === false || $cijenaDjeca === false) {
+        $errors[] = 'Cijena po kategoriji mora biti nenegativan broj (ili prazno).';
+    }
     if ($prijavaLink !== '' && !preg_match('#^(https?://|mailto:|tel:)#i', $prijavaLink)) {
         $errors[] = 'Link za prijavu mora biti http(s)://, mailto: ili tel:.';
     }
@@ -193,8 +215,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tajniKod = hnkcms_novi_tajni_kod();
     }
 
-    $baseCols = 'slug=?, naziv_hr=?, naziv_de=?, kategorija=?, datum_pocetak=?, prikazi_pocetak=?, datum_kraj=?, prikazi_kraj=?, lokacija=?, prikazi_lokaciju=?, cover_alt=?, flyer_alt=?, opis_hr=?, opis_de=?, kotizacija=?, prikazi_kotizaciju=?, kapacitet=?, prikazi_kapacitet=?, prijava_link=?, prikazi_gumb_prijave=?, prikazi_info_karticu=?, galerija_id=?, vrsta_prijave=?, pristup_prijavi=?, prijave_otvorene=?, rok_prijave=?, tajni_kod=?, status=?';
-    $baseParams = [$slug, $nazivHr, $nazivDe ?: null, $kategorija, $datumPocetak, $prikaziPocetak, $datumKraj, $prikaziKraj, $lokacija ?: null, $prikaziLokaciju, $coverAlt ?: null, $flyerAlt ?: null, $opisHr ?: null, $opisDe ?: null, $kotizacija ?: null, $prikaziKotizaciju, $kapacitet ?: null, $prikaziKapacitet, $prijavaLink ?: null, $prikaziGumbPrijave, $prikaziInfoKarticu, $galerijaId, $vrsta, $pristup, $otvorene, $rokPrijave, $tajniKod, $status];
+    $baseCols = 'slug=?, naziv_hr=?, naziv_de=?, kategorija=?, datum_pocetak=?, prikazi_pocetak=?, datum_kraj=?, prikazi_kraj=?, lokacija=?, prikazi_lokaciju=?, cover_alt=?, flyer_alt=?, opis_hr=?, opis_de=?, kotizacija=?, cijena_aktivni=?, cijena_seniori=?, cijena_djeca=?, prikazi_kotizaciju=?, kapacitet=?, prikazi_kapacitet=?, prijava_link=?, prikazi_gumb_prijave=?, prikazi_info_karticu=?, galerija_id=?, vrsta_prijave=?, pristup_prijavi=?, prijave_otvorene=?, rok_prijave=?, tajni_kod=?, status=?';
+    $baseParams = [$slug, $nazivHr, $nazivDe ?: null, $kategorija, $datumPocetak, $prikaziPocetak, $datumKraj, $prikaziKraj, $lokacija ?: null, $prikaziLokaciju, $coverAlt ?: null, $flyerAlt ?: null, $opisHr ?: null, $opisDe ?: null, $kotizacija ?: null, $cijenaAktivni, $cijenaSeniori, $cijenaDjeca, $prikaziKotizaciju, $kapacitet ?: null, $prikaziKapacitet, $prijavaLink ?: null, $prikaziGumbPrijave, $prikaziInfoKarticu, $galerijaId, $vrsta, $pristup, $otvorene, $rokPrijave, $tajniKod, $status];
 
     $coverData = null;
     $removeCover = false;
@@ -469,9 +491,22 @@ hnkcms_admin_page_start($isEdit ? 'Uredi događaj' : 'Novi događaj', 'dogadjaji
       <textarea name="program" rows="5" class="admin-textarea-mono" placeholder="09:00 | Okupljanje ekipa&#10;10:00 | Početak turnira"><?= htmlspecialchars((string) $programText, ENT_QUOTES) ?></textarea>
     </label>
 
-    <label>Kotizacija <span class="hint" style="display:inline">(slobodan tekst, npr. „20 CHF po ekipi“, „Besplatno“)</span>
+    <label>Kotizacija <span class="hint" style="display:inline">(slobodan tekst, npr. „20 CHF po ekipi“, „Besplatno“ — koristi se SAMO ako nijedna cijena po kategoriji ispod nije postavljena)</span>
       <input type="text" name="kotizacija" value="<?= $v('kotizacija') ?>">
     </label>
+    <div class="field-group">
+      <p class="group-title">Cijena po kategoriji (ekipna prijava)</p>
+      <p class="hint">Samo za "Prijava ekipe" (vidi Vrsta prijave niže). Kad je barem jedna od ova tri polja popunjena, ukupna kotizacija se AUTOMATSKI računa iz zbroja kategorija koje ekipa odabere pri prijavi (npr. Aktivni + Seniori), umjesto slobodnog teksta iznad. Prazno polje = ta kategorija je besplatna.</p>
+      <label>Aktivni (CHF)
+        <input type="number" step="0.01" min="0" name="cijena_aktivni" value="<?= $v('cijena_aktivni') ?>">
+      </label>
+      <label>Seniori (CHF)
+        <input type="number" step="0.01" min="0" name="cijena_seniori" value="<?= $v('cijena_seniori') ?>">
+      </label>
+      <label>Djeca (CHF)
+        <input type="number" step="0.01" min="0" name="cijena_djeca" value="<?= $v('cijena_djeca') ?>">
+      </label>
+    </div>
     <label class="checkbox-inline"><input type="checkbox" name="prikazi_kotizaciju" value="1" <?= $prikaziChecked('prikazi_kotizaciju') ? 'checked' : '' ?>> Prikaži u info kartici i u formi za prijavu</label>
 
     <label>Kapacitet <span class="hint" style="display:inline">(slobodan tekst, npr. „16 ekipa“; ne provjerava se automatski)</span>
