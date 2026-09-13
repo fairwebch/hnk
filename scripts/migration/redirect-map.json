@@ -1,0 +1,406 @@
+[
+  {
+    "old": "/sport-turniri/nggallery/album/malonogometni-turnir-2024",
+    "new": "/hr/galerija/malonogometni-turnir-2024"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/malonogometni-turnir-2023",
+    "new": "/hr/galerija/malonogometni-turnir-2023"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/malonogometni-turnir-2017",
+    "new": "/hr/galerija/malonogometni-turnir-2017"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/malonogometni-turnir-2016",
+    "new": "/hr/galerija/malonogometni-turnir-2016"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/malonogometni-turnir-2014",
+    "new": "/hr/galerija/malonogometni-turnir-2014"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/malonogometni-turnir-2013",
+    "new": "/hr/galerija/malonogometni-turnir-2013"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/malonogometni-turnir-2012",
+    "new": "/hr/galerija/malonogometni-turnir-2012"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/turnir-prstena-2023",
+    "new": "/hr/galerija/turnir-prstena-2023"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/prsten-2011",
+    "new": "/hr/galerija/prsten-2011"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/prsten-2014",
+    "new": "/hr/galerija/prsten-2014"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/prsten-2015",
+    "new": "/hr/galerija/prsten-2015-5",
+    "napomena": "NextGEN gid20 'prsten-2015' je prazna galerija (0 slika) — pravi sadržaj je pod gid21, slug 'prsten-2015-5' (20 slika). Potvrđeno kao duplikat."
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/prsten-2015-5",
+    "new": "/hr/galerija/prsten-2015-5"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/prsten-2017",
+    "new": "/hr/galerija/prsten-2017"
+  },
+  {
+    "old": "/sport-turniri/nggallery/album/prsten-2018",
+    "new": "/hr/galerija/prsten-2018"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/zabavna-vecer-2026",
+    "new": "/hr/galerija/zabavna-vecer-2026"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/film-diva",
+    "new": "/hr/galerija/film-diva"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/europapark-2025",
+    "new": "/hr/galerija/europapark-2025"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/zabavna-vecer-2025",
+    "new": "/hr/galerija/zabavna-vecer-2025"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/izlet-u-muotathal-2024",
+    "new": "/hr/galerija/izlet-u-muotathal-2024"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/zabavna-vecer-2024",
+    "new": "/hr/galerija/zabavna-vecer-2024"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/grill-morschach-2023",
+    "new": "/hr/galerija/grill-morschach-2023"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/godisnja-skupstina-2014",
+    "new": "/hr/galerija/godisnja-skupstina-2014"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/dan-zena-2014",
+    "new": "/hr/galerija/dan-zena-2014"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/dan-zena-2013",
+    "new": "/hr/galerija/dan-zena-2013"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/ljetna-zabava-2013",
+    "new": "/hr/galerija/ljetna-zabava-2013"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/proljetna-zabava-2012",
+    "new": "/hr/galerija/proljetna-zabava-2012"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/bozicna-vecera-2012",
+    "new": "/hr/galerija/bozicna-vecera-2012"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/dan-zena-2012",
+    "new": "/hr/galerija/dan-zena-2012"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/godisnja-skupstina-2012",
+    "new": "/hr/galerija/godisnja-skupstina-2012"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/zabava-9-februara-2008",
+    "new": "/hr/galerija/zabava-9-februara-2008"
+  },
+  {
+    "old": "/zabave-feste/nggallery/album/zabava-19-novembra-2006",
+    "new": "/hr/galerija/zabava-19-novembra-2006"
+  },
+  {
+    "old": "/sport-turniri/",
+    "new": "/hr/galerija"
+  },
+  {
+    "old": "/zabave-feste/",
+    "new": "/hr/galerija"
+  },
+  {
+    "old": "/",
+    "new": "/hr",
+    "napomena": "Vjerojatno automatski riješeno kroz next-intl middleware (localePrefix: 'always', defaultLocale 'hr') — provjeriti da nije potreban eksplicitan redirect na razini domene/DNS-a."
+  },
+  {
+    "old": "/klub/",
+    "new": "/hr/klub"
+  },
+  {
+    "old": "/kontakt/",
+    "new": "/hr/kontakt"
+  },
+  {
+    "old": "/postani-clan/",
+    "new": "/hr/postani-clan"
+  },
+  {
+    "old": "/uprava/",
+    "new": "/hr/uprava"
+  },
+  {
+    "old": "/impressum/",
+    "new": "/hr/impressum"
+  },
+  {
+    "old": "/galerija/",
+    "new": "/hr/galerija"
+  },
+  {
+    "old": "/momcadi/",
+    "new": "/hr/momcadi"
+  },
+  {
+    "old": "/juniori/",
+    "new": "/hr/momcadi/juniori"
+  },
+  {
+    "old": "/seniori/",
+    "new": "/hr/momcadi/seniori"
+  },
+  {
+    "old": "/aktivni/",
+    "new": "/hr/momcadi/aktivni"
+  },
+  {
+    "old": "/blog/",
+    "new": "/hr/novosti"
+  },
+  {
+    "old": "/shop/",
+    "new": "/hr/shop",
+    "napomena": "Stari /shop/ danas 301-a na eksterni https://www.11teamsports.com/ch-de/clubshop/hnk-kroatien-schwyz/. Novi sajt ima VLASTITU /shop stranicu koja prikazuje iste proizvode s eksternim 'kupi' linkovima (lib/shop.ts) — bolje odredište od golog eksternog bounce-a."
+  },
+  {
+    "old": "/onama/",
+    "new": "/hr/klub",
+    "napomena": "Isti spoj kao postojeći interni redirect /o-nama -> /klub u next.config.mjs (WP slug je 'onama' bez crtice, ne 'o-nama')."
+  },
+  {
+    "old": "/datenschutzerklaerung/",
+    "new": "/hr/datenschutzerklarung",
+    "napomena": "Pažnja: različit spelling! Stari slug ima 'ae' (datenschutzerklaerung), novi Next.js route nema (datenschutzerklarung) — provjerio sam app/[locale]/datenschutzerklarung direktorij."
+  },
+  {
+    "old": "/sponsoring-vereinsfest/",
+    "new": "/hr/sponzoring"
+  },
+  {
+    "old": "/basic/",
+    "new": "/hr/postani-clan",
+    "napomena": "Napuštena članska tarifa (prazna stranica) — konsolidirano u jedinstven postani-clan tok. Potvrđeno."
+  },
+  {
+    "old": "/premium/",
+    "new": "/hr/postani-clan",
+    "napomena": "Napuštena članska tarifa (samo embed forme, wpforms id 2602) — konsolidirano u jedinstven postani-clan tok. Potvrđeno."
+  },
+  {
+    "old": "/standard/",
+    "new": "/hr/postani-clan",
+    "napomena": "Napuštena članska tarifa (samo embed forme, wpforms id 2599) — konsolidirano u jedinstven postani-clan tok. Potvrđeno."
+  },
+  {
+    "old": "/festa/",
+    "new": "/hr/dogadjaji",
+    "napomena": "Prazna stranica, ali ime sugerira događaj — nadređeni dogadjaji indeks umjesto root-a. Potvrđeno."
+  },
+  {
+    "old": "/skupstina/",
+    "new": "/hr/novosti",
+    "napomena": "'Skupstina 2024' (prazan sadržaj) — generički novosti indeks umjesto nagađanja konkretnog članka (pogrešan pogodak zbunjuje više od indeksa). Potvrđeno."
+  },
+  {
+    "old": "/turnir/",
+    "new": "/hr/dogadjaji/malonogometni-turnir-2026",
+    "napomena": "'Turnir 2025' (prijavna forma za prošli turnir) — preusmjereno na TRENUTNO aktivnu prijavu; ko traži turnir traži aktuelni. Potvrđeno."
+  },
+  {
+    "old": "/events/",
+    "new": "/hr/dogadjaji",
+    "napomena": "Novi sajt nema opći arhivski indeks prošlih događaja poput Tribe Events — dogadjaji prikazuje samo nadolazeće/aktivne."
+  },
+  {
+    "old": "/event/zabavna-vecer-2026/",
+    "new": "/hr/galerija/zabavna-vecer-2026",
+    "napomena": "Događaj je već prošao (07.02.2026) i sad postoji odgovarajuća galerija na novom sajtu. Potvrđeno."
+  },
+  {
+    "old": "/event/test/",
+    "new": "/hr/novosti/izlet-u-europapark-povodom-30-obljetnice-17-05-2025",
+    "napomena": "Unatoč slugu 'test', sadržaj potvrđuje da je ovo stvarni, indeksirani (u sitemapu) događaj: 'Povodom proslave 30 godina...izlet u Europa-Park' — isti datum/tema kao ovaj novosti članak. Potvrđeno."
+  },
+  {
+    "old": "/event/europa-park/",
+    "new": "/hr/dogadjaji",
+    "napomena": "Sadržaj 'Samo za članove kluba' bez jasnog pandana — nadređeni dogadjaji indeks. Potvrđeno."
+  },
+  {
+    "old": "/event/brunnen-kocht-2025/",
+    "new": "/hr/dogadjaji",
+    "napomena": "Prazan sadržaj, nema odgovarajućeg članka/galerije za 2025 izdanje — nadređeni dogadjaji indeks. Potvrđeno."
+  },
+  {
+    "old": "/event/malonogometni-turnir-2025/",
+    "new": "/hr/dogadjaji",
+    "napomena": "Turnir je prošao, nema još galerije — nadređeni dogadjaji indeks (ne konkretna 2026 prijava). Potvrđeno."
+  },
+  {
+    "old": "/product/",
+    "new": "/hr/shop",
+    "confidence": "niska",
+    "napomena": "WooCommerce produkti (4) već vraćaju 404 na živom starom sajtu (nisu u sitemapu) — vjerojatno mrtvi linkovi bez pravog prometa. Wildcard fallback samo kao sigurnosna mreža za eventualne stare backlinkove."
+  },
+  {
+    "old": "/2026/04/17/poziv-na-godisnju-skupstinu-hnk-kroatien-schwyz-2026/",
+    "new": "/hr/novosti/poziv-na-godisnju-skupstinu-hnk-kroatien-schwyz-2026"
+  },
+  {
+    "old": "/2026/02/15/uspjesno-odrzana-zabava-u-brunnenu-07-02-2026/",
+    "new": "/hr/novosti/uspjesno-odrzana-zabava-u-brunnenu-07-02-2026"
+  },
+  {
+    "old": "/2025/12/10/premijera-filma-diva-zahvala/",
+    "new": "/hr/novosti/premijera-filma-diva-zahvala"
+  },
+  {
+    "old": "/2025/11/13/nas-klub-koristi-proizvode-od-axa-nova/",
+    "new": "/hr/novosti/nas-klub-koristi-proizvode-od-axa-nova"
+  },
+  {
+    "old": "/2025/10/14/premijera-filma-diva-07-12-u-brunnenu/",
+    "new": "/hr/novosti/premijera-filma-diva-07-12-u-brunnenu"
+  },
+  {
+    "old": "/2025/09/05/19-malonogometni-turnir-prijave-otvorene/",
+    "new": "/hr/novosti/19-malonogometni-turnir-prijave-otvorene"
+  },
+  {
+    "old": "/2025/06/11/izvjestaj-sa-30-godisnje-skupstine-hnk-kroatien-schwyz/",
+    "new": "/hr/novosti/izvjestaj-sa-30-godisnje-skupstine-hnk-kroatien-schwyz"
+  },
+  {
+    "old": "/2025/05/20/izlet-u-europapark-povodom-30-obljetnice-17-05-2025/",
+    "new": "/hr/novosti/izlet-u-europapark-povodom-30-obljetnice-17-05-2025"
+  },
+  {
+    "old": "/2025/04/15/godisnja-skupstina-2025/",
+    "new": "/hr/novosti/godisnja-skupstina-2025"
+  },
+  {
+    "old": "/2025/02/28/30-godina-hnk-kroatien-schwyz/",
+    "new": "/hr/novosti/30-godina-hnk-kroatien-schwyz"
+  },
+  {
+    "old": "/2025/02/28/izvjestaj-o-turniru-u-prstenu-ibach-22-02-2025/",
+    "new": "/hr/novosti/izvjestaj-o-turniru-u-prstenu-ibach-22-02-2025"
+  },
+  {
+    "old": "/2025/02/11/turnir-u-prstenu-2025/",
+    "new": "/hr/novosti/turnir-u-prstenu-2025"
+  },
+  {
+    "old": "/2025/02/05/zabavna-vecer-2025/",
+    "new": "/hr/novosti/zabavna-vecer-2025"
+  },
+  {
+    "old": "/2024/12/13/pozivnica-za-izlet-u-europa-park/",
+    "new": "/hr/novosti/pozivnica-za-izlet-u-europa-park"
+  },
+  {
+    "old": "/2024/11/29/malonogometni-turnir-2024/",
+    "new": "/hr/novosti/malonogometni-turnir-2024"
+  },
+  {
+    "old": "/2024/11/22/malonogometni-turnir-23-11-2024-%e2%9a%bd/",
+    "new": "/hr/novosti/malonogometni-turnir-23-11-2024",
+    "napomena": "JEDINI slug koji se razlikuje između starog i novog sajta (stari ima URL-encoded emoji na kraju, novi ga nema) — treba EKSPLICITNU iznimku prije generičkog wildcard pravila /:god/:mj/:dan/:slug -> /hr/novosti/:slug, ne smije se osloniti na čisto 1:1 slug-preserving pattern."
+  },
+  {
+    "old": "/2024/06/12/izvjestaj-sa-29-godisnje-skupstine-hnk-kroatien-schwyz/",
+    "new": "/hr/novosti/izvjestaj-sa-29-godisnje-skupstine-hnk-kroatien-schwyz"
+  },
+  {
+    "old": "/2024/06/04/pozivnica-na-godisnju-skupstinu-hnk-kroatien-sz/",
+    "new": "/hr/novosti/pozivnica-na-godisnju-skupstinu-hnk-kroatien-sz"
+  },
+  {
+    "old": "/2024/05/24/izlet-kluba-hnk-kroatien-schwyz-2024/",
+    "new": "/hr/novosti/izlet-kluba-hnk-kroatien-schwyz-2024"
+  },
+  {
+    "old": "/2024/03/12/zaprati-novi-kroatien-schwyz-whatsapp-kanal/",
+    "new": "/hr/novosti/zaprati-novi-kroatien-schwyz-whatsapp-kanal"
+  },
+  {
+    "old": "/2024/03/11/pozivnica-na-izlet-s-clanovima-2024/",
+    "new": "/hr/novosti/pozivnica-na-izlet-s-clanovima-2024"
+  },
+  {
+    "old": "/2024/02/09/nezaboravna-zabavna-vecer/",
+    "new": "/hr/novosti/nezaboravna-zabavna-vecer"
+  },
+  {
+    "old": "/2023/12/21/cestit-bozic/",
+    "new": "/hr/novosti/cestit-bozic"
+  },
+  {
+    "old": "/2023/11/28/zabavna-vecer-u-dvorani-aula-brunnen-za-sve-generacije/",
+    "new": "/hr/novosti/zabavna-vecer-u-dvorani-aula-brunnen-za-sve-generacije"
+  },
+  {
+    "old": "/2023/11/15/uspjesno-odrzan-malonogometni-turnir-u-ibachu-hvala-svima-na-podrsci/",
+    "new": "/hr/novosti/uspjesno-odrzan-malonogometni-turnir-u-ibachu-hvala-svima-na-podrsci"
+  },
+  {
+    "old": "/2023/09/07/malonogometni-turnir-2023/",
+    "new": "/hr/novosti/malonogometni-turnir-2023"
+  },
+  {
+    "old": "/2023/08/21/hrvatske-delicije-i-zajednistvo-zasjali-na-kulinarik-festivalu-u-brunnenu-hvala/",
+    "new": "/hr/novosti/hrvatske-delicije-i-zajednistvo-zasjali-na-kulinarik-festivalu-u-brunnenu-hvala"
+  },
+  {
+    "old": "/2023/08/21/hrvatski-klub-odusevio-na-kulinarik-festivalu-202/",
+    "new": "/hr/novosti/hrvatski-klub-odusevio-na-kulinarik-festivalu-202"
+  },
+  {
+    "old": "/2023/07/09/druzenje-na-morschachu-s-clanovima-kluba/",
+    "new": "/hr/novosti/druzenje-na-morschachu-s-clanovima-kluba"
+  },
+  {
+    "old": "/2023/07/09/novi-dresovi-kroatie-schwyz/",
+    "new": "/hr/novosti/novi-dresovi-kroatie-schwyz"
+  },
+  {
+    "old": "/2023/07/09/brunnen-kocht-2023/",
+    "new": "/hr/novosti/brunnen-kocht-2023"
+  },
+  {
+    "old": "/2023/07/06/povjest-hnk-kroatien-schwyz/",
+    "new": "/hr/novosti/povjest-hnk-kroatien-schwyz"
+  },
+  {
+    "old": "/2023/06/27/redizajn/",
+    "new": "/hr/novosti/redizajn"
+  },
+  {
+    "old": "/2023/03/04/turnir-prstena-2023/",
+    "new": "/hr/novosti/turnir-prstena-2023"
+  }
+]
