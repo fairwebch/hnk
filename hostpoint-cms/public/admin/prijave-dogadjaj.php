@@ -9,6 +9,7 @@ require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/db-prijave.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/layout.php';
+require __DIR__ . '/includes/kotizacija-ekipe.php';
 
 $user = hnkcms_require_login();
 $priv = hnkcms_db_prijave();
@@ -40,6 +41,36 @@ $slug = $prijave[0]['dogadjaj_slug'];
 // samo kad je $isEkipa, inače bi bio prazan na SVAKOM osoba-tipa događaju.
 $isEkipa = ($prijave[0]['tip'] ?? null) === 'ekipa';
 
+// Strukturirana cijena po kategoriji živi na dogadjaji (GLAVNA baza, ne
+// privatna prijave baza koju ova stranica inače isključivo koristi) — jedan
+// dodatan upit po stranici, po dogadjaj_id.
+$cijenePoKategoriji = ['Aktivni' => null, 'Seniori' => null, 'Djeca' => null];
+$hasStruct = false;
+if ($isEkipa) {
+    $db = hnkcms_db();
+    $ev = $db->prepare('SELECT cijena_aktivni, cijena_seniori, cijena_djeca FROM dogadjaji WHERE id = ?');
+    $ev->execute([$dogadjajId]);
+    if ($r = $ev->fetch()) {
+        $cijenePoKategoriji = ['Aktivni' => $r['cijena_aktivni'], 'Seniori' => $r['cijena_seniori'], 'Djeca' => $r['cijena_djeca']];
+        $hasStruct = hnkcms_ima_strukturiranu_cijenu($cijenePoKategoriji);
+    }
+}
+// Izračunaj jednom po retku (koristi se i u CSV-u i u HTML tablici niže) —
+// ključ je id prijave, vrijednost gotov tekst za prikaz.
+$kotizacijaByRow = [];
+$kotizacijaUkupno = 0.0;
+if ($hasStruct) {
+    foreach ($prijave as $p) {
+        $odabrane = $p['kategorija_ekipe'] ? explode(',', (string) $p['kategorija_ekipe']) : [];
+        $kotizacijaByRow[$p['id']] = hnkcms_kotizacija_ekipe($odabrane, $cijenePoKategoriji);
+        if (!(int) $p['otkazana']) {
+            foreach ($odabrane as $kat) {
+                $kotizacijaUkupno += (float) ($cijenePoKategoriji[$kat] ?? 0.0);
+            }
+        }
+    }
+}
+
 // --- CSV (UTF-8 BOM + ; separator, isti stupci kao Sanity dashboard) ---
 if (isset($_GET['csv'])) {
     header('Content-Type: text/csv; charset=utf-8');
@@ -49,7 +80,9 @@ if (isset($_GET['csv'])) {
     fputcsv($out, array_merge(
         ['Tip', 'Ime / Naziv ekipe'],
         $isEkipa ? ['Kategorija'] : [],
-        ['Prezime / Kontakt osoba', 'E-mail', 'Telefon', 'Broj osoba', 'Napomena', 'Status plaćanja', 'Datum prijave', 'Otkazana', 'Datum otkaza'],
+        ['Prezime / Kontakt osoba', 'E-mail', 'Telefon', 'Broj osoba', 'Napomena'],
+        $hasStruct ? ['Kotizacija'] : [],
+        ['Status plaćanja', 'Datum prijave', 'Otkazana', 'Datum otkaza'],
     ), ';');
     foreach ($prijave as $p) {
         fputcsv($out, array_merge(
@@ -61,6 +94,9 @@ if (isset($_GET['csv'])) {
             [
                 $p['tip'] === 'osoba' ? $p['prezime'] : $p['kontakt_osoba'],
                 $p['email'], $p['telefon'] ?? '', (int) $p['broj_osoba'], $p['napomena'] ?? '',
+            ],
+            $hasStruct ? [$kotizacijaByRow[$p['id']] ?? ''] : [],
+            [
                 $p['status_placanja'] === 'placeno' ? 'Plaćeno' : 'Neplaćeno',
                 $p['datum_prijave'], (int) $p['otkazana'] ? 'da' : 'ne', $p['datum_otkaza'] ?? '',
             ],
@@ -78,14 +114,14 @@ hnkcms_admin_page_start('Prijave · ' . $naslov, 'prijave', $user);
 ?>
   <p><a href="/admin/prijave.php">&larr; Natrag na pregled</a></p>
   <div class="admin-toolbar">
-    <h2><?= htmlspecialchars($naslov, ENT_QUOTES) ?> <span class="hint" style="display:inline;font-weight:400">— <?= count($aktivne) ?> aktivnih (<?= $osobe ?> osoba), <?= $placene ?> plaćenih, <?= count($prijave) - count($aktivne) ?> otkazanih</span></h2>
+    <h2><?= htmlspecialchars($naslov, ENT_QUOTES) ?> <span class="hint" style="display:inline;font-weight:400">— <?= count($aktivne) ?> aktivnih (<?= $osobe ?> osoba), <?= $placene ?> plaćenih, <?= count($prijave) - count($aktivne) ?> otkazanih<?= $hasStruct ? ', ukupno kotizacija CHF ' . htmlspecialchars(hnkcms_format_chf($kotizacijaUkupno), ENT_QUOTES) : '' ?></span></h2>
     <a href="<?= $back ?>&amp;csv=1" class="btn btn-primary">Izvoz CSV</a>
   </div>
   <?php hnkcms_flash(); ?>
 
   <table class="admin-table">
     <thead>
-      <tr><th>Tip</th><th>Ime / ekipa</th><?= $isEkipa ? '<th>Kategorija</th>' : '' ?><th>E-mail</th><th>Telefon</th><th>Osobe</th><th>Napomena</th><th>Plaćeno</th><th>Prijava</th><th></th></tr>
+      <tr><th>Tip</th><th>Ime / ekipa</th><?= $isEkipa ? '<th>Kategorija</th>' : '' ?><th>E-mail</th><th>Telefon</th><th>Osobe</th><th>Napomena</th><?= $hasStruct ? '<th>Kotizacija</th>' : '' ?><th>Plaćeno</th><th>Prijava</th><th></th></tr>
     </thead>
     <tbody>
       <?php foreach ($prijave as $p): $otk = (int) $p['otkazana']; ?>
@@ -100,6 +136,7 @@ hnkcms_admin_page_start('Prijave · ' . $naslov, 'prijave', $user);
           <td><?= htmlspecialchars((string) $p['telefon'], ENT_QUOTES) ?></td>
           <td><?= (int) $p['broj_osoba'] ?></td>
           <td style="max-width:220px;font-size:.8rem"><?= nl2br(htmlspecialchars((string) $p['napomena'], ENT_QUOTES)) ?></td>
+          <?php if ($hasStruct): ?><td><?= htmlspecialchars($kotizacijaByRow[$p['id']] ?? '', ENT_QUOTES) ?></td><?php endif; ?>
           <td>
             <?php if (!$otk): ?>
               <form method="post" style="margin:0">

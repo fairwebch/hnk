@@ -60,6 +60,10 @@ export interface Dogadjaj {
   flyerImage?: CmsImg;
   description?: LocaleBlocks;
   kotizacija?: string;
+  /** Strukturirana cijena po kategoriji (samo relevantno za vrstaPrijave='ekipa') — kad barem jedna nije undefined, ukupna kotizacija se računa iz odabranih kategorija umjesto koristeći `kotizacija` iznad. */
+  cijenaAktivni?: number;
+  cijenaSeniori?: number;
+  cijenaDjeca?: number;
   prikaziKotizaciju?: boolean;
   prijavaLink?: string;
   prikaziGumbPrijave?: boolean;

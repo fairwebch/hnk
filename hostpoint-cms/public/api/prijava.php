@@ -23,6 +23,7 @@ require __DIR__ . '/../admin/includes/db.php';
 require __DIR__ . '/../admin/includes/db-prijave.php';
 require __DIR__ . '/../admin/includes/cors.php';
 require __DIR__ . '/../admin/includes/mail.php';
+require __DIR__ . '/../admin/includes/kotizacija-ekipe.php';
 
 header('Content-Type: application/json; charset=utf-8');
 hnkcms_apply_public_cors(true);
@@ -72,7 +73,7 @@ function rate_limited(PDO $p, string $prefix, int $max, int $windowSec): bool
 
 function load_event(PDO $db, string $slug): ?array
 {
-    $stmt = $db->prepare("SELECT id, slug, naziv_hr, naziv_de, kotizacija, vrsta_prijave, pristup_prijavi, prijave_otvorene, rok_prijave, tajni_kod, datum_pocetak, datum_kraj
+    $stmt = $db->prepare("SELECT id, slug, naziv_hr, naziv_de, kotizacija, cijena_aktivni, cijena_seniori, cijena_djeca, vrsta_prijave, pristup_prijavi, prijave_otvorene, rok_prijave, tajni_kod, datum_pocetak, datum_kraj
                           FROM dogadjaji WHERE slug = ? AND status = 'veroeffentlicht'");
     $stmt->execute([$slug]);
     return $stmt->fetch() ?: null;
@@ -237,6 +238,15 @@ if (!access_allowed($ev, $kod)) {
     respond(403, ['error' => 'forbidden']);
 }
 
+// Strukturirana cijena po kategoriji (ako je konfigurirana za ovaj događaj)
+// nadjačava slobodni tekst kotizacije SAMO za ekipnu prijavu — osobne
+// prijave i ekipni događaji bez konfigurirane cijene ostaju nepromijenjeni
+// (koriste $ev['kotizacija'] kao dosad).
+$cijenePoKategoriji = ['Aktivni' => $ev['cijena_aktivni'], 'Seniori' => $ev['cijena_seniori'], 'Djeca' => $ev['cijena_djeca']];
+$kotizacijaDisplay = ($type === 'ekipa' && hnkcms_ima_strukturiranu_cijenu($cijenePoKategoriji))
+    ? hnkcms_kotizacija_ekipe($kategorijaEkipeArr, $cijenePoKategoriji)
+    : ($ev['kotizacija'] ?: null);
+
 $token = rtrim(strtr(base64_encode(random_bytes(24)), '+/', '-_'), '=');
 try {
     $priv->prepare(
@@ -268,7 +278,7 @@ $details = ['Događaj' => $naslovEventa]
     + ['E-mail' => $email]
     + ($telefon ? ['Telefon' => $telefon] : [])
     + ($napomena ? ['Napomena' => $napomena] : [])
-    + ($ev['kotizacija'] ? ['Kotizacija' => $ev['kotizacija']] : []);
+    + ($kotizacijaDisplay ? ['Kotizacija' => $kotizacijaDisplay] : []);
 $rows = '';
 foreach ($details as $k => $v) {
     $rows .= '<tr><td style="padding:4px 14px 4px 0;color:#666;white-space:nowrap">' . $e($k) . ':</td><td style="padding:4px 0"><strong>' . $e((string) $v) . '</strong></td></tr>';
@@ -289,7 +299,7 @@ $confHtml = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#111;
     . '<p>' . ($hr ? 'Pozdrav' : 'Hallo') . ' ' . $e((string) $pozdrav) . ',</p>'
     . '<p>' . ($hr ? 'zaprimili smo vašu prijavu na događaj <strong>' . $e($naslovEventa) . '</strong>.' : 'wir haben Ihre Anmeldung für <strong>' . $e($naslovEventa) . '</strong> erhalten.') . '</p>'
     . $table
-    . ($ev['kotizacija'] ? '<p>' . ($hr ? 'Kotizacija iznosi <strong>' . $e($ev['kotizacija']) . '</strong> — informacije o plaćanju dobit ćete od organizatora.' : 'Das Startgeld beträgt <strong>' . $e($ev['kotizacija']) . '</strong> — Angaben zur Zahlung erhalten Sie vom Organisator.') . '</p>' : '')
+    . ($kotizacijaDisplay ? '<p>' . ($hr ? 'Kotizacija iznosi <strong>' . $e($kotizacijaDisplay) . '</strong> — informacije o plaćanju dobit ćete od organizatora.' : 'Das Startgeld beträgt <strong>' . $e($kotizacijaDisplay) . '</strong> — Angaben zur Zahlung erhalten Sie vom Organisator.') . '</p>' : '')
     . '<p>' . ($hr ? 'Ako ne možete doći, prijavu možete otkazati ovdje:' : 'Falls Sie nicht teilnehmen können, können Sie Ihre Anmeldung hier stornieren:') . '<br><a href="' . $e($cancelUrl) . '">' . $e($cancelUrl) . '</a></p>'
     . '<p>' . ($hr ? 'Sportski pozdrav' : 'Sportliche Grüsse') . ',<br>HNK Kroatien Schwyz</p></div>';
 $confOk = hnkcms_send_mail($email, ($hr ? 'Potvrda prijave — ' : 'Anmeldebestätigung — ') . $naslovEventa, $confHtml, $cfg['contact_to']);
