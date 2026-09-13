@@ -54,7 +54,18 @@ $db = hnkcms_db();
 $n = 0;
 foreach ($statements as $stmt) {
     try {
-        $db->exec($stmt);
+        // query(), ne exec(): kad idempotentna grana odabere "EXECUTE stmt"
+        // nad "SELECT 1" (već primijenjeno, ništa za mijenjati), taj EXECUTE
+        // vraća rezultat-set — exec() ga ne konzumira, pa sljedeća naredba
+        // (DEALLOCATE PREPARE) na istoj konekciji baci "Cannot execute
+        // queries while other unbuffered queries are active." Otkriveno
+        // uživo: ponovno pokretanje već primijenjene migracije 007 (privatna
+        // prijave baza, isti obrazac) reproduciralo je točno ovu grešku.
+        // query() vraća PDOStatement čiji kursor PHP zatvara kad se odbaci
+        // (rezultat se ovdje namjerno ne koristi), pa je ponovno pokretanje
+        // iste migracije stvarno sigurno, ne samo naizgled — kako i piše u
+        // komentaru "Sigurno za re-run" na vrhu svake migracijske datoteke.
+        $db->query($stmt);
         $n++;
     } catch (PDOException $e) {
         fwrite(STDERR, "GREŠKA na naredbi #" . ($n + 1) . " od " . count($statements) . ":\n");
