@@ -5,6 +5,11 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Vercelov optimizer je bio bez kvote (402) pa se slike nisu prikazivale —
+    // vidi lib/imageLoader.ts. Kad je custom loader aktivan, remotePatterns
+    // se ne primjenjuje; ostaje samo kao dokumentacija dozvoljenih izvora.
+    loader: 'custom',
+    loaderFile: './lib/imageLoader.ts',
     remotePatterns: [
       // Sve slike sadržaja dolaze sa self-hosted PHP CMS-a — vidi hostpoint-cms/README.md.
       { protocol: 'https', hostname: 'api.kroatien-schwyz.ch' },
