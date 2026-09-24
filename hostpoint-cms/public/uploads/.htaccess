@@ -4,3 +4,14 @@
   Require all denied
 </FilesMatch>
 Options -Indexes
+
+# Cache: imena varijanti sadrže nasumični hash (WebpPipeline: prefiks-id-<8 hex>
+# [-veličina].webp, SVG isto), pa svaki upload dobiva novo ime i sadržaj pod
+# istim imenom se nikad ne mijenja — sigurno za godinu dana + immutable.
+# Samo webp/svg, i "Header set" (ne "always"): greške poput 404 se NE keširaju.
+# API JSON (../api/*.php) je izvan ovog foldera i ostaje nekeširan.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(webp|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
