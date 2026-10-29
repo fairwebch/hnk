@@ -26,11 +26,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     [t('factVenue'), t('factVenueValue')],
     [t('factClub'), t('factClubValue')],
   ];
-  const offers: [string, string][] = [
-    [t('offerBannerTitle'), t('offerBannerText')],
-    [t('offerFlyerTitle'), t('offerFlyerText')],
-    [t('offerOtherTitle'), t('offerOtherText')],
-  ];
 
   return (
     <>
@@ -80,24 +75,19 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      {/* Što nudimo */}
+      {/* Vaša podrška — glavna poruka je podrška; banner/flyeri samo kao usputna mogućnost. */}
       <section className="bg-white border-y border-line">
         <div className="container-x py-16 md:py-24">
-          <div className="max-w-2xl">
-            <div className="font-display font-bold uppercase text-xs tracking-wider2 text-croatia mb-3">{t('offerKicker')}</div>
-            <h2 className="h-display text-content text-3xl md:text-5xl leading-[0.95]">{t('offerTitle')}</h2>
-            <p className="font-sans text-lg text-content-soft mt-5">{t('offerIntro')}</p>
+          <div className="max-w-3xl">
+            <div className="font-display font-bold uppercase text-xs tracking-wider2 text-croatia mb-3">{t('supportKicker')}</div>
+            <h2 className="h-display text-content text-3xl md:text-5xl leading-[0.95]">{t('supportTitle')}</h2>
+            <p className="font-sans text-lg md:text-xl text-content-soft mt-6 leading-relaxed">{t('supportText')}</p>
+            <p className="h-display text-content text-2xl mt-8 border-l-[3px] border-croatia pl-4">{t('supportAmount')}</p>
+            <p className="font-sans text-content-muted mt-6">{t('supportOptions')}</p>
+            <a href="#forma" className="btn-cta mt-8 px-6 py-3.5">
+              <span>{t('ctaHero')}</span>
+            </a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-line border border-line mt-10">
-            {offers.map(([title, text]) => (
-              <div key={title} className="bg-white p-6 md:p-8">
-                <div className="w-8 h-[3px] bg-croatia mb-5" aria-hidden />
-                <h3 className="h-display text-content text-2xl">{title}</h3>
-                <p className="font-sans text-content-soft mt-3">{text}</p>
-              </div>
-            ))}
-          </div>
-          <p className="font-sans text-sm text-content-muted mt-5">{t('offerNote')}</p>
         </div>
       </section>
 
