@@ -21,6 +21,15 @@ if ($id !== null) {
 }
 
 $kategorije = ['Eventi', 'Novosti', 'Skupština', 'Sport'];
+// Fokus naslovne slike (stupac cover_fokus) => CSS object-position, isto
+// preslikavanje kao u api-novost.php; koristi se i za pregled u adminu.
+$fokusi = [
+    'sredina' => ['Sredina (zadano)', '50% 50%'],
+    'lijevo' => ['Lijevo', '0% 50%'],
+    'desno' => ['Desno', '100% 50%'],
+    'gore' => ['Gore', '50% 0%'],
+    'dolje' => ['Dolje', '50% 100%'],
+];
 $uploadsDir = __DIR__ . '/../uploads/novosti';
 $errors = [];
 
@@ -33,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datumRaw = trim((string) ($_POST['datum'] ?? ''));       // datetime-local: GGGG-MM-DDTHH:MM
     $kategorija = (string) ($_POST['kategorija'] ?? 'Novosti');
     $coverAlt = trim((string) ($_POST['cover_alt'] ?? ''));
+    $coverFokus = (string) ($_POST['cover_fokus'] ?? 'sredina');
     $sazetakHr = trim((string) ($_POST['sazetak_hr'] ?? ''));
     $sazetakDe = trim((string) ($_POST['sazetak_de'] ?? ''));
     $sadrzajHr = (string) ($_POST['sadrzaj_hr'] ?? '');
@@ -44,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (!in_array($kategorija, $kategorije, true)) {
         $errors[] = 'Nevažeća kategorija.';
+    }
+    if (!isset($fokusi[$coverFokus])) {
+        $errors[] = 'Nevažeći fokus naslovne slike.';
     }
     $datum = null;
     if (preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/', $datumRaw)) {
@@ -63,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $baseCols = 'slug=?, naslov_hr=?, naslov_de=?, datum=?, kategorija=?, cover_alt=?, sazetak_hr=?, sazetak_de=?, sadrzaj_hr=?, sadrzaj_de=?, status=?';
-    $baseParams = [$slug, $naslovHr, $naslovDe ?: null, $datum, $kategorija, $coverAlt ?: null, $sazetakHr ?: null, $sazetakDe ?: null, $sadrzajHr ?: null, $sadrzajDe ?: null, $status];
+    $baseCols = 'slug=?, naslov_hr=?, naslov_de=?, datum=?, kategorija=?, cover_alt=?, cover_fokus=?, sazetak_hr=?, sazetak_de=?, sadrzaj_hr=?, sadrzaj_de=?, status=?';
+    $baseParams = [$slug, $naslovHr, $naslovDe ?: null, $datum, $kategorija, $coverAlt ?: null, $coverFokus, $sazetakHr ?: null, $sazetakDe ?: null, $sadrzajHr ?: null, $sadrzajDe ?: null, $status];
 
     $coverData = null;
     $removeCover = false;
@@ -122,6 +135,10 @@ $isEdit = $row !== null;
 $v = fn(string $key, $default = '') => htmlspecialchars((string) ($_POST[$key] ?? $row[$key] ?? $default), ENT_QUOTES);
 $datumValue = $_POST['datum'] ?? ($row ? str_replace(' ', 'T', substr($row['datum'], 0, 16)) : date('Y-m-d\TH:i'));
 $selKat = (string) ($_POST['kategorija'] ?? $row['kategorija'] ?? 'Novosti');
+$selFokus = (string) ($_POST['cover_fokus'] ?? $row['cover_fokus'] ?? 'sredina');
+if (!isset($fokusi[$selFokus])) {
+    $selFokus = 'sredina';
+}
 
 $slike = [];
 if ($isEdit) {
@@ -173,13 +190,21 @@ hnkcms_admin_page_start($isEdit ? 'Uredi novost' : 'Nova novost', 'novosti', $us
       </label>
       <?php if ($isEdit && $row['cover_small']): ?>
         <div class="current-logo">
-          <img src="<?= htmlspecialchars($uploadsUrl . '/' . $row['cover_small'], ENT_QUOTES) ?>" alt="" style="width:120px;height:68px;object-fit:cover">
+          <img src="<?= htmlspecialchars($uploadsUrl . '/' . $row['cover_small'], ENT_QUOTES) ?>" alt="" style="width:120px;height:68px;object-fit:cover;object-position:<?= $fokusi[$selFokus][1] ?>">
           <span class="hint">Trenutna (<?= (int) $row['cover_width'] ?>×<?= (int) $row['cover_height'] ?>)</span>
         </div>
         <label class="checkbox-inline"><input type="checkbox" name="ukloni_cover" value="1"> Ukloni naslovnu sliku</label>
       <?php endif; ?>
       <label>Alt tekst
         <input type="text" name="cover_alt" value="<?= $v('cover_alt') ?>">
+      </label>
+      <label>Fokus slike u karticama
+        <select name="cover_fokus">
+          <?php foreach ($fokusi as $k => [$label]): ?>
+            <option value="<?= $k ?>" <?= $selFokus === $k ? 'selected' : '' ?>><?= htmlspecialchars($label, ENT_QUOTES) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <span class="hint">Kartice na početnoj i u listi novosti često su uže od slike pa se slika obreže. Ovdje birate koji dio ostaje vidljiv, npr. „Desno" za plakat s tekstom na desnoj strani. Na stranici članka slika se uvijek prikazuje cijela (16:9).</span>
       </label>
     </div>
 
