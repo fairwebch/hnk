@@ -243,9 +243,16 @@ if (!access_allowed($ev, $kod)) {
 // prijave i ekipni događaji bez konfigurirane cijene ostaju nepromijenjeni
 // (koriste $ev['kotizacija'] kao dosad).
 $cijenePoKategoriji = ['Aktivni' => $ev['cijena_aktivni'], 'Seniori' => $ev['cijena_seniori'], 'Djeca' => $ev['cijena_djeca']];
-$kotizacijaDisplay = ($type === 'ekipa' && hnkcms_ima_strukturiranu_cijenu($cijenePoKategoriji))
+$hasStrukturiranuCijenu = $type === 'ekipa' && hnkcms_ima_strukturiranu_cijenu($cijenePoKategoriji);
+$kotizacijaDisplay = $hasStrukturiranuCijenu
     ? hnkcms_kotizacija_ekipe($kategorijaEkipeArr, $cijenePoKategoriji)
     : ($ev['kotizacija'] ?: null);
+// Kratak zbroj za drugu rečenicu potvrdnog emaila (vidi ispod $confHtml) —
+// null kad $kotizacijaDisplay (u $table) već kaže sve što treba, pa dodatna
+// rečenica ne bi bila korisna već doslovno ponavljanje istog iznosa.
+$kotizacijaUkupnoKratko = $hasStrukturiranuCijenu
+    ? hnkcms_kotizacija_ekipe_ukupno_kratko($kategorijaEkipeArr, $cijenePoKategoriji)
+    : null;
 
 $token = rtrim(strtr(base64_encode(random_bytes(24)), '+/', '-_'), '=');
 try {
@@ -295,11 +302,31 @@ $notifOk = hnkcms_send_mail(
 
 $hr = $locale === 'hr';
 $pozdrav = $type === 'osoba' ? $ime : $kontaktOsoba;
+
+// Strukturirana cijena: $table (gore) već prikazuje puni raščlan
+// ($kotizacijaDisplay), pa ovdje ističemo SAMO krajnji zbroj, i samo kad
+// $kotizacijaUkupnoKratko postoji (inače bi ponovila isti iznos iz
+// tablice — vidi hnkcms_kotizacija_ekipe_ukupno_kratko). Slobodni tekst
+// (događaji bez strukturirane cijene, osobne prijave): nepromijenjeno
+// dosadašnje ponašanje.
+$kotizacijaParagraf = '';
+if ($hasStrukturiranuCijenu) {
+    if ($kotizacijaUkupnoKratko !== null) {
+        $kotizacijaParagraf = '<p>' . ($hr
+            ? 'Ukupna kotizacija iznosi <strong>' . $e($kotizacijaUkupnoKratko) . '</strong> — informacije o plaćanju dobit ćete od organizatora.'
+            : 'Die Gesamtstartgebühr beträgt <strong>' . $e($kotizacijaUkupnoKratko) . '</strong> — Angaben zur Zahlung erhalten Sie vom Organisator.') . '</p>';
+    }
+} elseif ($kotizacijaDisplay) {
+    $kotizacijaParagraf = '<p>' . ($hr
+        ? 'Kotizacija iznosi <strong>' . $e($kotizacijaDisplay) . '</strong> — informacije o plaćanju dobit ćete od organizatora.'
+        : 'Das Startgeld beträgt <strong>' . $e($kotizacijaDisplay) . '</strong> — Angaben zur Zahlung erhalten Sie vom Organisator.') . '</p>';
+}
+
 $confHtml = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#111;line-height:1.55">'
     . '<p>' . ($hr ? 'Pozdrav' : 'Hallo') . ' ' . $e((string) $pozdrav) . ',</p>'
     . '<p>' . ($hr ? 'zaprimili smo vašu prijavu na događaj <strong>' . $e($naslovEventa) . '</strong>.' : 'wir haben Ihre Anmeldung für <strong>' . $e($naslovEventa) . '</strong> erhalten.') . '</p>'
     . $table
-    . ($kotizacijaDisplay ? '<p>' . ($hr ? 'Kotizacija iznosi <strong>' . $e($kotizacijaDisplay) . '</strong> — informacije o plaćanju dobit ćete od organizatora.' : 'Das Startgeld beträgt <strong>' . $e($kotizacijaDisplay) . '</strong> — Angaben zur Zahlung erhalten Sie vom Organisator.') . '</p>' : '')
+    . $kotizacijaParagraf
     . '<p>' . ($hr ? 'Ako ne možete doći, prijavu možete otkazati ovdje:' : 'Falls Sie nicht teilnehmen können, können Sie Ihre Anmeldung hier stornieren:') . '<br><a href="' . $e($cancelUrl) . '">' . $e($cancelUrl) . '</a></p>'
     . '<p>' . ($hr ? 'Sportski pozdrav' : 'Sportliche Grüsse') . ',<br>HNK Kroatien Schwyz</p></div>';
 $confOk = hnkcms_send_mail($email, ($hr ? 'Potvrda prijave — ' : 'Anmeldebestätigung — ') . $naslovEventa, $confHtml, $cfg['contact_to']);

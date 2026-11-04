@@ -1,5 +1,6 @@
 import { Card, cardImage, cardTitle } from '@/components/ui/Card';
 import { CmsImage } from '@/components/ui/CmsImage';
+import { focusToObjectPosition } from '@/lib/cmsImage';
 import { pickLocale, formatDate } from '@/lib/locale';
 import type { NovostFromApi as Novost } from '@/lib/novostiApi';
 
@@ -24,6 +25,7 @@ export function NewsCard({
           fill
           sizes="(max-width:768px) 100vw, 33vw"
           className={cardImage}
+          objectPosition={focusToObjectPosition(novost.coverFocus)}
         />
       </div>
       <div className="p-5 flex flex-col flex-1">

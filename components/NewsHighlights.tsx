@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { Card, cardImage, cardTitle } from '@/components/ui/Card';
 import { CmsImage } from '@/components/ui/CmsImage';
+import { focusToObjectPosition } from '@/lib/cmsImage';
 import { pickLocale, formatDate } from '@/lib/locale';
 import type { NovostFromApi as Novost } from '@/lib/novostiApi';
 
@@ -91,6 +92,7 @@ function FeaturedCard({
           fill
           sizes="(max-width:768px) 100vw, (max-width:1200px) 50vw, 440px"
           className={cardImage}
+          objectPosition={focusToObjectPosition(novost.coverFocus)}
         />
       </div>
       <div className="p-6 md:p-7 flex flex-col justify-center">
@@ -136,6 +138,7 @@ function TeaserCard({
           fill
           sizes={sizes}
           className={cardImage}
+          objectPosition={focusToObjectPosition(novost.coverFocus)}
         />
       </div>
       <div className="p-5 md:p-6 flex flex-col flex-1">

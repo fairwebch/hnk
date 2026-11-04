@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import { fetchNovost, fetchNovosti } from '@/lib/novostiApi';
 import { CmsImage } from '@/components/ui/CmsImage';
+import { focusToObjectPosition } from '@/lib/cmsImage';
 import { HtmlContent } from '@/components/ui/HtmlContent';
 import { pickLocale, formatDate } from '@/lib/locale';
 
@@ -70,7 +71,15 @@ export default async function NovostPage({
       {n.coverImage && (
         <div className="container-x max-w-4xl">
           <div className="relative aspect-[16/9] overflow-hidden border border-line">
-            <CmsImage image={n.coverImage} alt={title} fill sizes="100vw" className="object-cover" priority />
+            <CmsImage
+              image={n.coverImage}
+              alt={title}
+              fill
+              sizes="100vw"
+              className="object-cover"
+              objectPosition={focusToObjectPosition(n.coverFocus)}
+              priority
+            />
           </div>
         </div>
       )}

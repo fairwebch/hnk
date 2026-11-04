@@ -13,6 +13,9 @@ function hnkcms_datetime_iso(string $mysqlDatetime): string
     return str_replace(' ', 'T', $mysqlDatetime) . 'Z';
 }
 
+/** novosti.cover_fokus -> vrijednost koju frontend preslikava u object-position. */
+const HNKCMS_COVER_FOCUS = ['sredina' => 'center', 'lijevo' => 'left', 'desno' => 'right', 'gore' => 'top', 'dolje' => 'bottom'];
+
 function hnkcms_novost_summary_json(array $row, string $uploadsUrl): array
 {
     return [
@@ -22,6 +25,7 @@ function hnkcms_novost_summary_json(array $row, string $uploadsUrl): array
         'date' => hnkcms_datetime_iso($row['datum']),
         'category' => $row['kategorija'],
         'coverImage' => hnkcms_image_json($row, 'cover', $uploadsUrl, 'cover_alt'),
+        'coverFocus' => HNKCMS_COVER_FOCUS[$row['cover_fokus'] ?? 'sredina'] ?? 'center',
         'excerpt' => hnkcms_locale_json($row, 'sazetak'),
     ];
 }
