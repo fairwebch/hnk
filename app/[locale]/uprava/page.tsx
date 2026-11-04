@@ -42,7 +42,9 @@ function Portrait({ member, sizes }: { member: ClanUpraveFromApi; sizes: string 
       alt={member.name}
       fill
       sizes={sizes}
-      className="object-cover"
+      // object-top: uspravni portreti (npr. 1024x1536) u kvadratnom/4:5 okviru
+      // inače izgube vrh glave; kvadratne slike to ne mijenja.
+      className="object-cover object-top"
       unoptimized={member.image.isVector}
     />
   ) : (
