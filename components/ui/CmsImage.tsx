@@ -17,6 +17,7 @@ export function CmsImage({
   sizes,
   fill = false,
   priority = false,
+  objectPosition,
 }: {
   image?: CmsImg | null;
   alt?: string;
@@ -26,6 +27,8 @@ export function CmsImage({
   sizes?: string;
   fill?: boolean;
   priority?: boolean;
+  /** CSS object-position for object-cover crops, e.g. from focusToObjectPosition(). */
+  objectPosition?: string;
 }) {
   if (!image) {
     return (
@@ -48,6 +51,7 @@ export function CmsImage({
   }
 
   const resolvedAlt = image.alt || alt;
+  const style = objectPosition ? { objectPosition } : undefined;
 
   if (fill) {
     return (
@@ -58,6 +62,7 @@ export function CmsImage({
         sizes={sizes ?? '100vw'}
         priority={priority}
         className={className}
+        style={style}
         unoptimized={image.isVector}
       />
     );
@@ -72,6 +77,7 @@ export function CmsImage({
       sizes={sizes}
       priority={priority}
       className={className}
+      style={style}
       unoptimized={image.isVector}
     />
   );

@@ -367,6 +367,9 @@ CREATE TABLE IF NOT EXISTS novosti (
   cover_width       SMALLINT UNSIGNED NULL,
   cover_height      SMALLINT UNSIGNED NULL,
   cover_alt         VARCHAR(255) NULL,
+  -- Koji dio naslovne slike ostaje vidljiv kad je kartica uža/viša od slike
+  -- (object-position); 'sredina' = centrirani izrez. Vidi migraciju 010.
+  cover_fokus       ENUM('sredina','lijevo','desno','gore','dolje') NOT NULL DEFAULT 'sredina',
 
   sazetak_hr        TEXT NULL,
   sazetak_de        TEXT NULL,

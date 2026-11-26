@@ -1,5 +1,5 @@
 import type { LocaleString } from '@/lib/cmsTypes';
-import type { CmsImg } from '@/lib/cmsImage';
+import type { CmsImg, ImageFocus } from '@/lib/cmsImage';
 
 /**
  * TEST MIGRACIJA (staging/php-sponsors-api-test): novosti se ovdje čitaju sa
@@ -27,6 +27,8 @@ interface NovostApiSummary {
   date: string;
   category: string;
   coverImage: CmsImg | null;
+  /** Absent on an API deployed before migration 010 — treated as center. */
+  coverFocus?: ImageFocus;
   excerpt: ApiLocale;
 }
 
@@ -43,6 +45,8 @@ export interface NovostFromApi {
   date: string;
   category?: string;
   coverImage?: CmsImg;
+  /** Koji dio naslovne slike ostaje vidljiv u karticama koje je obrezuju (admin: "Fokus slike"). */
+  coverFocus?: ImageFocus;
   excerpt?: LocaleString;
   /** Samo na detalju. Markdown već renderiran u HTML na PHP strani. */
   bodyHtml?: LocaleString;
@@ -60,6 +64,7 @@ function mapSummary(item: NovostApiSummary): NovostFromApi {
     date: item.date,
     category: item.category || undefined,
     coverImage: item.coverImage ?? undefined,
+    coverFocus: item.coverFocus,
     excerpt: loc(item.excerpt),
   };
 }
