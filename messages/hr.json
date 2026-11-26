@@ -78,6 +78,7 @@
     "ctaText": "Želiš aktivno sudjelovati u razvoju i napredovanju kluba? Pridruži nam se — na terenu ili izvan njega.",
     "eventRegister": "Prijavi se",
     "eventRegisterEkipa": "Prijavi ekipu",
+    "eventReserve": "Rezerviraj sada",
     "noUpcoming": "Trenutno nema nadolazećih događaja"
   },
   "news": {
@@ -108,6 +109,9 @@
     "sponsor": "Sponzor događaja",
     "register": "Prijavi se",
     "registerEkipa": "Prijavi ekipu",
+    "reserve": "Rezerviraj ovdje",
+    "reserveTitle": "Rezervacije",
+    "reserveText": "Mjesto rezerviraš online.",
     "kotizacija": "Kotizacija",
     "kapacitet": "Kapacitet",
     "start": "Početak",
