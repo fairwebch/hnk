@@ -111,6 +111,9 @@ export default async function DogadjajPage({
   // kad nema ni polja ni gumba za prikazati (bez obzira na prikazi_info_karticu).
   const showRegisterAnchor = imaPrijave && isUpcoming && Boolean(d.prijaveOtvorene);
   const showRegisterExternal = !showRegisterAnchor && Boolean(d.prijavaLink);
+  // Događaj bez prijave na sajtu, ali s vanjskim linkom (npr. Eventfrog) = rezervacija.
+  const imaRezervaciju = !imaPrijave && Boolean(d.prijavaLink);
+  const externalLabel = imaRezervaciju ? t('events.reserve') : registerLabel;
   const showRegisterCta = d.prikaziGumbPrijave !== false && (showRegisterAnchor || showRegisterExternal);
   const showInfoCard = d.prikaziInfoKarticu !== false && (info.length > 0 || showRegisterCta);
 
@@ -184,6 +187,16 @@ export default async function DogadjajPage({
               </div>
             )}
 
+            {imaRezervaciju && isUpcoming && (
+              <Card className={`p-6 md:p-8 ${body || (d.program && d.program.length > 0) ? 'mt-10' : ''}`}>
+                <h2 className="h-display text-content text-2xl tracking-[.02em]">{t('events.reserveTitle')}</h2>
+                <p className="font-sans text-content-soft mt-2">{t('events.reserveText')}</p>
+                <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-6 py-3.5">
+                  <span>{t('events.reserve')}</span>
+                </a>
+              </Card>
+            )}
+
             {/* Registration — posljednje u lijevoj koloni: posjetitelj prvo pročita opis/program. */}
             {imaPrijave && isUpcoming && (
               <EventRegistration
@@ -228,7 +241,7 @@ export default async function DogadjajPage({
                     </a>
                   ) : (
                     <a href={d.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta mt-6 px-5 py-3 w-full justify-center">
-                      <span>{registerLabel}</span>
+                      <span>{externalLabel}</span>
                     </a>
                   )
                 )}

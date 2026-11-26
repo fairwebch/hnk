@@ -103,9 +103,16 @@ export default async function HomePage({
                 <div className="mt-5">
                   <EventCountdown date={nextEvent.datumPocetak} size="md" />
                 </div>
-                <Link href={`/dogadjaji/${nextEvent.slug}`} className="btn-cta px-5 py-3 w-fit mt-6">
-                  <span>{nextEvent.vrstaPrijave === 'ekipa' ? t('home.eventRegisterEkipa') : t('home.eventRegister')}</span>
-                </Link>
+                {nextEvent.vrstaPrijave === 'bez' && nextEvent.prijavaLink ? (
+                  // Bez prijave na sajtu, ali s vanjskim linkom (npr. Eventfrog) — ravno na rezervaciju.
+                  <a href={nextEvent.prijavaLink} target="_blank" rel="noopener noreferrer" className="btn-cta px-5 py-3 w-fit mt-6">
+                    <span>{t('home.eventReserve')}</span>
+                  </a>
+                ) : (
+                  <Link href={`/dogadjaji/${nextEvent.slug}`} className="btn-cta px-5 py-3 w-fit mt-6">
+                    <span>{nextEvent.vrstaPrijave === 'ekipa' ? t('home.eventRegisterEkipa') : t('home.eventRegister')}</span>
+                  </Link>
+                )}
               </div>
             )}
           </div>

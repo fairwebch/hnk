@@ -78,6 +78,7 @@
     "ctaText": "Möchtest du aktiv am Vereinsleben teilnehmen? Mach mit — auf dem Platz oder daneben.",
     "eventRegister": "Anmelden",
     "eventRegisterEkipa": "Team anmelden",
+    "eventReserve": "Jetzt reservieren",
     "noUpcoming": "Zurzeit keine bevorstehenden Veranstaltungen"
   },
   "news": {
@@ -108,6 +109,9 @@
     "sponsor": "Event-Sponsor",
     "register": "Anmelden",
     "registerEkipa": "Team anmelden",
+    "reserve": "Hier reservieren",
+    "reserveTitle": "Reservation",
+    "reserveText": "Plätze reservieren Sie online.",
     "kotizacija": "Startgeld",
     "kapacitet": "Kapazität",
     "start": "Beginn",
